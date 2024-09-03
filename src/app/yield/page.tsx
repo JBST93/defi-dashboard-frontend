@@ -6,6 +6,7 @@ import YieldTable from './YieldTable';
 import FAQ from './FAQ';
 import SearchAndFilter from './SearchAndFilter';
 import { getFAQData } from './api';
+import { Suspense } from 'react';
 
 interface YieldItem {
   id: number; // Changed from string to number
@@ -23,7 +24,7 @@ interface FAQItem {
   answer: string;
 }
 
-export default function YieldPage() {
+function YieldPageContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -133,5 +134,13 @@ export default function YieldPage() {
         <FAQ faqData={faqData} />
       </div>
     </div>
+  );
+}
+
+export default function YieldPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <YieldPageContent />
+    </Suspense>
   );
 }
