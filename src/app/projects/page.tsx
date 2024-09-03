@@ -56,6 +56,19 @@ export default function ProjectsPage() {
     }
   }, [activeFilter, projects]);
 
+  const getTopBlockchainMovers = () => {
+    const blockchains = projects.filter(
+      (p) => p.type.toLowerCase() === 'blockchain'
+    );
+    const sorted = [...blockchains].sort(
+      (a, b) => parseFloat(b.price_day_delta) - parseFloat(a.price_day_delta)
+    );
+    return {
+      winner: sorted[0],
+      loser: sorted[sorted.length - 1],
+    };
+  };
+
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-screen text-3xl font-semibold text-brown-800">
@@ -78,6 +91,9 @@ export default function ProjectsPage() {
   );
   const topGainers = sortedProjects.slice(0, 3);
   const topLosers = sortedProjects.slice(-3).reverse();
+
+  const { winner: topBlockchainWinner, loser: topBlockchainLoser } =
+    getTopBlockchainMovers();
 
   const renderProjectCard = (project: ProjectData, isGainer: boolean) => (
     <div
@@ -113,10 +129,8 @@ export default function ProjectsPage() {
   const filterButtons = [
     { label: 'All', value: null },
     { label: 'Blockchain', value: 'blockchain' },
-    { label: 'Lending Markets', value: 'lending' },
+    { label: 'Lending', value: 'lending' },
     { label: 'Stablecoin', value: 'stablecoin' },
-    { label: 'Liquid Staking', value: 'liquid staking' },
-    { label: 'Tokenized Bitcoin', value: 'bitcoin' },
   ];
 
   return (
@@ -130,7 +144,7 @@ export default function ProjectsPage() {
           <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-brown-800">
             Top Movers (24h)
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
               <h3 className="text-md font-semibold mb-2 text-green-700">
                 Top Gainers
@@ -147,23 +161,28 @@ export default function ProjectsPage() {
                 {topLosers.map((project) => renderProjectCard(project, false))}
               </div>
             </div>
+            <div>
+              <h3 className="text-md font-semibold mb-2 text-brown-700">
+                Top Blockchain Movers
+              </h3>
+              <div className="space-y-2">
+                {renderProjectCard(topBlockchainWinner, true)}
+                {renderProjectCard(topBlockchainLoser, false)}
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="mb-6 flex flex-wrap justify-left gap-2">
+        <div className="mb-6 flex flex-wrap justify-center gap-2">
           {filterButtons.map((button) => (
             <button
               key={button.label}
               onClick={() => setActiveFilter(button.value)}
-              className={`px-4 py-2 text-sm font-medium transition-colors
-                border-2 border-gray-400 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]
-                ${
-                  activeFilter === button.value
-                    ? 'bg-amber-500 text-white border-amber-600'
-                    : 'bg-amber-100 text-brown-800 hover:bg-amber-200'
-                }
-                active:shadow-[1px_1px_0px_0px_rgba(0,0,0,0.3)]
-                active:translate-x-[1px] active:translate-y-[1px]`}
+              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                activeFilter === button.value
+                  ? 'bg-amber-500 text-white'
+                  : 'bg-white text-brown-800 hover:bg-amber-200'
+              }`}
             >
               {button.label}
             </button>
