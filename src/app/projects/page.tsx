@@ -18,6 +18,8 @@ interface ProjectData {
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<ProjectData[]>([]);
+  const [filteredProjects, setFilteredProjects] = useState<ProjectData[]>([]);
+  const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -41,6 +43,18 @@ export default function ProjectsPage() {
 
     fetchProjects();
   }, []);
+
+  useEffect(() => {
+    if (activeFilter) {
+      setFilteredProjects(
+        projects.filter((p) =>
+          p.type.toLowerCase().includes(activeFilter.toLowerCase())
+        )
+      );
+    } else {
+      setFilteredProjects(projects);
+    }
+  }, [activeFilter, projects]);
 
   if (isLoading) {
     return (
@@ -96,6 +110,15 @@ export default function ProjectsPage() {
     }).format(price);
   };
 
+  const filterButtons = [
+    { label: 'All', value: null },
+    { label: 'Blockchain', value: 'blockchain' },
+    { label: 'Lending Markets', value: 'lending' },
+    { label: 'Stablecoin', value: 'stablecoin' },
+    { label: 'Liquid Staking', value: 'liquid staking' },
+    { label: 'Tokenized Bitcoin', value: 'bitcoin' },
+  ];
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-100 to-orange-200 p-4 sm:p-8">
       <div className="max-w-7xl mx-auto">
@@ -127,6 +150,26 @@ export default function ProjectsPage() {
           </div>
         </div>
 
+        <div className="mb-6 flex flex-wrap justify-left gap-2">
+          {filterButtons.map((button) => (
+            <button
+              key={button.label}
+              onClick={() => setActiveFilter(button.value)}
+              className={`px-4 py-2 text-sm font-medium transition-colors
+                border-2 border-gray-400 shadow-[2px_2px_0px_0px_rgba(0,0,0,0.3)]
+                ${
+                  activeFilter === button.value
+                    ? 'bg-amber-500 text-white border-amber-600'
+                    : 'bg-amber-100 text-brown-800 hover:bg-amber-200'
+                }
+                active:shadow-[1px_1px_0px_0px_rgba(0,0,0,0.3)]
+                active:translate-x-[1px] active:translate-y-[1px]`}
+            >
+              {button.label}
+            </button>
+          ))}
+        </div>
+
         <div className="bg-white rounded-xl shadow-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
@@ -153,7 +196,7 @@ export default function ProjectsPage() {
                 </tr>
               </thead>
               <tbody>
-                {projects.map((project, index) => (
+                {filteredProjects.map((project, index) => (
                   <tr
                     key={index}
                     className={
