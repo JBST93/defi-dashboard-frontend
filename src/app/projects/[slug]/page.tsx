@@ -73,7 +73,9 @@ export default function ProjectPage() {
     return sum + (isNaN(tvl) ? 0 : tvl);
   }, 0);
   const projectName = projectData[0].project;
-  const uniqueChains = [...new Set(projectData.map((item) => item.chain))];
+  const uniqueChains = Array.from(
+    new Set(projectData.map((item) => item.chain))
+  );
 
   const formatYieldRate = (yield_rate: any): string => {
     if (typeof yield_rate === 'number') {
