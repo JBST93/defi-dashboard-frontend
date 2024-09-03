@@ -152,7 +152,7 @@ export default function ProjectPage() {
       datalabels: {
         color: '#fff',
         font: {
-          weight: 'bold',
+          weight: 'bold' as const,
           size: 12,
         },
         formatter: (value: number, ctx: any) => {
@@ -160,7 +160,7 @@ export default function ProjectPage() {
           const percentage = ((value / totalTVL) * 100).toFixed(1);
           return `${label}\n${percentage}%`;
         },
-        textAlign: 'center',
+        textAlign: 'center' as const,
         display: function (context: any) {
           const dataset = context.dataset;
           const value = dataset.data[context.dataIndex];
@@ -233,7 +233,7 @@ export default function ProjectPage() {
       datalabels: {
         color: '#fff',
         font: {
-          weight: 'bold',
+          weight: 'bold' as const,
           size: 12,
         },
         formatter: (value: number, ctx: any) => {
@@ -241,7 +241,7 @@ export default function ProjectPage() {
           const percentage = ((value / totalTVL) * 100).toFixed(1);
           return `${label}\n${percentage}%`;
         },
-        textAlign: 'center',
+        textAlign: 'center' as const,
         display: function (context: any) {
           const dataset = context.dataset;
           const value = dataset.data[context.dataIndex];
