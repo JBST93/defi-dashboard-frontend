@@ -6,9 +6,7 @@ export default function Home() {
     <div className="min-h-screen bg-gradient-to-br from-amber-100 to-orange-200">
       <HeroSection />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        <FeaturesSection />
         <YieldSnapshotSection />
-        <BenefitsSection />
         <CTASection />
       </main>
       <Footer />
@@ -58,10 +56,6 @@ function HeroSection() {
       </div>
     </div>
   );
-}
-
-function FeaturesSection() {
-  // ... (Keep the existing FeaturesSection code)
 }
 
 function YieldSnapshotSection() {
@@ -179,10 +173,6 @@ function YieldSnapshotSection() {
       </div>
     </section>
   );
-}
-
-function BenefitsSection() {
-  // ... (Keep the existing BenefitsSection code)
 }
 
 function CTASection() {
