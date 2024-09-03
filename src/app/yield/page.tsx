@@ -7,11 +7,29 @@ import FAQ from './FAQ';
 import SearchAndFilter from './SearchAndFilter';
 import { getFAQData } from './api';
 
+interface YieldItem {
+  id: number; // Changed from string to number
+  project: string;
+  chain: string;
+  market: string;
+  apy: number;
+  yield_rate_base: number;
+  tvl: number;
+  // Add other properties if needed...
+}
+
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
 export default function YieldPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const [yieldData, setYieldData] = useState([]);
+  const [yieldData, setYieldData] = useState<(YieldItem & { index: number })[]>(
+    []
+  );
   const [searchTerm, setSearchTerm] = useState(
     searchParams.get('search') || ''
   );
@@ -21,7 +39,7 @@ export default function YieldPage() {
   const [selectedProject, setSelectedProject] = useState(
     searchParams.get('project') || ''
   );
-  const [faqData, setFaqData] = useState([]);
+  const [faqData, setFaqData] = useState<FAQItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -30,7 +48,7 @@ export default function YieldPage() {
         const response = await fetch(
           'https://www.tokendataview.com/api/yield_rates'
         );
-        const data = await response.json();
+        const data: YieldItem[] = await response.json();
         const indexedData = data.map((item, index) => ({
           ...item,
           index: index + 1,
@@ -53,8 +71,10 @@ export default function YieldPage() {
     fetchFAQData();
   }, []);
 
-  const uniqueProjects = [...new Set(yieldData.map((item) => item.project))];
-  const uniqueChains = [...new Set(yieldData.map((item) => item.chain))];
+  const uniqueProjects = Array.from(
+    new Set(yieldData.map((item) => item.project))
+  );
+  const uniqueChains = Array.from(new Set(yieldData.map((item) => item.chain)));
 
   const updateURLParams = (search: string, chain: string, project: string) => {
     const params = new URLSearchParams();
