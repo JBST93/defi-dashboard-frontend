@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
+import Glance from './Glance';
 
 interface ProjectData {
   type: string;
@@ -14,6 +15,7 @@ interface ProjectData {
   website: string;
   forum: string;
   project: string;
+  logo?: string;
 }
 
 export default function ProjectsPage() {
@@ -22,6 +24,43 @@ export default function ProjectsPage() {
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [btcEthChange, setBtcEthChange] = useState({ btc: '0', eth: '0' });
+
+  const totalMarketCapChange = useMemo(() => {
+    const validProjects = projects.filter(
+      (p) =>
+        p.marketCap &&
+        p.price &&
+        p.price_day_delta &&
+        !isNaN(parseFloat(p.price_day_delta))
+    );
+
+    const totalChange = validProjects.reduce((acc, project) => {
+      const marketCap = parseFloat(project.marketCap.replace(/[^0-9.-]+/g, ''));
+      const changePercent = parseFloat(project.price_day_delta) / 100;
+      return acc + marketCap * changePercent;
+    }, 0);
+
+    const totalMarketCap = validProjects.reduce((acc, project) => {
+      return acc + parseFloat(project.marketCap.replace(/[^0-9.-]+/g, ''));
+    }, 0);
+
+    const changePercentage = (totalChange / totalMarketCap) * 100;
+
+    const btc = projects.find((p) => p.token === 'BTC');
+    const eth = projects.find((p) => p.token === 'ETH');
+
+    setBtcEthChange({
+      btc: btc ? btc.price_day_delta : '0',
+      eth: eth ? eth.price_day_delta : '0',
+    });
+
+    return {
+      changeUSD: totalChange,
+      changePercentage: changePercentage,
+    };
+  }, [projects]);
 
   useEffect(() => {
     const fetchProjects = async () => {
@@ -30,7 +69,6 @@ export default function ProjectsPage() {
           'https://www.tokendataview.com/api/projects'
         );
         const data = await response.json();
-        console.log('Fetched data:', data); // Add this line
 
         setProjects(data);
         setIsLoading(false);
@@ -45,16 +83,19 @@ export default function ProjectsPage() {
   }, []);
 
   useEffect(() => {
-    if (activeFilter) {
-      setFilteredProjects(
-        projects.filter((p) =>
-          p.type.toLowerCase().includes(activeFilter.toLowerCase())
-        )
-      );
-    } else {
-      setFilteredProjects(projects);
-    }
-  }, [activeFilter, projects]);
+    const filtered = projects.filter((p) => {
+      const matchesFilter =
+        !activeFilter ||
+        p.type.toLowerCase().includes(activeFilter.toLowerCase());
+      const matchesSearch =
+        !searchTerm ||
+        p.project.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.token.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        p.type.toLowerCase().includes(searchTerm.toLowerCase());
+      return matchesFilter && matchesSearch;
+    });
+    setFilteredProjects(filtered);
+  }, [activeFilter, projects, searchTerm]);
 
   const getTopBlockchainMovers = () => {
     const blockchains = projects.filter(
@@ -136,52 +177,75 @@ export default function ProjectsPage() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-100 to-orange-200 p-4 sm:p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl sm:text-5xl font-bold mb-6 sm:mb-12 text-center text-brown-900 retro-shadow">
+        <h1 className="text-3xl sm:text-5xl font-bold mb-6 sm:mb-8 text-center text-brown-900 retro-shadow">
           Crypto Projects Overview
         </h1>
+
+        <Glance data={btcEthChange} />
+
+        <div className="mt-4 mb-6 sm:mb-12 p-4 bg-gray-100 border-2 border-gray-400 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+          <p className="text-sm sm:text-base text-center text-gray-800 font-sans">
+            Navigate the world of digital assets with our comprehensive
+            directory. Explore real-time data on your favorite cryptocurrencies,
+            compare market performance, and stay ahead with the latest updates.
+          </p>
+        </div>
 
         <div className="mb-6 sm:mb-12">
           <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-brown-800">
             Top Movers (24h)
           </h2>
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div>
-              <h3 className="text-md font-semibold mb-2 text-green-700">
-                Top Gainers
-              </h3>
-              <div className="space-y-2">
-                {topGainers.map((project) => renderProjectCard(project, true))}
+          <div className="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-gray-400">
+            <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-gray-200">
+              <div className="p-4">
+                <h3 className="text-md font-semibold mb-2 text-green-700">
+                  Top Gainers
+                </h3>
+                <div className="space-y-2">
+                  {topGainers.map((project) =>
+                    renderProjectCard(project, true)
+                  )}
+                </div>
               </div>
-            </div>
-            <div>
-              <h3 className="text-md font-semibold mb-2 text-red-700">
-                Top Losers
-              </h3>
-              <div className="space-y-2">
-                {topLosers.map((project) => renderProjectCard(project, false))}
+              <div className="p-4">
+                <h3 className="text-md font-semibold mb-2 text-red-700">
+                  Top Losers
+                </h3>
+                <div className="space-y-2">
+                  {topLosers.map((project) =>
+                    renderProjectCard(project, false)
+                  )}
+                </div>
               </div>
-            </div>
-            <div>
-              <h3 className="text-md font-semibold mb-2 text-brown-700">
-                Top Blockchain Movers
-              </h3>
-              <div className="space-y-2">
-                {renderProjectCard(topBlockchainWinner, true)}
-                {renderProjectCard(topBlockchainLoser, false)}
+              <div className="p-4">
+                <h3 className="text-md font-semibold mb-2 text-brown-700">
+                  Top Blockchain Movers
+                </h3>
+                <div className="space-y-2">
+                  {renderProjectCard(topBlockchainWinner, true)}
+                  {renderProjectCard(topBlockchainLoser, false)}
+                </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="mb-6 flex flex-wrap justify-center gap-2">
+        <div className="mb-6 flex flex-wrap justify-left items-center gap-2">
+          <input
+            type="text"
+            placeholder="Search project, token, or type"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="px-4 py-2 text-sm border-2 border-gray-400 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+          />
           {filterButtons.map((button) => (
             <button
               key={button.label}
               onClick={() => setActiveFilter(button.value)}
-              className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`px-4 py-2 text-sm font-medium transition-colors border-2 border-gray-400 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-y-[1px] active:translate-x-[1px] ${
                 activeFilter === button.value
-                  ? 'bg-amber-500 text-white'
-                  : 'bg-white text-brown-800 hover:bg-amber-200'
+                  ? 'bg-gray-200 border-gray-600'
+                  : 'bg-gray-100 hover:bg-gray-200'
               }`}
             >
               {button.label}
@@ -225,7 +289,16 @@ export default function ProjectsPage() {
                     }
                   >
                     <td className="p-2 sm:p-4 text-xs sm:text-sm">
-                      {project.token || 'N/A'}
+                      <div className="flex items-center space-x-2">
+                        {project.logo && (
+                          <img
+                            src={project.logo}
+                            alt={`${project.token} logo`}
+                            className="w-6 h-6 rounded-full mr-2"
+                          />
+                        )}
+                        {project.token || 'N/A'}
+                      </div>
                     </td>
                     <td className="p-2 sm:p-4 text-xs sm:text-sm">
                       {project.project}
@@ -269,8 +342,18 @@ export default function ProjectsPage() {
                         </span>
                       )}
                     </td>
+
                     <td className="p-2 sm:p-4 text-xs sm:text-sm">
                       <div className="flex flex-col sm:flex-row sm:space-x-2">
+                        <Link
+                          href={`/yield?search=${encodeURIComponent(
+                            project.token
+                          )}`}
+                          className="text-blue-600 hover:underline"
+                        >
+                          Yields
+                        </Link>
+                        <span className="hidden sm:inline">•</span>
                         <a
                           href={project.website}
                           target="_blank"

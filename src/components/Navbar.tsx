@@ -27,6 +27,7 @@ export default function Navbar() {
     { name: 'Home', path: '/' },
     { name: 'Projects', path: '/projects' },
     { name: 'Yield', path: '/yield' },
+    { name: 'Stablecoin Discount', path: '/stablecoin/discount' },
   ];
 
   return (
