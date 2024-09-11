@@ -82,12 +82,12 @@ function YieldPageContent() {
 
   const setSearchTermAndUpdateURL = (value: string) => {
     setSearchTerm(value);
-    updateURLParams(value, selectedChains[0] || '', '');
+    updateURLParams(value, selectedChains[0] || ''); // Remove the third argument
   };
 
   const setSelectedChainAndUpdateURL = (value: string) => {
     setSelectedChains([value]);
-    updateURLParams(searchTerm, value, '');
+    updateURLParams(searchTerm, value); // Remove the third argument
   };
 
   const setSelectedChainsAndUpdateURL = (chains: string[]) => {
