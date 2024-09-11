@@ -1,217 +1,176 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetClose,
+  SheetDescription,
+} from '@/components/ui/sheet';
+import { Menu, X, ChevronRight } from 'lucide-react';
+import { DialogTitle } from '@/components/ui/dialog'; // Import DialogTitle
+
+// Define the navItems array
+const navItems = [
+  { name: 'Home', path: '/' },
+  { name: 'Projects', path: '/project' },
+  {
+    name: 'Yields',
+    path: '/yield',
+    subItems: [
+      { name: 'All yields', path: '/yield' },
+      { name: 'Stablecoin yields', path: '/yields/stablecoin' },
+    ],
+  },
+  { name: 'Contact', path: '/contact' },
+];
 
 export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeSubmenu, setActiveSubmenu] = useState<string | null>(null);
   const currentPath = usePathname();
-  const menuRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsMenuOpen(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
-
-  const navItems = [
-    { name: 'Home', path: '/' },
-    { name: 'Projects', path: '/project' },
-    {
-      name: 'Yield',
-      path: '/yield',
-      subItems: [
-        { name: 'Stablecoin yields', path: '/yield/stablecoin' },
-        { name: 'All token yields', path: '/yield' },
-      ],
-    },
-    { name: 'Governance', path: '/governance' },
-  ];
-
-  const handleDropdownToggle = (itemName: string) => {
-    setActiveDropdown(activeDropdown === itemName ? null : itemName);
-  };
 
   return (
-    <nav className="bg-brown-800 text-white shadow-lg">
-      <div
-        className="max-w-7xl mx-auto px-4"
-        ref={menuRef}
-      >
+    <nav className="bg-white text-gray-800 shadow-md">
+      <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          <div className="flex items-center">
-            <Link
-              href="/"
-              className="flex items-center"
-            >
-              <Image
-                src="/logo_nav.jpg"
-                alt="TokenDataView Logo"
-                width={300}
-                height={100}
-                className="mr-2 w-[200px] md:w-[300px]"
-              />
-              <span className="font-semibold text-lg">TokenDataView</span>
-            </Link>
-          </div>
+          <Link
+            href="/"
+            className="flex items-center"
+          >
+            <Image
+              src="/logo_nav.jpg"
+              alt="TokenDataView Logo"
+              width={150}
+              height={40}
+              className="mr-2"
+              style={{ width: 'auto', height: 'auto' }}
+            />
+          </Link>
+
+          {/* Desktop menu */}
           <div className="hidden md:flex items-center space-x-4">
             {navItems.map((item) => (
-              <div
+              <Link
                 key={item.path}
-                className="relative"
+                href={item.path}
+                className={`px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 ${
+                  currentPath === item.path ? 'bg-yellow-400' : ''
+                }`}
               >
-                {item.subItems ? (
-                  <>
-                    <button
-                      onClick={() => handleDropdownToggle(item.name)}
-                      className={`py-2 px-3 rounded-md text-sm font-medium ${
-                        currentPath.startsWith(item.path)
-                          ? 'bg-amber-500 text-white'
-                          : 'text-black hover:bg-amber-700 hover:text-white'
-                      }`}
-                    >
-                      {item.name}
-                    </button>
-                    {activeDropdown === item.name && (
-                      <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
-                        <div
-                          className="py-1"
-                          role="menu"
-                          aria-orientation="vertical"
-                          aria-labelledby="options-menu"
-                        >
-                          {item.subItems.map((subItem) => (
-                            <Link
-                              key={subItem.path}
-                              href={subItem.path}
-                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                              role="menuitem"
-                            >
-                              {subItem.name}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <Link
-                    href={item.path}
-                    className={`py-2 px-3 rounded-md text-sm font-medium ${
-                      currentPath === item.path
-                        ? 'bg-amber-500 text-white'
-                        : 'text-black hover:bg-amber-700 hover:text-white'
-                    }`}
-                  >
-                    {item.name}
-                  </Link>
-                )}
-              </div>
+                {item.name}
+              </Link>
             ))}
           </div>
+
+          {/* Mobile menu */}
           <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+            <Sheet
+              open={isOpen}
+              onOpenChange={setIsOpen}
             >
-              <span className="sr-only">Open main menu</span>
-              {isMenuOpen ? (
-                <svg
-                  className="block h-6 w-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
+              <SheetTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="block h-6 w-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                </svg>
-              )}
-            </button>
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Open main menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent
+                side="right"
+                className="w-full sm:w-[300px] p-0 bg-[#1a1a1a] text-white"
+              >
+                <div className="flex flex-col h-full">
+                  <div className="p-4 border-b border-gray-700">
+                    <DialogTitle className="text-xl font-semibold text-[#ffd700]">
+                      Menu
+                    </DialogTitle>
+                    <SheetDescription className="sr-only">
+                      Navigation menu for mobile devices
+                    </SheetDescription>
+                    <SheetClose className="absolute top-4 right-4">
+                      <X className="h-6 w-6 text-white" />
+                      <span className="sr-only">Close menu</span>
+                    </SheetClose>
+                  </div>
+                  <div className="flex-grow overflow-y-auto py-4">
+                    {navItems.map((item) => (
+                      <div
+                        key={item.path}
+                        className="mb-2"
+                      >
+                        {item.subItems ? (
+                          <Button
+                            variant="ghost"
+                            className="w-full justify-between text-left px-6 py-3 text-lg hover:bg-[#333333]"
+                            onClick={() =>
+                              setActiveSubmenu(
+                                activeSubmenu === item.name ? null : item.name
+                              )
+                            }
+                          >
+                            {item.name}
+                            <ChevronRight
+                              className={`h-5 w-5 transition-transform ${
+                                activeSubmenu === item.name ? 'rotate-90' : ''
+                              }`}
+                            />
+                          </Button>
+                        ) : (
+                          <SheetClose asChild>
+                            <Link href={item.path}>
+                              <Button
+                                variant="ghost"
+                                className={`w-full justify-start px-6 py-3 text-lg ${
+                                  currentPath === item.path
+                                    ? 'bg-[#333333] text-[#ffd700]'
+                                    : 'hover:bg-[#333333]'
+                                }`}
+                              >
+                                {item.name}
+                              </Button>
+                            </Link>
+                          </SheetClose>
+                        )}
+                        {item.subItems && activeSubmenu === item.name && (
+                          <div className="bg-[#2a2a2a] py-2">
+                            {item.subItems.map((subItem) => (
+                              <SheetClose
+                                key={subItem.path}
+                                asChild
+                              >
+                                <Link href={subItem.path}>
+                                  <Button
+                                    variant="ghost"
+                                    className={`w-full justify-start pl-10 py-2 text-base ${
+                                      currentPath === subItem.path
+                                        ? 'bg-[#333333] text-[#ffd700]'
+                                        : 'hover:bg-[#333333]'
+                                    }`}
+                                  >
+                                    {subItem.name}
+                                  </Button>
+                                </Link>
+                              </SheetClose>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </SheetContent>
+            </Sheet>
           </div>
         </div>
       </div>
-      {isMenuOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-            {navItems.map((item) => (
-              <div key={item.path}>
-                {item.subItems ? (
-                  <>
-                    <button
-                      onClick={() => handleDropdownToggle(item.name)}
-                      className={`w-full text-left px-3 py-2 rounded-md text-base font-medium ${
-                        currentPath.startsWith(item.path)
-                          ? 'bg-amber-500 text-white'
-                          : 'text-gray-300 hover:bg-amber-700 hover:text-white'
-                      }`}
-                    >
-                      {item.name}
-                    </button>
-                    {activeDropdown === item.name && (
-                      <div className="pl-4">
-                        {item.subItems.map((subItem) => (
-                          <Link
-                            key={subItem.path}
-                            href={subItem.path}
-                            className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-amber-700 hover:text-white"
-                            onClick={() => setIsMenuOpen(false)}
-                          >
-                            {subItem.name}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <Link
-                    href={item.path}
-                    className={`block px-3 py-2 rounded-md text-base font-medium ${
-                      currentPath === item.path
-                        ? 'bg-amber-500 text-white'
-                        : 'text-gray-300 hover:bg-amber-700 hover:text-white'
-                    }`}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {item.name}
-                  </Link>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
     </nav>
   );
 }
