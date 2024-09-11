@@ -26,7 +26,9 @@ export default function YieldTable({
   selectedChain,
   isLoading,
 }: YieldTableProps) {
-  const [sortColumn, setSortColumn] = useState<'apy' | 'tvl' | null>(null);
+  const [sortColumn, setSortColumn] = useState<
+    'apy' | 'tvl' | 'yield_rate_base' | null
+  >(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [currentPage, setCurrentPage] = useState(1);
   const rowsPerPage = 50;
@@ -39,7 +41,7 @@ export default function YieldTable({
     return matchesSearch && matchesChain;
   });
 
-  const handleSort = (column: 'yield_rate_base' | 'tvl') => {
+  const handleSort = (column: 'apy' | 'tvl' | 'yield_rate_base') => {
     if (sortColumn === column) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
