@@ -77,17 +77,17 @@ function YieldPageContent() {
     const params = new URLSearchParams();
     if (search) params.set('search', search);
     if (chain) params.set('chain', chain);
-    router.push(`/yield?${params.toString()}`);
+    router.push(`/yield?${params.toString()}`, undefined, { shallow: true });
   };
 
   const setSearchTermAndUpdateURL = (value: string) => {
     setSearchTerm(value);
-    updateURLParams(value, selectedChains[0] || '', '');
+    updateURLParams(value, selectedChains[0] || '');
   };
 
   const setSelectedChainAndUpdateURL = (value: string) => {
     setSelectedChains([value]);
-    updateURLParams(searchTerm, value, '');
+    updateURLParams(searchTerm, value);
   };
 
   const setSelectedChainsAndUpdateURL = (chains: string[]) => {
