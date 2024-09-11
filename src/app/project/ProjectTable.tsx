@@ -19,9 +19,14 @@ export interface ProjectData {
   logo?: string;
 }
 
-export default function ProjectTable({ initialProjects }) {
-  const [projects, setProjects] = useState(initialProjects);
-  const [filteredProjects, setFilteredProjects] = useState(initialProjects);
+export default function ProjectTable({
+  initialProjects,
+}: {
+  initialProjects: ProjectData[];
+}) {
+  const [projects, setProjects] = useState<ProjectData[]>(initialProjects);
+  const [filteredProjects, setFilteredProjects] =
+    useState<ProjectData[]>(initialProjects);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
