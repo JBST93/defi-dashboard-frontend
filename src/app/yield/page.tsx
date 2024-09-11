@@ -77,7 +77,7 @@ function YieldPageContent() {
     const params = new URLSearchParams();
     if (search) params.set('search', search);
     if (chain) params.set('chain', chain);
-    router.push(`/yield?${params.toString()}`, undefined, { shallow: true });
+    router.push(`/yield?${params.toString()}`);
   };
 
   const setSearchTermAndUpdateURL = (value: string) => {
