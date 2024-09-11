@@ -7,7 +7,7 @@ import CategoryCard from '@/components/CategoryCard';
 import TopMovers from './TopMovers';
 import { motion } from 'framer-motion';
 
-interface ProjectData {
+export interface ProjectData {
   type: string;
   price: number;
   token: string;
