@@ -6,6 +6,7 @@ import Glance from './Glance';
 import CategoryCard from '@/components/CategoryCard';
 import TopMovers from './TopMovers';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 interface ProjectData {
   type: string;
@@ -308,9 +309,11 @@ export default function ProjectsPage() {
                     <td className="p-2 sm:p-4 text-xs sm:text-sm whitespace-nowrap">
                       <div className="flex items-center space-x-2">
                         {project.logo && (
-                          <img
+                          <Image
                             src={project.logo}
                             alt={`${project.token} logo`}
+                            width={24}
+                            height={24}
                             className="w-6 h-6 rounded-full"
                           />
                         )}

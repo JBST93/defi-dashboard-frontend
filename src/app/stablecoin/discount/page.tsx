@@ -165,10 +165,10 @@ export default function StablecoinDiscountPage() {
       <p className="mb-4">
         Principal Tokens (PTs) are similar to zero-coupon bonds, offering a
         claim on a specific amount of stablecoins at a future date. Since they
-        don't pay interest or provide any returns until maturity, PTs are
+        don&apos;t pay interest or provide any returns until maturity, PTs are
         typically sold at a discount. This discount reflects two key factors:
         the time value of money—where funds today are worth more than the same
-        amount in the future—and the market's perception of risk. As the
+        amount in the future—and the market&apos;s perception of risk. As the
         maturity date approaches, the value of PTs rises, converging with their
         full payout value. This makes PTs an attractive option for those looking
         to capture future value in a predictable way.
