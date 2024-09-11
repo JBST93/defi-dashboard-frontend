@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import {
   fetchCurveProposals,
   fetchUniswapProposals,
@@ -11,35 +11,41 @@ import {
 import AllProposalsList from '@/components/AllProposalList';
 import GovernanceFilters from '@/components/GovernanceFilters';
 
+// Define the Proposal interface
+interface Proposal {
+  id: string;
+  title: string;
+  body: string;
+  type: 'snapshot' | 'forum';
+  url: string;
+  state: string;
+  start: number;
+  end: number;
+  scores: number[];
+  scores_total: number;
+  choices: string[];
+  protocol: string;
+}
+
 export default function GovernancePage() {
-  const [proposals, setProposals] = useState([]);
+  const [proposals, setProposals] = useState<Proposal[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedProtocols, setSelectedProtocols] = useState<string[]>([]);
-  const [selectedType, setSelectedType] = useState('');
-  const [selectedState, setSelectedState] = useState('');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedType, setSelectedType] = useState<string>('all');
+  const [selectedState, setSelectedState] = useState<string>('all');
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
-  React.useEffect(() => {
+  useEffect(() => {
     async function fetchAllProposals() {
-      const curveProposals = await fetchCurveProposals();
-      const uniswapProposals = await fetchUniswapProposals();
-      const balancerProposals = await fetchBalancerProposals();
-      const aaveProposals = await fetchAaveProposals();
-      const fraxProposals = await fetchFraxProposals();
+      const allProposals = await Promise.all([
+        fetchCurveProposals(),
+        fetchUniswapProposals(),
+        fetchBalancerProposals(),
+        fetchAaveProposals(),
+        fetchFraxProposals(),
+      ]);
 
-      const allProposals = [
-        ...curveProposals,
-        ...uniswapProposals,
-        ...balancerProposals,
-        ...aaveProposals,
-        ...fraxProposals,
-      ].sort((a, b) => {
-        const dateA = a.start instanceof Date ? a.start : new Date(a.start);
-        const dateB = b.start instanceof Date ? b.start : new Date(b.start);
-        return dateB.getTime() - dateA.getTime();
-      });
-
-      setProposals(allProposals);
+      setProposals(allProposals.flat());
       setIsLoading(false);
     }
 
