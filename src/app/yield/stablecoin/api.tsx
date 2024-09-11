@@ -1,6 +1,18 @@
 'use client';
 
-export async function fetchStablecoinYieldRates() {
+export interface StablecoinYieldRate {
+  id: number;
+  project: string;
+  chain: string;
+  market: string;
+  apy: number;
+  yield_rate_base: number;
+  tvl: number;
+}
+
+export async function fetchStablecoinYieldRates(): Promise<
+  StablecoinYieldRate[]
+> {
   const response = await fetch(
     'https://www.tokendataview.com/api/stablecoin_yield_rates'
   );

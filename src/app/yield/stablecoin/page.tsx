@@ -1,12 +1,18 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { fetchStablecoinYieldRates } from './api';
+import { fetchStablecoinYieldRates, StablecoinYieldRate } from './api';
 import YieldTable from '@/components/YieldTable';
 import YieldFilters from '@/components/YieldFilters';
 
+interface IndexedStablecoinYieldRate extends StablecoinYieldRate {
+  index: number;
+}
+
 function StablecoinYield() {
-  const [yieldRates, setYieldRates] = useState([]);
+  const [yieldRates, setYieldRates] = useState<IndexedStablecoinYieldRate[]>(
+    []
+  );
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedChains, setSelectedChains] = useState<string[]>([]);
