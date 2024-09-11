@@ -7,6 +7,7 @@ import { usePathname } from 'next/navigation';
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const currentPath = usePathname();
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -25,10 +26,23 @@ export default function Navbar() {
 
   const navItems = [
     { name: 'Home', path: '/' },
-    { name: 'Projects', path: '/projects' },
-    { name: 'Yield', path: '/yield' },
-    { name: 'Stablecoin Discount', path: '/stablecoin/discount' },
+    { name: 'Projects', path: '/project' },
+    {
+      name: 'Yield',
+      path: '/yield',
+      subItems: [
+        { name: 'Stablecoin yields', path: '/yield/stablecoin' },
+        { name: 'Ethereum yields', path: '/yield/stablecoin' },
+        { name: 'Bitcoin yields', path: '/yield/stablecoin' },
+        { name: 'All token yields', path: '/yield' },
+      ],
+    },
+    { name: 'Governance', path: '/governance' },
   ];
+
+  const handleDropdownToggle = (itemName: string) => {
+    setActiveDropdown(activeDropdown === itemName ? null : itemName);
+  };
 
   return (
     <nav className="bg-brown-800 text-white shadow-lg">
@@ -54,17 +68,57 @@ export default function Navbar() {
           </div>
           <div className="hidden md:flex items-center space-x-4">
             {navItems.map((item) => (
-              <Link
+              <div
                 key={item.path}
-                href={item.path}
-                className={`py-2 px-3 rounded-md text-sm font-medium ${
-                  currentPath === item.path
-                    ? 'bg-amber-500 text-white'
-                    : 'text-gray-300 hover:bg-amber-700 hover:text-white'
-                }`}
+                className="relative"
               >
-                {item.name}
-              </Link>
+                {item.subItems ? (
+                  <>
+                    <button
+                      onClick={() => handleDropdownToggle(item.name)}
+                      className={`py-2 px-3 rounded-md text-sm font-medium ${
+                        currentPath.startsWith(item.path)
+                          ? 'bg-amber-500 text-white'
+                          : 'text-black hover:bg-amber-700 hover:text-white'
+                      }`}
+                    >
+                      {item.name}
+                    </button>
+                    {activeDropdown === item.name && (
+                      <div className="absolute left-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5">
+                        <div
+                          className="py-1"
+                          role="menu"
+                          aria-orientation="vertical"
+                          aria-labelledby="options-menu"
+                        >
+                          {item.subItems.map((subItem) => (
+                            <Link
+                              key={subItem.path}
+                              href={subItem.path}
+                              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                              role="menuitem"
+                            >
+                              {subItem.name}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <Link
+                    href={item.path}
+                    className={`py-2 px-3 rounded-md text-sm font-medium ${
+                      currentPath === item.path
+                        ? 'bg-amber-500 text-white'
+                        : 'text-black hover:bg-amber-700 hover:text-white'
+                    }`}
+                  >
+                    {item.name}
+                  </Link>
+                )}
+              </div>
             ))}
           </div>
           <div className="md:hidden">

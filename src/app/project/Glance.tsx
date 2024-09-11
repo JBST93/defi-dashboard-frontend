@@ -48,9 +48,32 @@ const CryptoInfoRow = ({ data }: { data: CryptoData }) => (
   </div>
 );
 
+// Remove the Button import
+
+// Add a new type for governance proposals
+type GovernanceProposal = {
+  id: string;
+  title: string;
+  status: 'Active' | 'Passed' | 'Failed';
+};
+
 export default function Glance(data: any) {
   const totalMarketCapChange = -3.43;
   const totalMarketCapChangeValue = -57995652602.93;
+
+  // Add a new type for governance proposals
+  type GovernanceProposal = {
+    id: string;
+    title: string;
+    status: 'Active' | 'Passed' | 'Failed';
+  };
+
+  // Mock data for governance proposals
+  const governanceProposals: GovernanceProposal[] = [
+    { id: 'PROP-1', title: 'Increase staking rewards', status: 'Active' },
+    { id: 'PROP-2', title: 'Reduce transaction fees', status: 'Passed' },
+    { id: 'PROP-3', title: 'Add new token pair', status: 'Failed' },
+  ];
 
   return (
     <div className="max-w-4xl p-4]">
@@ -80,6 +103,40 @@ export default function Glance(data: any) {
             <span className="mr-2">BTC: {formatChange(-3.73)}</span>
             <span>ETH: {formatChange(-4.26)}</span>
           </div>
+        </CardContent>
+      </Card>
+
+      <Card className="w-full mt-4 bg-white border-brown-300 shadow-lg">
+        <CardHeader>
+          <CardTitle className="text-lg font-semibold text-brown-800">
+            Governance Proposals
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {governanceProposals.map((proposal) => (
+            <div
+              key={proposal.id}
+              className="mb-2 flex justify-between items-center"
+            >
+              <div>
+                <p className="text-sm font-medium text-brown-800">
+                  {proposal.title}
+                </p>
+                <p className="text-xs text-brown-600">{proposal.id}</p>
+              </div>
+              <div
+                className={`px-2 py-1 text-xs font-semibold rounded ${
+                  proposal.status === 'Active'
+                    ? 'bg-blue-100 text-blue-700'
+                    : proposal.status === 'Passed'
+                    ? 'bg-green-100 text-green-700'
+                    : 'bg-red-100 text-red-700'
+                }`}
+              >
+                {proposal.status}
+              </div>
+            </div>
+          ))}
         </CardContent>
       </Card>
     </div>

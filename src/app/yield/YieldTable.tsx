@@ -8,25 +8,24 @@ interface YieldData {
   index: number;
   market: string;
   project: string;
-  apy: number;
   yield_rate_base: number;
   tvl: number;
   chain: string;
+}
+
+interface YieldTableProps {
+  yieldData: YieldData[];
+  searchTerm: string;
+  selectedChain: string;
+  isLoading: boolean;
 }
 
 export default function YieldTable({
   yieldData,
   searchTerm,
   selectedChain,
-  selectedProject,
   isLoading,
-}: {
-  yieldData: YieldData[];
-  searchTerm: string;
-  selectedChain: string;
-  selectedProject: string;
-  isLoading: boolean;
-}) {
+}: YieldTableProps) {
   const [sortColumn, setSortColumn] = useState<'apy' | 'tvl' | null>(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [currentPage, setCurrentPage] = useState(1);
@@ -37,25 +36,23 @@ export default function YieldTable({
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
     const matchesChain = selectedChain === '' || item.chain === selectedChain;
-    const matchesProject =
-      selectedProject === '' || item.project === selectedProject;
-    return matchesSearch && matchesChain && matchesProject;
+    return matchesSearch && matchesChain;
   });
 
-  const handleSort = (column: 'apy' | 'tvl') => {
+  const handleSort = (column: 'yield_rate_base' | 'tvl') => {
     if (sortColumn === column) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
       setSortColumn(column);
-      setSortDirection('asc');
+      setSortDirection('desc');
     }
   };
 
   const sortedData = [...filteredData].sort((a, b) => {
     if (sortColumn === null) return 0;
-    return sortDirection === 'asc'
-      ? a[sortColumn] - b[sortColumn]
-      : b[sortColumn] - a[sortColumn];
+    const aValue = a[sortColumn];
+    const bValue = b[sortColumn];
+    return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
   });
 
   const totalPages = Math.ceil(sortedData.length / rowsPerPage);
@@ -80,10 +77,11 @@ export default function YieldTable({
             <th className="p-2 text-xs sm:text-sm">Project</th>
             <th
               className="p-2 cursor-pointer text-xs sm:text-sm"
-              onClick={() => handleSort('apy')}
+              onClick={() => handleSort('yield_rate_base')}
             >
               APY{' '}
-              {sortColumn === 'apy' && (sortDirection === 'asc' ? '▲' : '▼')}
+              {sortColumn === 'yield_rate_base' &&
+                (sortDirection === 'asc' ? '▲' : '▼')}
             </th>
             <th
               className="p-2 cursor-pointer text-xs sm:text-sm"

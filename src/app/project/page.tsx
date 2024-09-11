@@ -3,6 +3,9 @@
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import Glance from './Glance';
+import CategoryCard from '@/components/CategoryCard';
+import TopMovers from './TopMovers';
+import { motion } from 'framer-motion';
 
 interface ProjectData {
   type: string;
@@ -26,6 +29,14 @@ export default function ProjectsPage() {
   const [error, setError] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [btcEthChange, setBtcEthChange] = useState({ btc: '0', eth: '0' });
+  const [categories, setCategories] = useState<string[]>([]);
+  const [categoryStats, setCategoryStats] = useState<{
+    [key: string]: {
+      averageChange: number;
+      highestGainer: { project: string; change: number };
+      highestLoser: { project: string; change: number };
+    };
+  }>({});
 
   const totalMarketCapChange = useMemo(() => {
     const validProjects = projects.filter(
@@ -71,6 +82,7 @@ export default function ProjectsPage() {
         const data = await response.json();
 
         setProjects(data);
+        calculateCategoryStats(data);
         setIsLoading(false);
       } catch (error) {
         console.error('Error fetching project data:', error);
@@ -97,18 +109,75 @@ export default function ProjectsPage() {
     setFilteredProjects(filtered);
   }, [activeFilter, projects, searchTerm]);
 
-  const getTopBlockchainMovers = () => {
-    const blockchains = projects.filter(
-      (p) => p.type.toLowerCase() === 'blockchain'
-    );
-    const sorted = [...blockchains].sort(
+  const calculateCategoryStats = (projects: ProjectData[]) => {
+    const stats: { [key: string]: any } = {};
+    const categories = Array.from(new Set(projects.map((p) => p.type)));
+
+    categories.forEach((category) => {
+      const categoryProjects = projects.filter((p) => p.type === category);
+
+      // Calculate average change for all projects in the category
+      const averageChange =
+        categoryProjects.reduce(
+          (sum, p) => sum + parseFloat(p.price_day_delta),
+          0
+        ) / categoryProjects.length;
+
+      const highestGainer = categoryProjects.reduce(
+        (max, p) =>
+          parseFloat(p.price_day_delta) > max.change
+            ? { project: p.project, change: parseFloat(p.price_day_delta) }
+            : max,
+        { project: '', change: -Infinity }
+      );
+      const highestLoser = categoryProjects.reduce(
+        (min, p) =>
+          parseFloat(p.price_day_delta) < min.change
+            ? { project: p.project, change: parseFloat(p.price_day_delta) }
+            : min,
+        { project: '', change: Infinity }
+      );
+
+      stats[category] = {
+        averageChange,
+        highestGainer,
+        highestLoser,
+      };
+    });
+
+    setCategories(categories);
+    setCategoryStats(stats);
+  };
+
+  // Sort projects by price_day_delta
+  const sortedProjects = useMemo(() => {
+    return [...projects].sort(
       (a, b) => parseFloat(b.price_day_delta) - parseFloat(a.price_day_delta)
     );
-    return {
-      winner: sorted[0],
-      loser: sorted[sorted.length - 1],
-    };
-  };
+  }, [projects]);
+
+  const topGainers = useMemo(
+    () => sortedProjects.slice(0, 3),
+    [sortedProjects]
+  );
+  const topLosers = useMemo(
+    () => sortedProjects.slice(-3).reverse(),
+    [sortedProjects]
+  );
+
+  const { winner: topBlockchainWinner, loser: topBlockchainLoser } =
+    useMemo(() => {
+      const blockchains = projects.filter(
+        (p) => p.type.toLowerCase() === 'blockchain'
+      );
+      const sorted = [...blockchains].sort(
+        (a, b) => parseFloat(b.price_day_delta) - parseFloat(a.price_day_delta)
+      );
+      return {
+        winner: sorted[0],
+        loser: sorted[sorted.length - 1],
+      };
+    }, [projects]);
 
   if (isLoading) {
     return (
@@ -125,38 +194,6 @@ export default function ProjectsPage() {
       </div>
     );
   }
-
-  // Sort projects by price_day_delta
-  const sortedProjects = [...projects].sort(
-    (a, b) => parseFloat(b.price_day_delta) - parseFloat(a.price_day_delta)
-  );
-  const topGainers = sortedProjects.slice(0, 3);
-  const topLosers = sortedProjects.slice(-3).reverse();
-
-  const { winner: topBlockchainWinner, loser: topBlockchainLoser } =
-    getTopBlockchainMovers();
-
-  const renderProjectCard = (project: ProjectData, isGainer: boolean) => (
-    <div
-      key={project.project}
-      className={`bg-white rounded-lg shadow-md p-3 flex justify-between items-center ${
-        isGainer ? 'border-l-4 border-green-500' : 'border-l-4 border-red-500'
-      }`}
-    >
-      <div>
-        <h3 className="font-semibold text-sm mb-1">{project.project}</h3>
-        <p className="text-xs text-gray-600">{formatUSD(project.price)}</p>
-      </div>
-      <p
-        className={`text-sm font-bold ${
-          isGainer ? 'text-green-600' : 'text-red-600'
-        }`}
-      >
-        {parseFloat(project.price_day_delta) > 0 ? '+' : ''}
-        {project.price_day_delta}%
-      </p>
-    </div>
-  );
 
   const formatUSD = (price: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -175,62 +212,37 @@ export default function ProjectsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-100 to-orange-200 p-4 sm:p-8">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+      className="min-h-screen bg-gradient-to-br from-amber-100 to-orange-200 p-4 sm:p-8"
+    >
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl sm:text-5xl font-bold mb-6 sm:mb-8 text-center text-brown-900 retro-shadow">
+        <motion.h1
+          initial={{ y: -50 }}
+          animate={{ y: 0 }}
+          transition={{ type: 'spring', stiffness: 100 }}
+          className="text-3xl sm:text-5xl font-bold mb-6 sm:mb-8 text-left text-brown-900"
+        >
           Crypto Projects Overview
-        </h1>
-
-        <Glance data={btcEthChange} />
-
-        <div className="mt-4 mb-6 sm:mb-12 p-4 bg-gray-100 border-2 border-gray-400 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-          <p className="text-sm sm:text-base text-center text-gray-800 font-sans">
-            Navigate the world of digital assets with our comprehensive
-            directory. Explore real-time data on your favorite cryptocurrencies,
-            compare market performance, and stay ahead with the latest updates.
-          </p>
-        </div>
+        </motion.h1>
 
         <div className="mb-6 sm:mb-12">
-          <h2 className="text-xl sm:text-2xl font-semibold mb-4 text-brown-800">
-            Top Movers (24h)
-          </h2>
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-gray-400">
-            <div className="grid grid-cols-1 sm:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-gray-200">
-              <div className="p-4">
-                <h3 className="text-md font-semibold mb-2 text-green-700">
-                  Top Gainers
-                </h3>
-                <div className="space-y-2">
-                  {topGainers.map((project) =>
-                    renderProjectCard(project, true)
-                  )}
-                </div>
-              </div>
-              <div className="p-4">
-                <h3 className="text-md font-semibold mb-2 text-red-700">
-                  Top Losers
-                </h3>
-                <div className="space-y-2">
-                  {topLosers.map((project) =>
-                    renderProjectCard(project, false)
-                  )}
-                </div>
-              </div>
-              <div className="p-4">
-                <h3 className="text-md font-semibold mb-2 text-brown-700">
-                  Top Blockchain Movers
-                </h3>
-                <div className="space-y-2">
-                  {renderProjectCard(topBlockchainWinner, true)}
-                  {renderProjectCard(topBlockchainLoser, false)}
-                </div>
-              </div>
-            </div>
-          </div>
+          <TopMovers
+            topGainers={topGainers}
+            topLosers={topLosers}
+            topBlockchainWinner={topBlockchainWinner}
+            topBlockchainLoser={topBlockchainLoser}
+          />
         </div>
 
-        <div className="mb-6 flex flex-wrap justify-left items-center gap-2">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="mb-6 flex flex-wrap justify-left items-center gap-2"
+        >
           <input
             type="text"
             placeholder="Search project, token, or type"
@@ -251,9 +263,14 @@ export default function ProjectsPage() {
               {button.label}
             </button>
           ))}
-        </div>
+        </motion.div>
 
-        <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="bg-white rounded-xl shadow-lg overflow-hidden"
+        >
           <div className="overflow-x-auto">
             <table className="w-full border-collapse">
               <thead className="bg-amber-200">
@@ -263,15 +280,15 @@ export default function ProjectsPage() {
                     'Project',
                     'Type',
                     'Price',
-                    '24H Change',
+                    'Day ▲',
                     'Market Cap',
                     'TVL',
-                    '24H TVL Change',
+                    'Day TVL ▲',
                     'Links',
                   ].map((header) => (
                     <th
                       key={header}
-                      className="p-2 sm:p-4 text-left text-brown-800 font-semibold text-xs sm:text-sm"
+                      className="p-2 sm:p-4 text-left text-brown-800 font-semibold text-xs sm:text-sm whitespace-nowrap"
                     >
                       {header}
                     </th>
@@ -288,29 +305,29 @@ export default function ProjectsPage() {
                         : 'bg-white hover:bg-amber-100 transition-colors duration-150'
                     }
                   >
-                    <td className="p-2 sm:p-4 text-xs sm:text-sm">
+                    <td className="p-2 sm:p-4 text-xs sm:text-sm whitespace-nowrap">
                       <div className="flex items-center space-x-2">
                         {project.logo && (
                           <img
                             src={project.logo}
                             alt={`${project.token} logo`}
-                            className="w-6 h-6 rounded-full mr-2"
+                            className="w-6 h-6 rounded-full"
                           />
                         )}
-                        {project.token || 'N/A'}
+                        <span>{project.token || 'N/A'}</span>
                       </div>
                     </td>
-                    <td className="p-2 sm:p-4 text-xs sm:text-sm">
+                    <td className="p-2 sm:p-4 text-xs sm:text-sm whitespace-nowrap">
                       {project.project}
                     </td>
-                    <td className="p-2 sm:p-4 text-xs sm:text-sm">
+                    <td className="p-2 sm:p-4 text-xs sm:text-sm whitespace-nowrap">
                       {project.type}
                     </td>
-                    <td className="p-2 sm:p-4 font-semibold text-xs sm:text-sm">
+                    <td className="p-2 sm:p-4 font-semibold text-xs sm:text-sm whitespace-nowrap">
                       {formatUSD(project.price)}
                     </td>
                     <td
-                      className={`p-2 sm:p-4 text-xs sm:text-sm ${
+                      className={`p-2 sm:p-4 text-xs sm:text-sm whitespace-nowrap ${
                         parseFloat(project.price_day_delta) >= 0
                           ? 'text-green-600'
                           : 'text-red-600'
@@ -320,13 +337,13 @@ export default function ProjectsPage() {
                       {Math.abs(parseFloat(project.price_day_delta)).toFixed(2)}
                       %
                     </td>
-                    <td className="p-2 sm:p-4 text-xs sm:text-sm">
+                    <td className="p-2 sm:p-4 text-xs sm:text-sm whitespace-nowrap">
                       {project.marketCap}
                     </td>
-                    <td className="p-2 sm:p-4 text-xs sm:text-sm">
+                    <td className="p-2 sm:p-4 text-xs sm:text-sm whitespace-nowrap">
                       {parseFloat(project.tvl) === 0 ? '-' : project.tvl}
                     </td>
-                    <td className="p-2 sm:p-4 text-xs sm:text-sm">
+                    <td className="p-2 sm:p-4 text-xs sm:text-sm whitespace-nowrap">
                       {parseFloat(project.tvl) === 0 ? (
                         '-'
                       ) : (
@@ -342,9 +359,8 @@ export default function ProjectsPage() {
                         </span>
                       )}
                     </td>
-
-                    <td className="p-2 sm:p-4 text-xs sm:text-sm">
-                      <div className="flex flex-col sm:flex-row sm:space-x-2">
+                    <td className="p-2 sm:p-4 text-xs sm:text-sm whitespace-nowrap">
+                      <div className="flex space-x-2">
                         <Link
                           href={`/yield?search=${encodeURIComponent(
                             project.token
@@ -353,7 +369,7 @@ export default function ProjectsPage() {
                         >
                           Yields
                         </Link>
-                        <span className="hidden sm:inline">•</span>
+                        <span>•</span>
                         <a
                           href={project.website}
                           target="_blank"
@@ -364,7 +380,7 @@ export default function ProjectsPage() {
                         </a>
                         {project.forum && (
                           <>
-                            <span className="hidden sm:inline">•</span>
+                            <span>•</span>
                             <a
                               href={project.forum}
                               target="_blank"
@@ -382,8 +398,8 @@ export default function ProjectsPage() {
               </tbody>
             </table>
           </div>
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }

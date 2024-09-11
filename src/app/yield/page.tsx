@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import YieldTable from './YieldTable';
+import YieldFilters from '@/components/YieldFilters';
 import FAQ from './FAQ';
-import SearchAndFilter from './SearchAndFilter';
 import { getFAQData } from './api';
 import { Suspense } from 'react';
 
@@ -16,7 +16,6 @@ interface YieldItem {
   apy: number;
   yield_rate_base: number;
   tvl: number;
-  // Add other properties if needed...
 }
 
 interface FAQItem {
@@ -34,11 +33,8 @@ function YieldPageContent() {
   const [searchTerm, setSearchTerm] = useState(
     searchParams.get('search') || ''
   );
-  const [selectedChain, setSelectedChain] = useState(
-    searchParams.get('chain') || ''
-  );
-  const [selectedProject, setSelectedProject] = useState(
-    searchParams.get('project') || ''
+  const [selectedChains, setSelectedChains] = useState<string[]>(
+    searchParams.get('chain') ? [searchParams.get('chain')!] : []
   );
   const [faqData, setFaqData] = useState<FAQItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -77,58 +73,52 @@ function YieldPageContent() {
   );
   const uniqueChains = Array.from(new Set(yieldData.map((item) => item.chain)));
 
-  const updateURLParams = (search: string, chain: string, project: string) => {
+  const updateURLParams = (search: string, chain: string) => {
     const params = new URLSearchParams();
     if (search) params.set('search', search);
     if (chain) params.set('chain', chain);
-    if (project) params.set('project', project);
     router.push(`/yield?${params.toString()}`);
   };
 
   const setSearchTermAndUpdateURL = (value: string) => {
     setSearchTerm(value);
-    updateURLParams(value, selectedChain, selectedProject);
+    updateURLParams(value, selectedChains[0] || '', '');
   };
 
   const setSelectedChainAndUpdateURL = (value: string) => {
-    setSelectedChain(value);
-    updateURLParams(searchTerm, value, selectedProject);
+    setSelectedChains([value]);
+    updateURLParams(searchTerm, value, '');
   };
 
-  const setSelectedProjectAndUpdateURL = (value: string) => {
-    setSelectedProject(value);
-    updateURLParams(searchTerm, selectedChain, value);
+  const setSelectedChainsAndUpdateURL = (chains: string[]) => {
+    setSelectedChains(chains);
+    updateURLParams(searchTerm, chains[0] || '');
   };
 
   const resetFilters = () => {
     setSearchTerm('');
-    setSelectedChain('');
-    setSelectedProject('');
+    setSelectedChains([]);
     router.push('/yield');
   };
 
   return (
     <div className="min-h-screen bg-amber-100 text-brown-800 p-4 sm:p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-center text-brown-900 retro-shadow">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-left text-brown-900 ">
           Yield Farming Opportunities
         </h1>
-        <SearchAndFilter
+        <YieldFilters
           searchTerm={searchTerm}
-          selectedChain={selectedChain}
-          selectedProject={selectedProject}
           setSearchTerm={setSearchTermAndUpdateURL}
-          setSelectedChain={setSelectedChainAndUpdateURL}
-          setSelectedProject={setSelectedProjectAndUpdateURL}
-          projects={uniqueProjects}
-          chains={uniqueChains}
+          selectedChains={selectedChains}
+          setSelectedChains={setSelectedChainsAndUpdateURL}
+          availableChains={uniqueChains}
           resetFilters={resetFilters}
         />
         <YieldTable
           yieldData={yieldData}
           searchTerm={searchTerm}
-          selectedChain={selectedChain}
-          selectedProject={selectedProject}
+          selectedChain={selectedChains[0] || ''}
           isLoading={isLoading}
         />
         <FAQ faqData={faqData} />
