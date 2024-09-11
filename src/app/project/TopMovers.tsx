@@ -1,5 +1,5 @@
 import React from 'react';
-import { ProjectData } from './page';
+import { ProjectData } from './ProjectTable';
 import Image from 'next/image';
 
 interface TopMoversProps {
