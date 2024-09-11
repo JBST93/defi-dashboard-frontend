@@ -8,7 +8,7 @@ import TopMovers from './TopMovers';
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 
-interface ProjectData {
+export interface ProjectData {
   type: string;
   price: number;
   token: string;
