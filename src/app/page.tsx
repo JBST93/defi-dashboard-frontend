@@ -35,7 +35,7 @@ function HeroSection() {
               <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                 <div className="rounded-md shadow">
                   <Link
-                    href="/projects"
+                    href="/project"
                     className="w-full flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-amber-700 bg-white hover:bg-amber-50 md:py-4 md:text-lg md:px-10"
                   >
                     Explore Projects
@@ -220,3 +220,17 @@ function Footer() {
 }
 
 // ... (Keep the existing FeatureCard and BenefitItem components)
+
+export interface ProjectData {
+  type: string;
+  price: number;
+  token: string;
+  price_day_delta: string;
+  marketCap: string;
+  tvl: string;
+  tvl_day_delta: string;
+  website: string;
+  forum: string;
+  project: string;
+  logo?: string;
+}
