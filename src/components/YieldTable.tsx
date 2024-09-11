@@ -1,6 +1,7 @@
-import React, { useState, useMemo } from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import YieldFilters from './YieldFilters';
 
 interface YieldData {
   id: number;
@@ -14,42 +15,29 @@ interface YieldData {
 
 interface YieldTableProps {
   yieldData: YieldData[];
+  searchTerm: string;
+  selectedChain: string;
   isLoading: boolean;
 }
 
 export default function YieldTable({
   yieldData,
   searchTerm,
-  selectedChains,
+  selectedChain,
   isLoading,
 }: YieldTableProps) {
-  const [sortColumn, setSortColumn] = useState<
-    'yield_rate_base' | 'tvl' | null
-  >(null);
-  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [sortColumn, setSortColumn] = useState<'apy' | 'tvl' | null>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 50;
 
-  const filteredAndSortedData = useMemo(() => {
-    let filtered = yieldData.filter((item) => {
-      const matchesSearch = item.market
-        .toLowerCase()
-        .includes(searchTerm.toLowerCase());
-      const matchesChain =
-        selectedChains.length === 0 || selectedChains.includes(item.chain);
-      return matchesSearch && matchesChain;
-    });
-
-    if (sortColumn) {
-      filtered.sort((a, b) => {
-        if (a[sortColumn] < b[sortColumn])
-          return sortDirection === 'asc' ? -1 : 1;
-        if (a[sortColumn] > b[sortColumn])
-          return sortDirection === 'asc' ? 1 : -1;
-        return 0;
-      });
-    }
-
-    return filtered;
-  }, [yieldData, searchTerm, selectedChains, sortColumn, sortDirection]);
+  const filteredData = yieldData.filter((item) => {
+    const matchesSearch = item.market
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesChain = selectedChain === '' || item.chain === selectedChain;
+    return matchesSearch && matchesChain;
+  });
 
   const handleSort = (column: 'yield_rate_base' | 'tvl') => {
     if (sortColumn === column) {
@@ -60,6 +48,19 @@ export default function YieldTable({
     }
   };
 
+  const sortedData = [...filteredData].sort((a, b) => {
+    if (sortColumn === null) return 0;
+    const aValue = a[sortColumn];
+    const bValue = b[sortColumn];
+    return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+  });
+
+  const totalPages = Math.ceil(sortedData.length / rowsPerPage);
+  const paginatedData = sortedData.slice(
+    (currentPage - 1) * rowsPerPage,
+    currentPage * rowsPerPage
+  );
+
   if (isLoading) {
     return <div className="text-center text-2xl">Loading...</div>;
   }
@@ -69,7 +70,9 @@ export default function YieldTable({
       <table className="w-full border-collapse">
         <thead className="bg-amber-200 sticky top-0">
           <tr>
-            <th className="p-2 text-xs sm:text-sm">#</th>
+            <th className="sticky left-0 z-10 bg-amber-200 p-2 text-xs sm:text-sm">
+              #
+            </th>
             <th className="p-2 text-xs sm:text-sm">Name</th>
             <th className="p-2 text-xs sm:text-sm">Project</th>
             <th
@@ -91,25 +94,57 @@ export default function YieldTable({
           </tr>
         </thead>
         <tbody>
-          {filteredAndSortedData.map((item) => (
+          {paginatedData.map((item) => (
             <tr
               key={item.id}
-              className="bg-white"
+              className={item.index % 2 === 0 ? 'bg-white' : 'bg-amber-50'}
             >
-              <td className="p-2 text-xs sm:text-sm">{item.index}</td>
+              <td className="sticky left-0 bg-inherit p-2 text-xs sm:text-sm">
+                {item.index}
+              </td>
               <td className="p-2 text-xs sm:text-sm">{item.market}</td>
-              <td className="p-2 text-xs sm:text-sm">{item.project}</td>
               <td className="p-2 text-xs sm:text-sm">
-                {item.yield_rate_base.toFixed(2)}%
+                <Link
+                  href={`/project/${encodeURIComponent(
+                    item.project.toLowerCase().replace(/\s+/g, '-')
+                  )}`}
+                  className="text-blue-600 hover:underline"
+                >
+                  {item.project}
+                </Link>
               </td>
               <td className="p-2 text-xs sm:text-sm">
-                ${item.tvl.toLocaleString()}
+                {item.yield_rate_base}%
+              </td>
+              <td className="p-2 text-xs sm:text-sm">
+                ${Math.round(item.tvl).toLocaleString()}
               </td>
               <td className="p-2 text-xs sm:text-sm">{item.chain}</td>
             </tr>
           ))}
         </tbody>
       </table>
+      <div className="mt-4 flex flex-col sm:flex-row justify-between items-center">
+        <button
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 mb-2 sm:mb-0"
+        >
+          Previous
+        </button>
+        <span className="mb-2 sm:mb-0">
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={() =>
+            setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+          }
+          disabled={currentPage === totalPages}
+          className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300"
+        >
+          Next
+        </button>
+      </div>
     </div>
   );
 }

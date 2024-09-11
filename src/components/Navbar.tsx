@@ -32,8 +32,6 @@ export default function Navbar() {
       path: '/yield',
       subItems: [
         { name: 'Stablecoin yields', path: '/yield/stablecoin' },
-        { name: 'Ethereum yields', path: '/yield/stablecoin' },
-        { name: 'Bitcoin yields', path: '/yield/stablecoin' },
         { name: 'All token yields', path: '/yield' },
       ],
     },
