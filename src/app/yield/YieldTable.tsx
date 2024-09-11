@@ -27,7 +27,7 @@ export default function YieldTable({
   isLoading,
 }: YieldTableProps) {
   const [sortColumn, setSortColumn] = useState<
-    'apy' | 'tvl' | 'yield_rate_base' | null
+    'yield_rate_base' | 'tvl' | null
   >(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [currentPage, setCurrentPage] = useState(1);
@@ -41,7 +41,7 @@ export default function YieldTable({
     return matchesSearch && matchesChain;
   });
 
-  const handleSort = (column: 'apy' | 'tvl' | 'yield_rate_base') => {
+  const handleSort = (column: 'yield_rate_base' | 'tvl') => {
     if (sortColumn === column) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
@@ -77,21 +77,8 @@ export default function YieldTable({
             </th>
             <th className="p-2 text-xs sm:text-sm">Name</th>
             <th className="p-2 text-xs sm:text-sm">Project</th>
-            <th
-              className="p-2 cursor-pointer text-xs sm:text-sm"
-              onClick={() => handleSort('yield_rate_base')}
-            >
-              APY{' '}
-              {sortColumn === 'yield_rate_base' &&
-                (sortDirection === 'asc' ? '▲' : '▼')}
-            </th>
-            <th
-              className="p-2 cursor-pointer text-xs sm:text-sm"
-              onClick={() => handleSort('tvl')}
-            >
-              TVL{' '}
-              {sortColumn === 'tvl' && (sortDirection === 'asc' ? '▲' : '▼')}
-            </th>
+            <th onClick={() => handleSort('yield_rate_base')}>APY</th>
+            <th onClick={() => handleSort('tvl')}>TVL</th>
             <th className="p-2 text-xs sm:text-sm">Chain</th>
           </tr>
         </thead>
