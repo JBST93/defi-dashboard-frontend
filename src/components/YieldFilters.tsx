@@ -6,7 +6,6 @@ interface YieldFiltersProps {
   selectedChains: string[];
   setSelectedChains: (chains: string[]) => void;
   availableChains: string[];
-  resetFilters: () => void;
 }
 
 export default function YieldFilters({
@@ -15,7 +14,6 @@ export default function YieldFilters({
   selectedChains,
   setSelectedChains,
   availableChains,
-  resetFilters,
 }: YieldFiltersProps) {
   const handleChainSelection = (chain: string) => {
     setSelectedChains((prev) =>
@@ -41,7 +39,7 @@ export default function YieldFilters({
           />
         </div>
         <button
-          onClick={resetFilters}
+          onClick={handleReset}
           className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
         >
           Reset
