@@ -2,10 +2,11 @@ import React from 'react';
 
 interface YieldFiltersProps {
   searchTerm: string;
-  setSearchTerm: (term: string) => void;
+  setSearchTerm: (value: string) => void;
   selectedChains: string[];
   setSelectedChains: (chains: string[]) => void;
   availableChains: string[];
+  resetFilters: () => void; // Add this line if it's not included
 }
 
 export default function YieldFilters({
