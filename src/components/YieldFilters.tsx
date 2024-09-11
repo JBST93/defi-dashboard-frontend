@@ -17,8 +17,10 @@ export default function YieldFilters({
   availableChains,
 }: YieldFiltersProps) {
   const handleChainSelection = (chain: string) => {
-    setSelectedChains((prev) =>
-      prev.includes(chain) ? prev.filter((c) => c !== chain) : [...prev, chain]
+    setSelectedChains(
+      selectedChains.includes(chain)
+        ? selectedChains.filter((c) => c !== chain)
+        : [...selectedChains, chain]
     );
   };
 
