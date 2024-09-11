@@ -166,18 +166,48 @@ export default function Navbar() {
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navItems.map((item) => (
-              <Link
-                key={item.path}
-                href={item.path}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  currentPath === item.path
-                    ? 'bg-amber-500 text-white'
-                    : 'text-gray-300 hover:bg-amber-700 hover:text-white'
-                }`}
-                onClick={() => setIsMenuOpen(false)}
-              >
-                {item.name}
-              </Link>
+              <div key={item.path}>
+                {item.subItems ? (
+                  <>
+                    <button
+                      onClick={() => handleDropdownToggle(item.name)}
+                      className={`w-full text-left px-3 py-2 rounded-md text-base font-medium ${
+                        currentPath.startsWith(item.path)
+                          ? 'bg-amber-500 text-white'
+                          : 'text-gray-300 hover:bg-amber-700 hover:text-white'
+                      }`}
+                    >
+                      {item.name}
+                    </button>
+                    {activeDropdown === item.name && (
+                      <div className="pl-4">
+                        {item.subItems.map((subItem) => (
+                          <Link
+                            key={subItem.path}
+                            href={subItem.path}
+                            className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-amber-700 hover:text-white"
+                            onClick={() => setIsMenuOpen(false)}
+                          >
+                            {subItem.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <Link
+                    href={item.path}
+                    className={`block px-3 py-2 rounded-md text-base font-medium ${
+                      currentPath === item.path
+                        ? 'bg-amber-500 text-white'
+                        : 'text-gray-300 hover:bg-amber-700 hover:text-white'
+                    }`}
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                )}
+              </div>
             ))}
           </div>
         </div>

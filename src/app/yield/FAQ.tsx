@@ -12,7 +12,7 @@ interface FAQProps {
 export default function FAQ({ faqData }: FAQProps) {
   return (
     <section className="mt-8 retro-box p-6">
-      <h2 className="text-2xl font-bold mb-6 text-brown-900 retro-shadow">
+      <h2 className="text-2xl font-bold mb-6 text-brown-900">
         Frequently Asked Questions
       </h2>
       <dl>
