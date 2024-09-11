@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import StablecoinDiscountTable from './StablecoinDiscountTable';
 import YieldCurve from './YieldCurve';
 import ProjectedReturns from './ProjectedReturns';
@@ -125,36 +125,39 @@ export default function StablecoinDiscountPage() {
     }
   };
 
-  const filterData = () => {
-    let filtered = discountData;
+  const filterData = useCallback(
+    (data) => {
+      let filtered = data;
 
-    if (tokenFilter) {
-      filtered = filtered.filter((item) =>
-        item.token.toLowerCase().includes(tokenFilter.toLowerCase())
-      );
-    }
+      if (tokenFilter) {
+        filtered = filtered.filter((item) =>
+          item.token.toLowerCase().includes(tokenFilter.toLowerCase())
+        );
+      }
 
-    if (chainFilter !== 'all') {
-      filtered = filtered.filter((item) => item.chain === chainFilter);
-    }
+      if (chainFilter !== 'all') {
+        filtered = filtered.filter((item) => item.chain === chainFilter);
+      }
 
-    switch (maturityFilter) {
-      case 'month':
-        filtered = filtered.filter((item) => item.daysToMaturity <= 30);
-        break;
-      case '3months':
-        filtered = filtered.filter((item) => item.daysToMaturity <= 90);
-        break;
-      case '6months':
-        filtered = filtered.filter((item) => item.daysToMaturity <= 180);
-        break;
-      case 'year':
-        filtered = filtered.filter((item) => item.daysToMaturity <= 365);
-        break;
-    }
+      switch (maturityFilter) {
+        case 'month':
+          filtered = filtered.filter((item) => item.daysToMaturity <= 30);
+          break;
+        case '3months':
+          filtered = filtered.filter((item) => item.daysToMaturity <= 90);
+          break;
+        case '6months':
+          filtered = filtered.filter((item) => item.daysToMaturity <= 180);
+          break;
+        case 'year':
+          filtered = filtered.filter((item) => item.daysToMaturity <= 365);
+          break;
+      }
 
-    setFilteredData(filtered);
-  };
+      return filtered;
+    },
+    [tokenFilter, maturityFilter, chainFilter]
+  );
 
   return (
     <div className="container mx-auto px-4 py-8">

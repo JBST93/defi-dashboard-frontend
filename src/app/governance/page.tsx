@@ -53,7 +53,7 @@ export default function GovernancePage() {
   }, []);
 
   const protocols = useMemo(
-    () => [...new Set(proposals.map((p) => p.protocol))],
+    () => Array.from(new Set(proposals.map((p) => p.protocol))),
     [proposals]
   );
 
