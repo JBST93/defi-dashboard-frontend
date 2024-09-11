@@ -1,15 +1,15 @@
 import React from 'react';
 import Link from 'next/link';
 
-interface Proposal {
+export interface Proposal {
   id: string;
   title: string;
   body: string;
-  type: 'snapshot' | 'forum';
+  type: string;
   url: string;
   state: string;
-  start: number; // Unix timestamp
-  end: number; // Unix timestamp
+  start: number;
+  end: number;
   scores: number[];
   scores_total: number;
   choices: string[];
