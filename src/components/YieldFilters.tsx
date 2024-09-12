@@ -43,7 +43,7 @@ export default function YieldFilters({
         </div>
         <button
           onClick={handleReset}
-          className="px-4 py-2 bg-gray-300 text-gray-700 rounded hover:bg-gray-400"
+          className="px-4 py-2 bg-yellow-300 text-brown-300 rounded hover:bg-gray-400"
         >
           Reset
         </button>
@@ -55,8 +55,8 @@ export default function YieldFilters({
             onClick={() => handleChainSelection(chain)}
             className={`px-3 py-1 rounded ${
               selectedChains.includes(chain)
-                ? 'bg-blue-500 text-white'
-                : 'bg-gray-200 text-gray-700'
+                ? 'bg-orange-600 text-white'
+                : 'bg-yellow-300 text-brown-700 border-color-yellow-500'
             }`}
           >
             {chain}

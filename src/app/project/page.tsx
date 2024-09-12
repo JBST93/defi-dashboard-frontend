@@ -1,5 +1,6 @@
 import { Suspense } from 'react';
 import ProjectTable from './ProjectTable';
+import ProjectStats from './ProjectStats';
 
 async function getProjects() {
   const res = await fetch('https://www.tokendataview.com/api/projects', {
@@ -21,6 +22,8 @@ export default async function ProjectsPage() {
           Crypto Projects Overview
         </h1>
         <Suspense fallback={<div>Loading...</div>}>
+          <ProjectStats projects={projects} />
+
           <ProjectTable initialProjects={projects} />
         </Suspense>
       </div>

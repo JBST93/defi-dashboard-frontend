@@ -24,7 +24,7 @@ const navItems = [
     path: '/yield',
     subItems: [
       { name: 'All yields', path: '/yield' },
-      { name: 'Stablecoin yields', path: '/yields/stablecoin' },
+      { name: 'Stablecoin yields', path: '/yield/stablecoin' },
     ],
   },
   { name: 'Contact', path: '/contact' },

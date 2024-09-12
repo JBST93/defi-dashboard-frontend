@@ -115,7 +115,7 @@ export default function YieldTable({
                   {item.project}
                 </Link>
               </td>
-              <td className="p-2 text-xs sm:text-sm">
+              <td className="p-2 text-xs sm:text-sm font-semibold">
                 {item.yield_rate_base}%
               </td>
               <td className="p-2 text-xs sm:text-sm">

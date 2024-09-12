@@ -2,106 +2,47 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import TopMovers from './TopMovers';
 import Image from 'next/image';
+import ProjectFilter from './ProjectFilter';
+
+interface ProjectTableProps {
+  initialProjects: ProjectData[];
+  filter: string | null;
+  searchTerm: string;
+}
 
 export interface ProjectData {
   type: string;
   price: number;
   token: string;
-  price_day_delta: string;
-  marketCap: string;
-  tvl: string;
-  tvl_day_delta: string;
+  price_day_delta: number;
+  marketCap: number;
+  tvl: number;
+  tvl_day_delta: number;
   website: string;
   forum: string;
   project: string;
   logo?: string;
+  category: string;
 }
 
 export default function ProjectTable({
   initialProjects,
-}: {
-  initialProjects: ProjectData[];
-}) {
-  const [projects, setProjects] = useState<ProjectData[]>(initialProjects);
+  filter,
+  searchTerm: initialSearchTerm,
+}: ProjectTableProps) {
+  const [projects] = useState<ProjectData[]>(initialProjects);
   const [filteredProjects, setFilteredProjects] =
     useState<ProjectData[]>(initialProjects);
-  const [activeFilter, setActiveFilter] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [btcEthChange, setBtcEthChange] = useState({ btc: '0', eth: '0' });
-  const [categories, setCategories] = useState<string[]>([]);
-  const [categoryStats, setCategoryStats] = useState<{
-    [key: string]: {
-      averageChange: number;
-      highestGainer: { project: string; change: number };
-      highestLoser: { project: string; change: number };
-    };
-  }>({});
-
-  const totalMarketCapChange = useMemo(() => {
-    const validProjects = projects.filter(
-      (p) =>
-        p.marketCap &&
-        p.price &&
-        p.price_day_delta &&
-        !isNaN(parseFloat(p.price_day_delta))
-    );
-
-    const totalChange = validProjects.reduce((acc, project) => {
-      const marketCap = parseFloat(project.marketCap.replace(/[^0-9.-]+/g, ''));
-      const changePercent = parseFloat(project.price_day_delta) / 100;
-      return acc + marketCap * changePercent;
-    }, 0);
-
-    const totalMarketCap = validProjects.reduce((acc, project) => {
-      return acc + parseFloat(project.marketCap.replace(/[^0-9.-]+/g, ''));
-    }, 0);
-
-    const changePercentage = (totalChange / totalMarketCap) * 100;
-
-    const btc = projects.find((p) => p.token === 'BTC');
-    const eth = projects.find((p) => p.token === 'ETH');
-
-    setBtcEthChange({
-      btc: btc ? btc.price_day_delta : '0',
-      eth: eth ? eth.price_day_delta : '0',
-    });
-
-    return {
-      changeUSD: totalChange,
-      changePercentage: changePercentage,
-    };
-  }, [projects]);
-
-  useEffect(() => {
-    const fetchProjects = async () => {
-      try {
-        const response = await fetch(
-          'https://www.tokendataview.com/api/projects'
-        );
-        const data = await response.json();
-
-        setProjects(data);
-        calculateCategoryStats(data);
-        setIsLoading(false);
-      } catch (error) {
-        console.error('Error fetching project data:', error);
-        setError('Failed to fetch project data. Please try again later.');
-        setIsLoading(false);
-      }
-    };
-
-    fetchProjects();
-  }, []);
+  const [sortColumn, setSortColumn] = useState<string | null>(null);
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
+  const [activeFilter, setActiveFilter] = useState<string | null>(filter);
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
 
   useEffect(() => {
     const filtered = projects.filter((p) => {
       const matchesFilter =
-        !activeFilter ||
-        p.type.toLowerCase().includes(activeFilter.toLowerCase());
+        !activeFilter || p.type.toLowerCase() === activeFilter.toLowerCase();
       const matchesSearch =
         !searchTerm ||
         p.project.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -112,91 +53,39 @@ export default function ProjectTable({
     setFilteredProjects(filtered);
   }, [activeFilter, projects, searchTerm]);
 
-  const calculateCategoryStats = (projects: ProjectData[]) => {
-    const stats: { [key: string]: any } = {};
-    const categories = Array.from(new Set(projects.map((p) => p.type)));
-
-    categories.forEach((category) => {
-      const categoryProjects = projects.filter((p) => p.type === category);
-
-      // Calculate average change for all projects in the category
-      const averageChange =
-        categoryProjects.reduce(
-          (sum, p) => sum + parseFloat(p.price_day_delta),
-          0
-        ) / categoryProjects.length;
-
-      const highestGainer = categoryProjects.reduce(
-        (max, p) =>
-          parseFloat(p.price_day_delta) > max.change
-            ? { project: p.project, change: parseFloat(p.price_day_delta) }
-            : max,
-        { project: '', change: -Infinity }
-      );
-      const highestLoser = categoryProjects.reduce(
-        (min, p) =>
-          parseFloat(p.price_day_delta) < min.change
-            ? { project: p.project, change: parseFloat(p.price_day_delta) }
-            : min,
-        { project: '', change: Infinity }
-      );
-
-      stats[category] = {
-        averageChange,
-        highestGainer,
-        highestLoser,
-      };
-    });
-
-    setCategories(categories);
-    setCategoryStats(stats);
+  const handleSort = (column: string) => {
+    if (sortColumn === column) {
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortColumn(column);
+      setSortDirection('asc');
+    }
   };
 
-  // Sort projects by price_day_delta
+  const resetTable = () => {
+    setFilteredProjects(initialProjects);
+    setSortColumn(null);
+    setSortDirection('asc');
+    setActiveFilter(null);
+    setSearchTerm('');
+  };
+
   const sortedProjects = useMemo(() => {
-    return [...projects].sort(
-      (a, b) => parseFloat(b.price_day_delta) - parseFloat(a.price_day_delta)
-    );
-  }, [projects]);
+    return [...filteredProjects].sort((a, b) => {
+      if (!sortColumn) return 0;
 
-  const topGainers = useMemo(
-    () => sortedProjects.slice(0, 3),
-    [sortedProjects]
-  );
-  const topLosers = useMemo(
-    () => sortedProjects.slice(-3).reverse(),
-    [sortedProjects]
-  );
+      const aValue = a[sortColumn as keyof typeof a];
+      const bValue = b[sortColumn as keyof typeof b];
 
-  const { winner: topBlockchainWinner, loser: topBlockchainLoser } =
-    useMemo(() => {
-      const blockchains = projects.filter(
-        (p) => p.type.toLowerCase() === 'blockchain'
-      );
-      const sorted = [...blockchains].sort(
-        (a, b) => parseFloat(b.price_day_delta) - parseFloat(a.price_day_delta)
-      );
-      return {
-        winner: sorted[0],
-        loser: sorted[sorted.length - 1],
-      };
-    }, [projects]);
+      if (typeof aValue === 'number' && typeof bValue === 'number') {
+        return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+      }
 
-  if (isLoading) {
-    return (
-      <div className="flex justify-center items-center h-screen text-3xl font-semibold text-brown-800">
-        Loading...
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex justify-center items-center h-screen text-3xl font-semibold text-red-600">
-        {error}
-      </div>
-    );
-  }
+      return sortDirection === 'asc'
+        ? String(aValue).localeCompare(String(bValue))
+        : String(bValue).localeCompare(String(aValue));
+    });
+  }, [filteredProjects, sortColumn, sortDirection]);
 
   const formatUSD = (price: number) => {
     return new Intl.NumberFormat('en-US', {
@@ -207,121 +96,107 @@ export default function ProjectTable({
     }).format(price);
   };
 
-  const filterButtons = [
-    { label: 'All', value: null },
-    { label: 'Blockchain', value: 'blockchain' },
-    { label: 'Lending', value: 'lending' },
-    { label: 'Stablecoin', value: 'stablecoin' },
-  ];
-
   return (
     <div>
-      <div className="mb-6 sm:mb-12">
-        <TopMovers
-          topGainers={topGainers}
-          topLosers={topLosers}
-          topBlockchainWinner={topBlockchainWinner}
-          topBlockchainLoser={topBlockchainLoser}
-        />
-      </div>
-      <div className="flex flex-row gap-4 pb-4">
-        <input
-          type="text"
-          placeholder="Search project, token, or type"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="px-4 py-2 text-sm border-2 border-gray-400 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-        />
-        {filterButtons.map((button) => (
-          <button
-            key={button.label}
-            onClick={() => setActiveFilter(button.value)}
-            className={`px-4 py-2 text-sm font-medium transition-colors border-2 border-gray-400 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] active:translate-y-[1px] active:translate-x-[1px] ${
-              activeFilter === button.value
-                ? 'bg-gray-200 border-gray-600'
-                : 'bg-gray-100 hover:bg-gray-200'
-            }`}
-          >
-            {button.label}
-          </button>
-        ))}
-      </div>
-
+      <ProjectFilter
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        activeFilter={activeFilter}
+        setActiveFilter={setActiveFilter}
+        resetTable={resetTable}
+      />
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse">
-          <thead className="bg-amber-200">
+        <table className="w-full border-collapse text-s md:text-md">
+          <thead className="sticky top-0 z-20 bg-amber-400">
             <tr>
               {[
                 'Token',
-                'Project',
                 'Type',
                 'Price',
-                'Day ▲',
+                '24h Change',
                 'Market Cap',
                 'TVL',
-                'Day TVL ▲',
-                'Links',
-              ].map((header) => (
+                '24h Change',
+                'Farming',
+              ].map((header, index) => (
                 <th
                   key={header}
-                  className="p-2 sm:p-4 text-left text-brown-800 font-semibold text-xs sm:text-sm whitespace-nowrap"
+                  className={`p-2 sm:p-4 text-left text-brown-800 font-semibold whitespace-nowrap cursor-pointer ${
+                    index === 0 ? 'sticky left-0 z-30 bg-amber-400' : ''
+                  } ${header === 'Type' ? 'hidden sm:table-cell' : ''}`}
+                  onClick={() =>
+                    handleSort(header.toLowerCase().replace(' ', '_'))
+                  }
                 >
-                  {header}
+                  {header}{' '}
+                  {sortColumn === header.toLowerCase().replace(' ', '_') &&
+                    (sortDirection === 'asc' ? '▲' : '▼')}
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
-            {filteredProjects.map((project, index) => (
+            {sortedProjects.map((project, index) => (
               <tr
                 key={index}
                 className={
                   index % 2 === 0
                     ? 'bg-amber-50'
-                    : 'bg-white hover:bg-amber-100 transition-colors duration-150'
+                    : 'bg-white hover:bg-amber-100 transition-colors'
                 }
               >
-                <td className="p-2 sm:p-4 text-xs sm:text-sm whitespace-nowrap">
-                  <div className="flex items-center space-x-2">
-                    {project.logo && (
-                      <Image
-                        src={project.logo}
-                        alt={`${project.token} logo`}
-                        width={24}
-                        height={24}
-                        className="rounded-full"
-                      />
-                    )}
-                    <span>{project.token || 'N/A'}</span>
+                <td className="p-2 sm:p-4 whitespace-nowrap sticky left-0 z-10 bg-inherit">
+                  <div className="flex items-center space-x-2 sm:space-x-3">
+                    <span className="text-xs sm:text-sm text-gray-500 w-6 sm:w-8 text-right">
+                      #{index + 1}
+                    </span>
+                    <div className="flex items-center space-x-2">
+                      {project.logo ? (
+                        <Image
+                          src={project.logo}
+                          alt={`${project.token} logo`}
+                          width={24}
+                          height={24}
+                          className="rounded-full w-8 h-8 sm:w-10 sm:h-10"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gray-200 rounded-full"></div>
+                      )}
+                      <div className="flex flex-col">
+                        <span className="font-medium">
+                          {project.token || 'N/A'}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {project.project}
+                        </span>
+                      </div>
+                    </div>
                   </div>
                 </td>
-                <td className="p-2 sm:p-4 text-xs sm:text-sm whitespace-nowrap">
-                  {project.project}
-                </td>
-                <td className="p-2 sm:p-4 text-xs sm:text-sm whitespace-nowrap">
+                <td className="p-1 sm:p-4 whitespace-nowrap hidden sm:table-cell">
                   {project.type}
                 </td>
-                <td className="p-2 sm:p-4 font-semibold text-xs sm:text-sm whitespace-nowrap">
+                <td className="p-1 sm:p-4 text-right font-semibold whitespace-nowrap">
                   {formatUSD(project.price)}
                 </td>
                 <td
-                  className={`p-2 sm:p-4 text-xs sm:text-sm whitespace-nowrap ${
+                  className={`p-1 sm:p-4 whitespace-nowrap ${
                     parseFloat(project.price_day_delta) >= 0
                       ? 'text-green-600'
                       : 'text-red-600'
                   }`}
                 >
-                  {parseFloat(project.price_day_delta) >= 0 ? '▲' : '▼'}{' '}
-                  {Math.abs(parseFloat(project.price_day_delta)).toFixed(2)}%
+                  {project.price_day_delta >= 0 ? '▲' : '▼'}{' '}
+                  {Math.abs(project.price_day_delta).toFixed(2)}%
                 </td>
-                <td className="p-2 sm:p-4 text-xs sm:text-sm whitespace-nowrap">
-                  {project.marketCap}
+                <td className="p-1 sm:p-4 whitespace-nowrap text-right font-semibold">
+                  {formatUSD(project.marketCap)}
                 </td>
-                <td className="p-2 sm:p-4 text-xs sm:text-sm whitespace-nowrap">
-                  {parseFloat(project.tvl) === 0 ? '-' : project.tvl}
+                <td className="p-1 sm:p-4 whitespace-nowrap">
+                  {project.tvl === 0 ? '-' : formatUSD(project.tvl)}
                 </td>
-                <td className="p-2 sm:p-4 text-xs sm:text-sm whitespace-nowrap">
-                  {parseFloat(project.tvl) === 0 ? (
+                <td className="p-1 sm:p-4 whitespace-nowrap">
+                  {project.tvl === 0 ? (
                     '-'
                   ) : (
                     <span
@@ -332,12 +207,12 @@ export default function ProjectTable({
                       }`}
                     >
                       {parseFloat(project.tvl_day_delta) >= 0 ? '▲' : '▼'}{' '}
-                      {Math.abs(parseFloat(project.tvl_day_delta))}%
+                      {Math.abs(parseFloat(project.tvl_day_delta.toFixed(2)))}%
                     </span>
                   )}
                 </td>
-                <td className="p-2 sm:p-4 text-xs sm:text-sm whitespace-nowrap">
-                  <div className="flex space-x-2">
+                <td className="p-1 sm:p-4 whitespace-nowrap">
+                  <div className="flex space-x-1 sm:space-x-2">
                     <Link
                       href={`/yield?search=${encodeURIComponent(
                         project.token
