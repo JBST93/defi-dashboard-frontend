@@ -16,6 +16,7 @@ interface YieldItem {
   apy: number;
   yield_rate_base: number;
   tvl: number;
+  humanized_timestamp: string; // Add this line
 }
 
 interface FAQItem {

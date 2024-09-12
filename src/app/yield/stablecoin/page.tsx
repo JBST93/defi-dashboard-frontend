@@ -14,6 +14,7 @@ interface YieldItem {
   apy: number;
   yield_rate_base: number;
   tvl: number;
+  humanized_timestamp: string;
 }
 
 interface FAQItem {
@@ -41,7 +42,7 @@ function YieldPageContent() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          'https://www.tokendataview.com/api/stablecoin_yield_rates'
+          'https://www.tokendataview.com/api/yield_rates'
         );
         const data: YieldItem[] = await response.json();
         const indexedData = data.map((item, index) => ({
@@ -58,7 +59,7 @@ function YieldPageContent() {
     };
 
     fetchData();
-  }, []);
+  }, []); // Add dependencies if needed
 
   const uniqueProjects = Array.from(
     new Set(yieldData.map((item) => item.project))
