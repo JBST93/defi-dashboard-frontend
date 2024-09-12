@@ -24,7 +24,11 @@ export default async function ProjectsPage() {
         <Suspense fallback={<div>Loading...</div>}>
           <ProjectStats projects={projects} />
 
-          <ProjectTable initialProjects={projects} />
+          <ProjectTable
+            initialProjects={projects}
+            filter=""
+            searchTerm=""
+          />
         </Suspense>
       </div>
     </div>
