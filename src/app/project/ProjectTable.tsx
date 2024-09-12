@@ -181,7 +181,7 @@ export default function ProjectTable({
                 </td>
                 <td
                   className={`p-1 sm:p-4 whitespace-nowrap ${
-                    parseFloat(project.price_day_delta) >= 0
+                    project.price_day_delta >= 0
                       ? 'text-green-600'
                       : 'text-red-600'
                   }`}
@@ -201,13 +201,13 @@ export default function ProjectTable({
                   ) : (
                     <span
                       className={`${
-                        parseFloat(project.tvl_day_delta) >= 0
+                        project.tvl_day_delta >= 0
                           ? 'text-green-600'
                           : 'text-red-600'
                       }`}
                     >
-                      {parseFloat(project.tvl_day_delta) >= 0 ? '▲' : '▼'}{' '}
-                      {Math.abs(parseFloat(project.tvl_day_delta.toFixed(2)))}%
+                      {project.tvl_day_delta >= 0 ? '▲' : '▼'}{' '}
+                      {project.tvl_day_delta.toFixed(2)}%
                     </span>
                   )}
                 </td>
