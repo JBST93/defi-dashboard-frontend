@@ -4,9 +4,9 @@ interface YieldFiltersProps {
   searchTerm: string;
   setSearchTerm: (value: string) => void;
   selectedChains: string[];
-  setSelectedChains: (chains: string[]) => void;
+  setSelectedChains: React.Dispatch<React.SetStateAction<string[]>>;
   selectedProjects: string[];
-  setSelectedProjects: (projects: string[]) => void;
+  setSelectedProjects: React.Dispatch<React.SetStateAction<string[]>>;
   availableChains: string[];
   availableProjects: string[];
   resetFilters: () => void;
@@ -49,7 +49,7 @@ export default function YieldFilters({
   }, []);
 
   const handleChainSelection = (chain: string) => {
-    setSelectedChains((prev) =>
+    setSelectedChains((prev: string[]) =>
       prev.includes(chain) ? prev.filter((c) => c !== chain) : [...prev, chain]
     );
   };
