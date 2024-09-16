@@ -1,4 +1,5 @@
 // src/app/project/ProjectFilter.tsx
+import { useRef } from 'react';
 import { ProjectData } from './ProjectTable';
 
 interface ProjectFilterProps {
@@ -29,39 +30,47 @@ export default function ProjectFilter({
     resetTable();
   };
 
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
   return (
     <div className="flex flex-col gap-4 pb-4">
-      <input
-        type="text"
-        placeholder="Search project, token, or type"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        className="w-full px-4 py-2 text-sm border-2 border-gray-400 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
-      />
-      <div className="flex flex-wrap gap-2 items-center justify-between">
-        <div className="flex flex-wrap gap-2">
+      <div className="flex gap-2">
+        <input
+          type="text"
+          placeholder="Search project, token, or type"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="flex-grow px-4 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+        />
+        <button
+          type="button"
+          onClick={handleReset}
+          className="px-4 py-2 text-sm font-medium rounded-md transition-colors bg-gray-100 hover:bg-gray-200 text-gray-700 border-solid border-amber-600 whitespace-nowrap"
+        >
+          Reset
+        </button>
+      </div>
+      <div className="relative">
+        <div
+          ref={scrollContainerRef}
+          className="flex overflow-x-auto scrollbar-hide gap-2 pb-2"
+        >
           {filterButtons.map((button) => (
             <button
               key={button.label}
               type="button"
               onClick={() => setActiveFilter(button.value)}
-              className={`px-3 py-1 text-sm font-medium transition-colors border-2 border-gray-400 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] ${
+              className={`px-3 py-1 text-sm font-medium rounded-md transition-colors whitespace-nowrap ${
                 activeFilter === button.value
-                  ? 'bg-gray-200 border-gray-600'
-                  : 'bg-gray-100 hover:bg-gray-200'
+                  ? 'bg-amber-600 text-white'
+                  : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
               }`}
             >
               {button.label}
             </button>
           ))}
         </div>
-        <button
-          type="button"
-          onClick={handleReset}
-          className="px-3 py-1 text-sm font-medium transition-colors border-2 border-gray-400 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] bg-gray-100 hover:bg-gray-200"
-        >
-          Reset
-        </button>
+        {/* Remove the left and right scroll buttons */}
       </div>
     </div>
   );

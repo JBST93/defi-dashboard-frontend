@@ -16,14 +16,16 @@ interface YieldData {
 interface YieldTableProps {
   yieldData: YieldData[];
   searchTerm: string;
-  selectedChain: string;
+  selectedChains: string[];
+  selectedProjects: string[];
   isLoading: boolean;
 }
 
 export default function YieldTable({
   yieldData,
   searchTerm,
-  selectedChain,
+  selectedChains,
+  selectedProjects,
   isLoading,
 }: YieldTableProps) {
   const [sortColumn, setSortColumn] = useState<
@@ -37,8 +39,11 @@ export default function YieldTable({
     const matchesSearch = item.market
       .toLowerCase()
       .includes(searchTerm.toLowerCase());
-    const matchesChain = selectedChain === '' || item.chain === selectedChain;
-    return matchesSearch && matchesChain;
+    const matchesChain =
+      selectedChains.length === 0 || selectedChains.includes(item.chain);
+    const matchesProject =
+      selectedProjects.length === 0 || selectedProjects.includes(item.project);
+    return matchesSearch && matchesChain && matchesProject;
   });
 
   const handleSort = (column: 'yield_rate_base' | 'tvl') => {

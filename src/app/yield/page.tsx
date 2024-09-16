@@ -34,11 +34,19 @@ function YieldPageContent() {
   const [searchTerm, setSearchTerm] = useState(
     searchParams.get('search') || ''
   );
-  const [selectedChains, setSelectedChains] = useState<string[]>(
-    searchParams.get('chain') ? [searchParams.get('chain')!] : []
-  );
-  const [faqData, setFaqData] = useState<FAQItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [faqData, setFaqData] = useState<FAQItem[]>([]);
+
+  // Define uniqueChains and uniqueProjects
+  const uniqueChains = Array.from(new Set(yieldData.map((item) => item.chain)));
+  const uniqueProjects = Array.from(
+    new Set(yieldData.map((item) => item.project))
+  );
+
+  // Initialize selectedChains and selectedProjects with all options
+  const [selectedChains, setSelectedChains] = useState<string[]>(uniqueChains);
+  const [selectedProjects, setSelectedProjects] =
+    useState<string[]>(uniqueProjects);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,6 +61,16 @@ function YieldPageContent() {
         }));
         setYieldData(indexedData);
         setIsLoading(false);
+
+        // Update uniqueChains and uniqueProjects after data is fetched
+        const chains = Array.from(
+          new Set(indexedData.map((item) => item.chain))
+        );
+        const projects = Array.from(
+          new Set(indexedData.map((item) => item.project))
+        );
+        setSelectedChains(chains);
+        setSelectedProjects(projects);
       } catch (error) {
         console.error('Error fetching yield data:', error);
         setYieldData([]);
@@ -68,11 +86,6 @@ function YieldPageContent() {
     fetchData();
     fetchFAQData();
   }, []);
-
-  const uniqueProjects = Array.from(
-    new Set(yieldData.map((item) => item.project))
-  );
-  const uniqueChains = Array.from(new Set(yieldData.map((item) => item.chain)));
 
   const updateURLParams = (search: string, chain: string) => {
     const params = new URLSearchParams();
@@ -96,9 +109,15 @@ function YieldPageContent() {
     updateURLParams(searchTerm, chains[0] || '');
   };
 
+  const setSelectedProjectsAndUpdateURL = (projects: string[]) => {
+    setSelectedProjects(projects);
+    updateURLParams(searchTerm, selectedChains[0] || '', projects[0] || '');
+  };
+
   const resetFilters = () => {
     setSearchTerm('');
     setSelectedChains([]);
+    setSelectedProjects([]);
     router.push('/yield');
   };
 
@@ -113,13 +132,17 @@ function YieldPageContent() {
           setSearchTerm={setSearchTermAndUpdateURL}
           selectedChains={selectedChains}
           setSelectedChains={setSelectedChainsAndUpdateURL}
+          selectedProjects={selectedProjects}
+          setSelectedProjects={setSelectedProjectsAndUpdateURL}
           availableChains={uniqueChains}
+          availableProjects={uniqueProjects}
           resetFilters={resetFilters}
         />
         <YieldTable
           yieldData={yieldData}
           searchTerm={searchTerm}
-          selectedChain={selectedChains[0] || ''}
+          selectedChains={selectedChains}
+          selectedProjects={selectedProjects}
           isLoading={isLoading}
         />
         <FAQ faqData={faqData} />

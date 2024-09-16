@@ -1,12 +1,15 @@
-import React from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 
 interface YieldFiltersProps {
   searchTerm: string;
   setSearchTerm: (value: string) => void;
   selectedChains: string[];
   setSelectedChains: (chains: string[]) => void;
+  selectedProjects: string[];
+  setSelectedProjects: (projects: string[]) => void;
   availableChains: string[];
-  resetFilters: () => void; // Add this line if it's not included
+  availableProjects: string[];
+  resetFilters: () => void;
 }
 
 export default function YieldFilters({
@@ -14,19 +17,65 @@ export default function YieldFilters({
   setSearchTerm,
   selectedChains,
   setSelectedChains,
+  selectedProjects,
+  setSelectedProjects,
   availableChains,
+  availableProjects,
+  resetFilters,
 }: YieldFiltersProps) {
+  const [isChainOpen, setIsChainOpen] = useState(false);
+  const [isProjectOpen, setIsProjectOpen] = useState(false);
+  const chainDropdownRef = useRef<HTMLDivElement>(null);
+  const projectDropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        chainDropdownRef.current &&
+        !chainDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsChainOpen(false);
+      }
+      if (
+        projectDropdownRef.current &&
+        !projectDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsProjectOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const handleChainSelection = (chain: string) => {
-    setSelectedChains(
-      selectedChains.includes(chain)
-        ? selectedChains.filter((c) => c !== chain)
-        : [...selectedChains, chain]
+    setSelectedChains((prev) =>
+      prev.includes(chain) ? prev.filter((c) => c !== chain) : [...prev, chain]
     );
   };
 
-  const handleReset = () => {
-    setSearchTerm('');
+  const handleProjectSelection = (project: string) => {
+    setSelectedProjects((prev) =>
+      prev.includes(project)
+        ? prev.filter((p) => p !== project)
+        : [...prev, project]
+    );
+  };
+
+  const handleChainSelectAll = () => {
+    setSelectedChains([...availableChains]);
+  };
+
+  const handleChainUnselectAll = () => {
     setSelectedChains([]);
+  };
+
+  const handleProjectSelectAll = () => {
+    setSelectedProjects([...availableProjects]);
+  };
+
+  const handleProjectUnselectAll = () => {
+    setSelectedProjects([]);
   };
 
   return (
@@ -42,26 +91,103 @@ export default function YieldFilters({
           />
         </div>
         <button
-          onClick={handleReset}
-          className="px-4 py-2 bg-yellow-300 text-brown-300 rounded hover:bg-gray-400"
+          onClick={resetFilters}
+          className="inline-flex items-center px-6 py-auto border border-transparent text-base font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700"
         >
           Reset
         </button>
       </div>
-      <div className="flex flex-wrap gap-2">
-        {availableChains.map((chain) => (
+      <div className="flex gap-4">
+        <div className="relative">
           <button
-            key={chain}
-            onClick={() => handleChainSelection(chain)}
-            className={`px-3 py-1 rounded ${
-              selectedChains.includes(chain)
-                ? 'bg-orange-600 text-white'
-                : 'bg-yellow-300 text-brown-700 border-color-yellow-500'
-            }`}
+            onClick={() => setIsChainOpen(!isChainOpen)}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700"
           >
-            {chain}
+            Select Chain ({selectedChains.length})
           </button>
-        ))}
+          {isChainOpen && (
+            <div
+              ref={chainDropdownRef}
+              className="absolute z-10 mt-2 w-56 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
+            >
+              <div className="py-1">
+                <div className="flex justify-between px-4 py-2 border-b border-gray-200">
+                  <button
+                    onClick={handleChainSelectAll}
+                    className="text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    Select All
+                  </button>
+                  <button
+                    onClick={handleChainUnselectAll}
+                    className="text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    Unselect All
+                  </button>
+                </div>
+                {availableChains.map((chain) => (
+                  <label
+                    key={chain}
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedChains.includes(chain)}
+                      onChange={() => handleChainSelection(chain)}
+                      className="mr-2"
+                    />
+                    {chain}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="relative">
+          <button
+            onClick={() => setIsProjectOpen(!isProjectOpen)}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700"
+          >
+            Select Project ({selectedProjects.length})
+          </button>
+          {isProjectOpen && (
+            <div
+              ref={projectDropdownRef}
+              className="absolute z-10 mt-2 w-56 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
+            >
+              <div className="py-1">
+                <div className="flex justify-between px-4 py-2 border-b border-gray-200">
+                  <button
+                    onClick={handleProjectSelectAll}
+                    className="text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    Select All
+                  </button>
+                  <button
+                    onClick={handleProjectUnselectAll}
+                    className="text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    Unselect All
+                  </button>
+                </div>
+                {availableProjects.map((project) => (
+                  <label
+                    key={project}
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedProjects.includes(project)}
+                      onChange={() => handleProjectSelection(project)}
+                      className="mr-2"
+                    />
+                    {project}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

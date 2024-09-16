@@ -30,7 +30,7 @@ export default function ProjectPage() {
     const fetchProjectData = async () => {
       try {
         const response = await fetch(
-          'https://www.tokendataview.com/api/yield_rates'
+          'https://defi-dashboard-99d015fc546e.herokuapp.com/api/yield_rates'
         );
         const data: YieldData[] = await response.json();
         const filteredData = data.filter(
@@ -386,7 +386,7 @@ export default function ProjectPage() {
                 >
                   <td className="p-4">{item.market}</td>
                   <td className="p-4">{item.chain}</td>
-                  <td className="p-4 text-green-600 font-semibold">
+                  <td className="p-4 font-semibold">
                     {formatYieldRate(item.yield_rate_base)}
                   </td>
                   <td className="p-4">{formatTVL(item.tvl)}</td>
