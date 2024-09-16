@@ -27,6 +27,10 @@ function YieldPageContent() {
   const [searchTerm, setSearchTerm] = useState(
     searchParams.get('search') || ''
   );
+  const [selectedChains, setSelectedChains] = useState<string[]>(
+    searchParams.get('chain') ? [searchParams.get('chain')!] : []
+  );
+  const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   // Define uniqueChains and uniqueProjects
@@ -34,11 +38,6 @@ function YieldPageContent() {
   const uniqueProjects = Array.from(
     new Set(yieldData.map((item) => item.project))
   );
-
-  // Initialize selectedChains and selectedProjects with all options
-  const [selectedChains, setSelectedChains] = useState<string[]>(uniqueChains);
-  const [selectedProjects, setSelectedProjects] =
-    useState<string[]>(uniqueProjects);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -97,7 +96,7 @@ function YieldPageContent() {
 
   const setSelectedProjectsAndUpdateURL = (projects: string[]) => {
     setSelectedProjects(projects);
-    updateURLParams(searchTerm, selectedChains[0] || '', projects[0] || '');
+    updateURLParams(searchTerm, selectedChains[0] || '');
   };
 
   const resetFilters = () => {
