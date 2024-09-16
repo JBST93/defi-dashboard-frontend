@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, SetStateAction } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import YieldTable from '@/components/YieldTable';
 import YieldFilters from '@/components/YieldFilters';
@@ -81,14 +81,22 @@ function YieldPageContent() {
     updateURLParams(value, selectedChains[0] || '');
   };
 
-  const setSelectedChainsAndUpdateURL = (chains: string[]) => {
-    setSelectedChains(chains);
-    updateURLParams(searchTerm, chains[0] || '');
+  const setSelectedChainsAndUpdateURL = (
+    chainsOrUpdater: SetStateAction<string[]>
+  ) => {
+    setSelectedChains(chainsOrUpdater);
+    const newChains =
+      typeof chainsOrUpdater === 'function'
+        ? chainsOrUpdater(selectedChains)
+        : chainsOrUpdater;
+    updateURLParams(searchTerm, newChains[0] || '');
   };
 
-  const setSelectedProjectsAndUpdateURL = (projects: string[]) => {
-    setSelectedProjects(projects);
-    updateURLParams(searchTerm, selectedChains[0] || '');
+  const setSelectedProjectsAndUpdateURL = (
+    projectsOrUpdater: SetStateAction<string[]>
+  ) => {
+    setSelectedProjects(projectsOrUpdater);
+    // No need to update URL params for projects, as it's not included in the URL
   };
 
   const resetFilters = () => {
