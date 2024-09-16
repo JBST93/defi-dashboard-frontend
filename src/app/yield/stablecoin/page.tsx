@@ -47,11 +47,11 @@ function YieldPageContent() {
 
         // Set initial selections for chains and projects
         const uniqueChains = Array.from(
-          new Set(indexedData.map((item) => item.chain))
-        );
+          new Set(indexedData.map((item: YieldItem) => item.chain))
+        ) as string[];
         const uniqueProjects = Array.from(
-          new Set(indexedData.map((item) => item.project))
-        );
+          new Set(indexedData.map((item: YieldItem) => item.project))
+        ) as string[];
         setSelectedChains(uniqueChains);
         setSelectedProjects(uniqueProjects);
       } catch (error) {
