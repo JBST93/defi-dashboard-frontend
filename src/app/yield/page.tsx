@@ -104,13 +104,25 @@ function YieldPageContent() {
     updateURLParams(searchTerm, value);
   };
 
-  const setSelectedChainsAndUpdateURL = (chains: string[]) => {
-    setSelectedChains(chains);
-    updateURLParams(searchTerm, chains[0] || '');
+  const setSelectedChainsAndUpdateURL = (
+    chainsOrUpdater: string[] | ((prev: string[]) => string[])
+  ) => {
+    const newChains =
+      typeof chainsOrUpdater === 'function'
+        ? chainsOrUpdater(selectedChains)
+        : chainsOrUpdater;
+    setSelectedChains(newChains);
+    updateURLParams(searchTerm, newChains[0] || '');
   };
 
-  const setSelectedProjectsAndUpdateURL = (projects: string[]) => {
-    setSelectedProjects(projects);
+  const setSelectedProjectsAndUpdateURL = (
+    projectsOrUpdater: string[] | ((prev: string[]) => string[])
+  ) => {
+    const newProjects =
+      typeof projectsOrUpdater === 'function'
+        ? projectsOrUpdater(selectedProjects)
+        : projectsOrUpdater;
+    setSelectedProjects(newProjects);
     updateURLParams(searchTerm, selectedChains[0] || '');
   };
 
