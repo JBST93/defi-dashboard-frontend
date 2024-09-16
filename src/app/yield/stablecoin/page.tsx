@@ -42,7 +42,7 @@ function YieldPageContent() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          'https://www.tokendataview.com/api/stablecoin_yield_rates'
+          'https://defi-dashboard-99d015fc546e.herokuapp.com/api/stablecoin_yield_rates'
         );
         const data: YieldItem[] = await response.json();
         const indexedData = data.map((item, index) => ({

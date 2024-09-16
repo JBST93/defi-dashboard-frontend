@@ -3,9 +3,12 @@ import ProjectTable from './ProjectTable';
 import ProjectStats from './ProjectStats';
 
 async function getProjects() {
-  const res = await fetch('https://www.tokendataview.com/api/projects', {
-    cache: 'no-store',
-  });
+  const res = await fetch(
+    'https://defi-dashboard-99d015fc546e.herokuapp.com/api/projects',
+    {
+      cache: 'no-store',
+    }
+  );
   if (!res.ok) {
     throw new Error('Failed to fetch project data');
   }
