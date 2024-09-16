@@ -69,27 +69,26 @@ function YieldPageContent() {
     new Set(yieldData.map((item) => item.project))
   );
 
-  const updateURLParams = (search: string, chain: string, project: string) => {
+  const updateURLParams = (search: string, chain: string) => {
     const params = new URLSearchParams();
     if (search) params.set('search', search);
     if (chain) params.set('chain', chain);
-    if (project) params.set('project', project);
     router.push(`/yield/stablecoin?${params.toString()}`);
   };
 
   const setSearchTermAndUpdateURL = (value: string) => {
     setSearchTerm(value);
-    updateURLParams(value, selectedChains[0] || '', selectedProjects[0] || '');
+    updateURLParams(value, selectedChains[0] || '');
   };
 
   const setSelectedChainsAndUpdateURL = (chains: string[]) => {
     setSelectedChains(chains);
-    updateURLParams(searchTerm, chains[0] || '', selectedProjects[0] || '');
+    updateURLParams(searchTerm, chains[0] || '');
   };
 
   const setSelectedProjectsAndUpdateURL = (projects: string[]) => {
     setSelectedProjects(projects);
-    updateURLParams(searchTerm, selectedChains[0] || '', projects[0] || '');
+    updateURLParams(searchTerm, selectedChains[0] || '');
   };
 
   const resetFilters = () => {
