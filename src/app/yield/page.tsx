@@ -96,12 +96,12 @@ function YieldPageContent() {
 
   const setSearchTermAndUpdateURL = (value: string) => {
     setSearchTerm(value);
-    updateURLParams(value, selectedChains[0] || ''); // Remove the third argument
+    updateURLParams(value, selectedChains[0] || '');
   };
 
   const setSelectedChainAndUpdateURL = (value: string) => {
     setSelectedChains([value]);
-    updateURLParams(searchTerm, value); // Remove the third argument
+    updateURLParams(searchTerm, value);
   };
 
   const setSelectedChainsAndUpdateURL = (chains: string[]) => {
@@ -111,7 +111,7 @@ function YieldPageContent() {
 
   const setSelectedProjectsAndUpdateURL = (projects: string[]) => {
     setSelectedProjects(projects);
-    updateURLParams(searchTerm, selectedChains[0] || '', projects[0] || '');
+    updateURLParams(searchTerm, selectedChains[0] || '');
   };
 
   const resetFilters = () => {
