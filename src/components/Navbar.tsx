@@ -36,7 +36,6 @@ const navItems = [
       { name: 'ETH Yields', path: '/yield/ethereum' },
     ],
   },
-  { name: 'Contact', path: '/contact' },
 ];
 
 export default function Navbar() {
