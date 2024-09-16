@@ -16,19 +16,19 @@ export default async function ProjectsPage() {
   const projects = await getProjects();
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-100 to-orange-200 p-4 sm:p-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl sm:text-5xl font-bold mb-6 sm:mb-8 text-left text-brown-900">
-          Crypto Projects Overview
+    <div className="min-h-screen bg-amber-100 text-brown-800 p-4 sm:p-8">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-left text-brown-900 ">
+          Projects Overview{' '}
         </h1>
         <Suspense fallback={<div>Loading...</div>}>
-          <ProjectStats projects={projects} />
-
-          <ProjectTable
-            initialProjects={projects}
-            filter=""
-            searchTerm=""
-          />
+          <div className="max-w mx-auto">
+            <ProjectTable
+              initialProjects={projects}
+              filter=""
+              searchTerm=""
+            />
+          </div>
         </Suspense>
       </div>
     </div>

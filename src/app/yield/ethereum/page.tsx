@@ -7,7 +7,7 @@ import YieldFilters from '@/components/YieldFilters';
 import { Suspense } from 'react';
 
 interface YieldItem {
-  id: number; // Changed from string to number
+  id: number;
   project: string;
   chain: string;
   market: string;
@@ -15,11 +15,6 @@ interface YieldItem {
   yield_rate_base: number;
   tvl: number;
   humanized_timestamp: string;
-}
-
-interface FAQItem {
-  question: string;
-  answer: string;
 }
 
 function YieldPageContent() {
@@ -35,7 +30,6 @@ function YieldPageContent() {
   const [selectedChains, setSelectedChains] = useState<string[]>(
     searchParams.get('chain') ? [searchParams.get('chain')!] : []
   );
-  const [faqData, setFaqData] = useState<FAQItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -59,28 +53,20 @@ function YieldPageContent() {
     };
 
     fetchData();
-  }, []); // Add dependencies if needed
+  }, []);
 
-  const uniqueProjects = Array.from(
-    new Set(yieldData.map((item) => item.project))
-  );
   const uniqueChains = Array.from(new Set(yieldData.map((item) => item.chain)));
 
   const updateURLParams = (search: string, chain: string) => {
     const params = new URLSearchParams();
     if (search) params.set('search', search);
     if (chain) params.set('chain', chain);
-    router.push(`/yield?${params.toString()}`);
+    router.push(`/yield/ethereum?${params.toString()}`);
   };
 
   const setSearchTermAndUpdateURL = (value: string) => {
     setSearchTerm(value);
     updateURLParams(value, selectedChains[0] || '');
-  };
-
-  const setSelectedChainAndUpdateURL = (value: string) => {
-    setSelectedChains([value]);
-    updateURLParams(searchTerm, value);
   };
 
   const setSelectedChainsAndUpdateURL = (chains: string[]) => {
@@ -91,38 +77,42 @@ function YieldPageContent() {
   const resetFilters = () => {
     setSearchTerm('');
     setSelectedChains([]);
-    router.push('/yield');
+    router.push('/yield/ethereum');
   };
 
   return (
-    <div className="min-h-screen bg-amber-100 text-brown-800 p-4 sm:p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-left text-brown-900 ">
-          Yield Farming Opportunities
-        </h1>
-        <YieldFilters
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTermAndUpdateURL}
-          selectedChains={selectedChains}
-          setSelectedChains={setSelectedChainsAndUpdateURL}
-          availableChains={uniqueChains}
-          resetFilters={resetFilters}
-        />
-        <YieldTable
-          yieldData={yieldData}
-          searchTerm={searchTerm}
-          selectedChain={selectedChains[0] || ''}
-          isLoading={isLoading}
-        />
-      </div>
+    <div className="max-w-4xl mx-auto">
+      <YieldFilters
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTermAndUpdateURL}
+        selectedChains={selectedChains}
+        setSelectedChains={setSelectedChainsAndUpdateURL}
+        availableChains={uniqueChains}
+        resetFilters={resetFilters}
+      />
+      <YieldTable
+        yieldData={yieldData}
+        searchTerm={searchTerm}
+        selectedChain={selectedChains[0] || ''}
+        isLoading={isLoading}
+      />
     </div>
   );
 }
 
 export default function YieldPage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <YieldPageContent />
-    </Suspense>
+    <>
+      <div className="min-h-screen bg-amber-100 text-brown-800 p-4 sm:p-8">
+        <div className="max-w-4xl mx-auto">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-left text-brown-900 ">
+            Ethereum (ETH) Yield Farming Opportunities
+          </h1>
+          <Suspense fallback={<div>Loading...</div>}>
+            <YieldPageContent />
+          </Suspense>
+        </div>
+      </div>
+    </>
   );
 }

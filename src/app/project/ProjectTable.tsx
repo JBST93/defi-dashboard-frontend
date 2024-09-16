@@ -24,6 +24,7 @@ export interface ProjectData {
   project: string;
   logo?: string;
   category: string;
+  index?: number; // Add this line
 }
 
 export default function ProjectTable({
@@ -31,7 +32,9 @@ export default function ProjectTable({
   filter,
   searchTerm: initialSearchTerm,
 }: ProjectTableProps) {
-  const [projects] = useState<ProjectData[]>(initialProjects);
+  const [projects] = useState<ProjectData[]>(
+    initialProjects.map((project, index) => ({ ...project, index: index + 1 }))
+  );
   const [filteredProjects, setFilteredProjects] =
     useState<ProjectData[]>(initialProjects);
   const [sortColumn, setSortColumn] = useState<string | null>(null);
@@ -106,10 +109,11 @@ export default function ProjectTable({
         resetTable={resetTable}
       />
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse text-s md:text-md">
-          <thead className="sticky top-0 z-20 bg-amber-400">
+        <table className="w-full border-collapse text-xs md:text-sm">
+          <thead className="sticky top-0 z-20 bg-amber-400 text-xs">
             <tr>
               {[
+                '#',
                 'Token',
                 'Type',
                 'Price',
@@ -138,25 +142,27 @@ export default function ProjectTable({
           <tbody>
             {sortedProjects.map((project, index) => (
               <tr
-                key={index}
+                key={project.index}
                 className={
                   index % 2 === 0
                     ? 'bg-amber-50'
                     : 'bg-white hover:bg-amber-100 transition-colors'
                 }
               >
+                <td>
+                  <span className="text-xs sm:text-sm text-gray-500 w-6 sm:w-8 text-center">
+                    #{project.index}
+                  </span>
+                </td>
                 <td className="p-2 sm:p-4 whitespace-nowrap sticky left-0 z-10 bg-inherit">
                   <div className="flex items-center space-x-2 sm:space-x-3">
-                    <span className="text-xs sm:text-sm text-gray-500 w-6 sm:w-8 text-right">
-                      #{index + 1}
-                    </span>
                     <div className="flex items-center space-x-2">
                       {project.logo ? (
                         <Image
                           src={project.logo}
                           alt={`${project.token} logo`}
-                          width={24}
-                          height={24}
+                          width={20}
+                          height={20}
                           className="rounded-full w-8 h-8 sm:w-10 sm:h-10"
                         />
                       ) : (
@@ -173,7 +179,7 @@ export default function ProjectTable({
                     </div>
                   </div>
                 </td>
-                <td className="p-1 sm:p-4 whitespace-nowrap hidden sm:table-cell">
+                <td className="p-1 sm:p-4 text-s whitespace-nowrap hidden sm:table-cell">
                   {project.type}
                 </td>
                 <td className="p-1 sm:p-4 text-right font-semibold whitespace-nowrap">

@@ -14,6 +14,14 @@ import {
 } from '@/components/ui/sheet';
 import { Menu, X, ChevronRight } from 'lucide-react';
 import { DialogTitle } from '@/components/ui/dialog'; // Import DialogTitle
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from '@/components/ui/navigation-menu';
 
 // Define the navItems array
 const navItems = [
@@ -25,6 +33,7 @@ const navItems = [
     subItems: [
       { name: 'All yields', path: '/yield' },
       { name: 'Stablecoin yields', path: '/yield/stablecoin' },
+      { name: 'ETH Yields', path: '/yield/ethereum' },
     ],
   },
   { name: 'Contact', path: '/contact' },
@@ -55,17 +64,49 @@ export default function Navbar() {
 
           {/* Desktop menu */}
           <div className="hidden md:flex items-center space-x-4">
-            {navItems.map((item) => (
-              <Link
-                key={item.path}
-                href={item.path}
-                className={`px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 ${
-                  currentPath === item.path ? 'bg-yellow-400' : ''
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
+            <NavigationMenu>
+              <NavigationMenuList>
+                {navItems.map((item) => (
+                  <NavigationMenuItem key={item.path}>
+                    {item.subItems ? (
+                      <NavigationMenuTrigger>{item.name}</NavigationMenuTrigger>
+                    ) : (
+                      <Link
+                        href={item.path}
+                        legacyBehavior
+                        passHref
+                      >
+                        <NavigationMenuLink
+                          className={`px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 ${
+                            currentPath === item.path ? 'bg-yellow-400' : ''
+                          }`}
+                        >
+                          {item.name}
+                        </NavigationMenuLink>
+                      </Link>
+                    )}
+                    {item.subItems && (
+                      <NavigationMenuContent>
+                        <ul className="grid w-[200px] gap-3 p-4">
+                          {item.subItems.map((subItem) => (
+                            <li key={subItem.path}>
+                              <NavigationMenuLink asChild>
+                                <Link
+                                  href={subItem.path}
+                                  className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                >
+                                  {subItem.name}
+                                </Link>
+                              </NavigationMenuLink>
+                            </li>
+                          ))}
+                        </ul>
+                      </NavigationMenuContent>
+                    )}
+                  </NavigationMenuItem>
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
 
           {/* Mobile menu */}

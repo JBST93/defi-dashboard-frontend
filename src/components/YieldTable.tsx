@@ -71,10 +71,10 @@ export default function YieldTable({
   return (
     <div className="overflow-x-auto">
       <div className="flex justify-between items-center mb-4 bg-amber-100 p-3 rounded-lg shadow-sm">
-        <h2 className="text-lg font-semibold text-amber-800">Yield Data</h2>
+        <h2 className="text-lg font-semibold text-amber-800"></h2>
         <div className="flex items-center">
           <svg
-            className="w-5 h-5 text-amber-600 mr-2"
+            className="w-5 h-5 text-green-600 mr-2"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -87,8 +87,8 @@ export default function YieldTable({
               d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
             />
           </svg>
-          <span className="text-sm font-medium text-amber-700">
-            Updated {yieldData[0]?.humanized_timestamp || 'N/A'}
+          <span className="text-sm font-medium text-green-700">
+            Last Updated {yieldData[0]?.humanized_timestamp || 'N/A'}
           </span>
         </div>
       </div>
