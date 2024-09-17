@@ -9,8 +9,8 @@ interface YieldData {
   market: string;
   project: string;
   yield_rate_base: string;
-  yield_rate_reward: string;
-  tvl: number;
+  yield_rate_reward?: string;
+  tvl?: number;
   chain: string;
 }
 
