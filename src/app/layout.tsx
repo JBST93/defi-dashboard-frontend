@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   description: 'Your one-stop shop for token data and yield farming insights',
   viewport: 'width=device-width, initial-scale=1', // Include viewport meta tag here
   icons: {
-    icon: '/favicon.jpg', // Specify your favicon here
+    icon: '/favicon.jpg',
   },
 };
 
