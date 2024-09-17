@@ -8,6 +8,10 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: 'TokenDataView',
   description: 'Your one-stop shop for token data and yield farming insights',
+  viewport: 'width=device-width, initial-scale=1', // Include viewport meta tag here
+  icons: {
+    icon: '/favicon.ico', // Specify your favicon here
+  },
 };
 
 export default function RootLayout({
