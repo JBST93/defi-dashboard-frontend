@@ -68,10 +68,10 @@ export default function YieldTable({
     if (sortColumn === 'apy') {
       const aValue =
         (parseFloat(a.yield_rate_base) || 0) +
-        (parseFloat(a.yield_rate_reward) || 0);
+        (parseFloat(a.yield_rate_reward || '0') || 0);
       const bValue =
         (parseFloat(b.yield_rate_base) || 0) +
-        (parseFloat(b.yield_rate_reward) || 0);
+        (parseFloat(b.yield_rate_reward || '0') || 0);
       return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
     }
     const aValue = parseFloat(a[sortColumn] as string) || 0;
@@ -155,14 +155,14 @@ export default function YieldTable({
               <td className="p-2 text-xs sm:text-sm font-semibold">
                 {(
                   (parseFloat(item.yield_rate_base) || 0) +
-                  (parseFloat(item.yield_rate_reward) || 0)
+                  (parseFloat(item.yield_rate_reward || '0') || 0)
                 )
                   .toFixed(2)
                   .replace(/^0.00$/, '0.00')}
                 %
               </td>
               <td className="p-2 text-xs sm:text-sm">
-                ${Math.round(item.tvl).toLocaleString()}
+                ${Math.round(item.tvl || 0).toLocaleString()}
               </td>
               <td className="p-2 text-xs sm:text-sm">{item.chain}</td>
               <td className="p-2 text-xs sm:text-sm">
