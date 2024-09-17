@@ -22,8 +22,10 @@ export default async function ProjectsPage() {
     (sum: number, project: { marketCap: number }) => sum + project.marketCap,
     0
   );
-  const btcMarketCap = projects.find((p) => p.token === 'BTC')?.marketCap || 0;
-  const ethMarketCap = projects.find((p) => p.token === 'ETH')?.marketCap || 0;
+  const btcMarketCap =
+    projects.find((p: { token: string }) => p.token === 'BTC')?.marketCap || 0;
+  const ethMarketCap =
+    projects.find((p: { token: string }) => p.token === 'ETH')?.marketCap || 0;
   const stablecoinMarketCap = projects
     .filter((p: { type: string }) => p.type.toLowerCase() === 'stablecoin')
     .reduce(
