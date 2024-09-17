@@ -16,6 +16,7 @@ export interface ProjectData {
   price: number;
   token: string;
   price_day_delta: number;
+  price_7d_delta: number;
   marketCap: number;
   tvl: number;
   tvl_day_delta: number;
@@ -90,12 +91,12 @@ export default function ProjectTable({
     });
   }, [filteredProjects, sortColumn, sortDirection]);
 
-  const formatUSD = (price: number) => {
+  const formatUSD = (price: number, decimals: number = 2) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
       currency: 'USD',
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
     }).format(price);
   };
 
@@ -118,6 +119,7 @@ export default function ProjectTable({
                 'Type',
                 'Price',
                 '24h Change',
+                '7d Change',
                 'Market Cap',
                 'TVL',
                 '24h Change',
@@ -195,11 +197,21 @@ export default function ProjectTable({
                   {project.price_day_delta >= 0 ? '▲' : '▼'}{' '}
                   {Math.abs(project.price_day_delta).toFixed(2)}%
                 </td>
+                <td
+                  className={`p-1 sm:p-4 whitespace-nowrap ${
+                    project.price_7d_delta >= 0
+                      ? 'text-green-600'
+                      : 'text-red-600'
+                  }`}
+                >
+                  {project.price_7d_delta >= 0 ? '▲' : '▼'}{' '}
+                  {Math.abs(project.price_7d_delta).toFixed(2)}%
+                </td>
                 <td className="p-1 sm:p-4 whitespace-nowrap text-right font-semibold">
-                  {formatUSD(project.marketCap)}
+                  {formatUSD(project.marketCap, 0)}
                 </td>
                 <td className="p-1 sm:p-4 whitespace-nowrap">
-                  {project.tvl === 0 ? '-' : formatUSD(project.tvl)}
+                  {project.tvl === 0 ? '-' : formatUSD(project.tvl, 0)}
                 </td>
                 <td className="p-1 sm:p-4 whitespace-nowrap">
                   {project.tvl === 0 ? (

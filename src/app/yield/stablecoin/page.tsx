@@ -33,6 +33,7 @@ function YieldPageContent() {
   );
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isSingleAssetOnly, setIsSingleAssetOnly] = useState(false); // Add this line
 
   useEffect(() => {
     const fetchData = async () => {
@@ -103,6 +104,7 @@ function YieldPageContent() {
     setSearchTerm('');
     setSelectedChains(uniqueChains);
     setSelectedProjects(uniqueProjects);
+    setIsSingleAssetOnly(false); // Add this line
     router.push('/yield/stablecoin');
   };
 
@@ -122,6 +124,8 @@ function YieldPageContent() {
           availableChains={uniqueChains}
           availableProjects={uniqueProjects}
           resetFilters={resetFilters}
+          isSingleAssetOnly={isSingleAssetOnly}
+          setIsSingleAssetOnly={setIsSingleAssetOnly} // Add this line
         />
         <YieldTable
           yieldData={yieldData}
@@ -129,6 +133,7 @@ function YieldPageContent() {
           selectedChains={selectedChains}
           selectedProjects={selectedProjects}
           isLoading={isLoading}
+          isSingleAssetOnly={isSingleAssetOnly} // Add this line
         />
       </div>
     </div>

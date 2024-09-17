@@ -10,6 +10,8 @@ interface YieldFiltersProps {
   availableChains: string[];
   availableProjects: string[];
   resetFilters: () => void;
+  isSingleAssetOnly: boolean;
+  setIsSingleAssetOnly: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function YieldFilters({
@@ -22,6 +24,8 @@ export default function YieldFilters({
   availableChains,
   availableProjects,
   resetFilters,
+  isSingleAssetOnly,
+  setIsSingleAssetOnly,
 }: YieldFiltersProps) {
   const [isChainOpen, setIsChainOpen] = useState(false);
   const [isProjectOpen, setIsProjectOpen] = useState(false);
@@ -97,7 +101,7 @@ export default function YieldFilters({
           Reset
         </button>
       </div>
-      <div className="flex gap-4">
+      <div className="flex gap-4 mb-4">
         <div className="relative">
           <button
             onClick={() => setIsChainOpen(!isChainOpen)}
@@ -187,6 +191,18 @@ export default function YieldFilters({
               </div>
             </div>
           )}
+        </div>
+        <div>
+          <button
+            onClick={() => setIsSingleAssetOnly(!isSingleAssetOnly)}
+            className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md ${
+              isSingleAssetOnly
+                ? 'text-white bg-amber-600 hover:bg-amber-700'
+                : 'text-amber-600 bg-white hover:bg-gray-100 border-amber-600'
+            }`}
+          >
+            Single Exposure
+          </button>
         </div>
       </div>
     </div>

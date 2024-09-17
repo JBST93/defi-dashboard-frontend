@@ -48,6 +48,8 @@ function YieldPageContent() {
   const [selectedProjects, setSelectedProjects] =
     useState<string[]>(uniqueProjects);
 
+  const [isSingleAssetOnly, setIsSingleAssetOnly] = useState(false);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -130,6 +132,7 @@ function YieldPageContent() {
     setSearchTerm('');
     setSelectedChains([]);
     setSelectedProjects([]);
+    setIsSingleAssetOnly(false);
     router.push('/yield');
   };
 
@@ -149,6 +152,8 @@ function YieldPageContent() {
           availableChains={uniqueChains}
           availableProjects={uniqueProjects}
           resetFilters={resetFilters}
+          isSingleAssetOnly={isSingleAssetOnly}
+          setIsSingleAssetOnly={setIsSingleAssetOnly}
         />
         <YieldTable
           yieldData={yieldData}
@@ -156,6 +161,7 @@ function YieldPageContent() {
           selectedChains={selectedChains}
           selectedProjects={selectedProjects}
           isLoading={isLoading}
+          isSingleAssetOnly={isSingleAssetOnly} // Add this line
         />
         <FAQ faqData={faqData} />
       </div>

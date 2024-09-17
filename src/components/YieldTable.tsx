@@ -8,7 +8,8 @@ interface YieldData {
   index: number;
   market: string;
   project: string;
-  yield_rate_base: number;
+  yield_rate_base: string;
+  yield_rate_reward: string;
   tvl: number;
   chain: string;
 }
@@ -19,6 +20,7 @@ interface YieldTableProps {
   selectedChains: string[];
   selectedProjects: string[];
   isLoading: boolean;
+  isSingleAssetOnly: boolean; // Add this line
 }
 
 export default function YieldTable({
@@ -27,9 +29,10 @@ export default function YieldTable({
   selectedChains,
   selectedProjects,
   isLoading,
+  isSingleAssetOnly, // Add this line
 }: YieldTableProps) {
   const [sortColumn, setSortColumn] = useState<
-    'yield_rate_base' | 'tvl' | null
+    'apy' | 'tvl' | 'yield_rate_base' | 'yield_rate_reward' | null
   >(null);
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,10 +46,15 @@ export default function YieldTable({
       selectedChains.length === 0 || selectedChains.includes(item.chain);
     const matchesProject =
       selectedProjects.length === 0 || selectedProjects.includes(item.project);
-    return matchesSearch && matchesChain && matchesProject;
+    const matchesSingleAsset = !isSingleAssetOnly || !item.market.includes('/');
+    return (
+      matchesSearch && matchesChain && matchesProject && matchesSingleAsset
+    );
   });
 
-  const handleSort = (column: 'yield_rate_base' | 'tvl') => {
+  const handleSort = (
+    column: 'apy' | 'tvl' | 'yield_rate_base' | 'yield_rate_reward'
+  ) => {
     if (sortColumn === column) {
       setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
@@ -57,8 +65,17 @@ export default function YieldTable({
 
   const sortedData = [...filteredData].sort((a, b) => {
     if (sortColumn === null) return 0;
-    const aValue = a[sortColumn];
-    const bValue = b[sortColumn];
+    if (sortColumn === 'apy') {
+      const aValue =
+        (parseFloat(a.yield_rate_base) || 0) +
+        (parseFloat(a.yield_rate_reward) || 0);
+      const bValue =
+        (parseFloat(b.yield_rate_base) || 0) +
+        (parseFloat(b.yield_rate_reward) || 0);
+      return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
+    }
+    const aValue = parseFloat(a[sortColumn] as string) || 0;
+    const bValue = parseFloat(b[sortColumn] as string) || 0;
     return sortDirection === 'asc' ? aValue - bValue : bValue - aValue;
   });
 
@@ -84,11 +101,10 @@ export default function YieldTable({
             <th className="p-2 text-xs sm:text-sm">Project</th>
             <th
               className="p-2 cursor-pointer text-xs sm:text-sm"
-              onClick={() => handleSort('yield_rate_base')}
+              onClick={() => handleSort('apy')}
             >
               APY{' '}
-              {sortColumn === 'yield_rate_base' &&
-                (sortDirection === 'asc' ? '▲' : '▼')}
+              {sortColumn === 'apy' && (sortDirection === 'asc' ? '▲' : '▼')}
             </th>
             <th
               className="p-2 cursor-pointer text-xs sm:text-sm"
@@ -98,6 +114,22 @@ export default function YieldTable({
               {sortColumn === 'tvl' && (sortDirection === 'asc' ? '▲' : '▼')}
             </th>
             <th className="p-2 text-xs sm:text-sm">Chain</th>
+            <th
+              className="p-2 text-xs sm:text-sm"
+              onClick={() => handleSort('yield_rate_base')}
+            >
+              Base APY
+              {sortColumn === 'yield_rate_base' &&
+                (sortDirection === 'asc' ? '▲' : '▼')}
+            </th>
+            <th
+              className="p-2 text-xs sm:text-sm"
+              onClick={() => handleSort('yield_rate_reward')}
+            >
+              Reward APY
+              {sortColumn === 'yield_rate_reward' &&
+                (sortDirection === 'asc' ? '▲' : '▼')}
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -121,12 +153,24 @@ export default function YieldTable({
                 </Link>
               </td>
               <td className="p-2 text-xs sm:text-sm font-semibold">
-                {item.yield_rate_base}%
+                {(
+                  (parseFloat(item.yield_rate_base) || 0) +
+                  (parseFloat(item.yield_rate_reward) || 0)
+                )
+                  .toFixed(2)
+                  .replace(/^0.00$/, '0.00')}
+                %
               </td>
               <td className="p-2 text-xs sm:text-sm">
                 ${Math.round(item.tvl).toLocaleString()}
               </td>
               <td className="p-2 text-xs sm:text-sm">{item.chain}</td>
+              <td className="p-2 text-xs sm:text-sm">
+                {item.yield_rate_base}%
+              </td>
+              <td className="p-2 text-xs sm:text-sm">
+                {item.yield_rate_reward}%
+              </td>
             </tr>
           ))}
         </tbody>
