@@ -13,7 +13,7 @@ interface YieldItem {
   chain: string;
   market: string;
   apy: number;
-  yield_rate_base: number;
+  yield_rate_base: string;
   tvl: number;
   humanized_timestamp: string;
 }
