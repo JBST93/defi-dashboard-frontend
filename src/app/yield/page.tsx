@@ -14,7 +14,7 @@ interface YieldItem {
   chain: string;
   market: string;
   apy: number;
-  yield_rate_base: number;
+  yield_rate_base: string; // Change this from number to string
   tvl: number;
   humanized_timestamp: string; // Add this line
 }
