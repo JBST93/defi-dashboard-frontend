@@ -19,14 +19,17 @@ export default async function ProjectsPage() {
   const projects = await getProjects();
 
   const totalMarketCap = projects.reduce(
-    (sum, project) => sum + project.marketCap,
+    (sum: number, project: { marketCap: number }) => sum + project.marketCap,
     0
   );
   const btcMarketCap = projects.find((p) => p.token === 'BTC')?.marketCap || 0;
   const ethMarketCap = projects.find((p) => p.token === 'ETH')?.marketCap || 0;
   const stablecoinMarketCap = projects
-    .filter((p) => p.type.toLowerCase() === 'stablecoin')
-    .reduce((sum, project) => sum + project.marketCap, 0);
+    .filter((p: { type: string }) => p.type.toLowerCase() === 'stablecoin')
+    .reduce(
+      (sum: number, project: { marketCap: number }) => sum + project.marketCap,
+      0
+    );
 
   const btcDominance = btcMarketCap / totalMarketCap;
   const ethDominance = ethMarketCap / totalMarketCap;
