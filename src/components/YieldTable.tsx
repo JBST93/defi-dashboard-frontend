@@ -152,7 +152,7 @@ export default function YieldTable({
                   {item.project}
                 </Link>
               </td>
-              <td className="p-2 text-xs sm:text-sm font-semibold">
+              <td className="p-2 text-xs sm:text-sm font-semibold align-right">
                 {(
                   (parseFloat(item.yield_rate_base) || 0) +
                   (parseFloat(item.yield_rate_reward || '0') || 0)
@@ -161,7 +161,7 @@ export default function YieldTable({
                   .replace(/^0.00$/, '0.00')}
                 %
               </td>
-              <td className="p-2 text-xs sm:text-sm">
+              <td className="p-2 text-xs sm:text-sm text-right">
                 ${Math.round(item.tvl || 0).toLocaleString()}
               </td>
               <td className="p-2 text-xs sm:text-sm">{item.chain}</td>

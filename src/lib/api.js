@@ -6,6 +6,7 @@ export async function fetchProjects() {
       'https://defi-dashboard-99d015fc546e.herokuapp.com/api/projects'
     );
     if (!res.ok) throw new Error('Failed to fetch projects');
+
     const data = await res.json();
     console.log('Fetched projects:', data); // Add this line
     return data;
