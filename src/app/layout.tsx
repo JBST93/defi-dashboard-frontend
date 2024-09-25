@@ -25,7 +25,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Navbar />
         <main>{children}</main>
-        <GoogleAnalytics gaId="G-22YFB5MYBR" />
+        <GoogleAnalytics gaId="G-017T9RC5Z4" />
       </body>
     </html>
   );
