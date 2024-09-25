@@ -27,7 +27,7 @@ interface ProjectOption {
 
 interface GovernancePageClientProps {
   initialProposals: Proposal[];
-  projectOptions: ProjectOption[];
+  projectOptions: { value: string; label: string }[];
 }
 
 export default function GovernancePageClient({

@@ -2,6 +2,11 @@ import { fetchProjects } from '@/lib/api';
 import { fetchProposals } from '@/lib/snaphotApi';
 import GovernancePageClient from './GovernancePageClient';
 
+interface Project {
+  project: string;
+  snapshot_name?: string;
+}
+
 const KNOWN_SNAPSHOT_NAMES: { [key: string]: string } = {
   Aave: 'aave.eth',
   Uniswap: 'uniswapgovernance.eth',
@@ -22,7 +27,7 @@ export default async function GovernancePage() {
   try {
     const projects = await fetchProjects();
 
-    const projectsWithGovernance = projects.filter((project) => {
+    const projectsWithGovernance = projects.filter((project: Project) => {
       if (!project.snapshot_name && KNOWN_SNAPSHOT_NAMES[project.project]) {
         project.snapshot_name = KNOWN_SNAPSHOT_NAMES[project.project];
       }
@@ -33,7 +38,7 @@ export default async function GovernancePage() {
       );
     });
 
-    let allProposals = [];
+    let allProposals: any = [];
     for (const project of projectsWithGovernance) {
       try {
         const proposals = await fetchProposals(project.snapshot_name);
@@ -55,13 +60,13 @@ export default async function GovernancePage() {
 
     const oneMonthAgo = Date.now() - 30 * 24 * 60 * 60 * 1000;
     const recentProposals = allProposals
-      .filter((proposal) => {
+      .filter((proposal: any) => {
         const endTime = proposal.end * 1000;
         return endTime > oneMonthAgo || proposal.state === 'active';
       })
-      .sort((a, b) => b.end - a.end);
+      .sort((a: any, b: any) => b.end - a.end);
 
-    const projectOptions = projectsWithGovernance.map((project) => ({
+    const projectOptions = projectsWithGovernance.map((project: Project) => ({
       value: project.project,
       label: project.project,
     }));
