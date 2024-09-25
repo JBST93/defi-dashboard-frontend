@@ -102,61 +102,72 @@ const GovernanceProposal: React.FC<ProposalProps> = ({
 
   return (
     <div
-      className={`border rounded-lg p-4 shadow-md ${getCardBackgroundColor(
+      className={`border rounded-lg overflow-hidden shadow-md ${getCardBackgroundColor(
         proposal.state
       )}`}
     >
-      <div className="flex justify-between items-center mb-2">
-        <span className="text-lg font-semibold text-gray-700">
-          {projectName}
-        </span>
-        <span
-          className={`px-2 py-1 text-sm text-white rounded ${getStatusColor(
-            proposal.state
-          )}`}
-        >
-          {proposal.state.charAt(0).toUpperCase() + proposal.state.slice(1)}
-        </span>
-      </div>
-      <a
-        href={getProposalUrl()}
-        className="text-2xl font-bold hover:underline block mb-2"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        {proposal.title}
-      </a>
-      <p className="text-gray-600 mb-4">{getShortDescription(proposal.body)}</p>
-      <div className="mb-4">
-        <p>Start: {formatDate(proposal.start)}</p>
-        <p>End: {formatDate(proposal.end)}</p>
-      </div>
-      <div className="mt-4 flex justify-between items-center">
-        {proposal.state === 'active' ? (
-          <div className="text-green-600 font-semibold">
-            Time Remaining: {timeLeft}
+      {/* New header for time information */}
+      <div className="bg-gray-100 p-3 border-b">
+        <div className="flex justify-between items-center text-sm">
+          <div className="flex items-center space-x-4">
+            <div>
+              <span className="font-semibold text-gray-600">Start:</span>{' '}
+              <span>{formatDate(proposal.start)}</span>
+            </div>
+            <div>
+              <span className="font-semibold text-gray-600">End:</span>{' '}
+              <span>{formatDate(proposal.end)}</span>
+            </div>
           </div>
-        ) : (
-          ''
+          {proposal.state === 'active' && timeLeft && (
+            <div className="text-green-600 font-medium">{timeLeft}</div>
+          )}
+        </div>
+      </div>
+
+      <div className="p-4">
+        <div className="flex justify-between items-center mb-4">
+          <span className="text-lg font-semibold text-gray-700">
+            {projectName}
+          </span>
+          <span
+            className={`px-2 py-1 text-sm text-white rounded ${getStatusColor(
+              proposal.state
+            )}`}
+          >
+            {proposal.state.charAt(0).toUpperCase() + proposal.state.slice(1)}
+          </span>
+        </div>
+
+        <a
+          href={getProposalUrl()}
+          className="text-2xl font-bold hover:underline block mb-2"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {proposal.title}
+        </a>
+        <p className="text-gray-600 mb-4">
+          {getShortDescription(proposal.body)}
+        </p>
+        {proposal.scores && proposal.scores.length > 0 && (
+          <div>
+            <h4 className="font-semibold mb-2">Voting Results:</h4>
+            <ul>
+              {proposal.choices.map((choice, index) => (
+                <li key={index}>
+                  {choice}: {formatVotes(proposal.scores[index])} (
+                  {(
+                    (proposal.scores[index] / proposal.scores_total) *
+                    100
+                  ).toFixed(2)}
+                  %)
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
       </div>
-      {proposal.scores && proposal.scores.length > 0 && (
-        <div>
-          <h4 className="font-semibold mb-2">Voting Results:</h4>
-          <ul>
-            {proposal.choices.map((choice, index) => (
-              <li key={index}>
-                {choice}: {formatVotes(proposal.scores[index])} (
-                {(
-                  (proposal.scores[index] / proposal.scores_total) *
-                  100
-                ).toFixed(2)}
-                %)
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
     </div>
   );
 };
