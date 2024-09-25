@@ -11,10 +11,10 @@ interface ProposalProps {
     start: number;
     end: number;
     state: string;
-    scores: number[] | null;
+    scores: number[];
     scores_total: number;
   };
-  projectName: string; //
+  projectName: string;
   snapshotName: string;
 }
 
@@ -53,82 +53,63 @@ const GovernanceProposal: React.FC<ProposalProps> = ({
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'closed':
-        return 'bg-red-500';
+        return 'bg-red-600 text-white';
       case 'active':
-        return 'bg-green-500';
+        return 'bg-green-600 text-white';
+      case 'pending':
+        return 'bg-yellow-500 text-black';
       default:
-        return 'bg-gray-500';
+        return 'bg-gray-600 text-white';
+    }
+  };
+
+  const getCardBackgroundColor = (status: string) => {
+    switch (status) {
+      case 'closed':
+        return 'bg-red-50';
+      case 'active':
+        return 'bg-green-50';
+      case 'pending':
+        return 'bg-yellow-50';
+      default:
+        return 'bg-white';
     }
   };
 
   const formatDate = (timestamp: number) => {
-    return new Date(timestamp * 1000).toLocaleDateString();
+    return new Date(timestamp * 1000).toLocaleDateString('en-GB');
   };
 
   const getShortDescription = (body: string) => {
-    // Split the body into sentences
     const sentences = body.match(/[^\.!\?]+[\.!\?]+/g) || [];
-
-    // Take the first 3 sentences or fewer if there aren't 3
     const shortDescription = sentences.slice(0, 3).join(' ');
-
-    // Truncate to roughly 200 characters if it's longer
-    return shortDescription.length > 200
-      ? shortDescription.slice(0, 200) + '...'
-      : shortDescription;
+    const trimmedDescription = shortDescription
+      .split(' ')
+      .map((word) => (word.length > 20 ? word.slice(0, 15) + '...' : word))
+      .join(' ');
+    return trimmedDescription.length > 200
+      ? trimmedDescription.slice(0, 200) + '...'
+      : trimmedDescription;
   };
 
   const getProposalUrl = () => {
-    if (!snapshotName) {
-      console.error(`Missing snapshot name for proposal: ${proposal.id}`);
-      return `https://snapshot.org/#/proposal/${proposal.id}`;
-    }
     return `https://snapshot.org/#/${snapshotName}/proposal/${proposal.id}`;
   };
 
-  const renderVotingResults = () => {
-    if (!proposal.scores || proposal.scores.length === 0) return null;
-
-    const total = proposal.scores.reduce((sum, score) => sum + score, 0);
-    let startAngle = 0;
-
-    return (
-      <svg
-        width="100"
-        height="100"
-        viewBox="0 0 100 100"
-      >
-        {proposal.scores.map((score, index) => {
-          const percentage = score / total;
-          const endAngle = startAngle + percentage * 360;
-          const largeArcFlag = percentage > 0.5 ? 1 : 0;
-          const x1 = 50 + 50 * Math.cos((startAngle * Math.PI) / 180);
-          const y1 = 50 + 50 * Math.sin((startAngle * Math.PI) / 180);
-          const x2 = 50 + 50 * Math.cos((endAngle * Math.PI) / 180);
-          const y2 = 50 + 50 * Math.sin((endAngle * Math.PI) / 180);
-
-          const pathData = `M 50 50 L ${x1} ${y1} A 50 50 0 ${largeArcFlag} 1 ${x2} ${y2} Z`;
-
-          startAngle = endAngle;
-
-          return (
-            <path
-              key={index}
-              d={pathData}
-              fill={`hsl(${index * 137.5}, 50%, 60%)`}
-            />
-          );
-        })}
-      </svg>
-    );
+  const formatVotes = (votes: number) => {
+    return votes.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
   };
 
   return (
-    <div className="border rounded-lg p-4 shadow-md bg-white">
+    <div
+      className={`border rounded-lg p-4 shadow-md ${getCardBackgroundColor(
+        proposal.state
+      )}`}
+    >
       <div className="flex justify-between items-center mb-2">
-        <span className="text-sm font-semibold text-gray-600">
+        <span className="text-lg font-semibold text-gray-700">
           {projectName}
-        </span>{' '}
+        </span>
         <span
           className={`px-2 py-1 text-sm text-white rounded ${getStatusColor(
             proposal.state
@@ -139,14 +120,14 @@ const GovernanceProposal: React.FC<ProposalProps> = ({
       </div>
       <a
         href={getProposalUrl()}
-        className="text-xl font-bold hover:underline"
+        className="text-2xl font-bold hover:underline block mb-2"
         target="_blank"
         rel="noopener noreferrer"
       >
         {proposal.title}
       </a>
-      <p className="text-gray-600 mt-2">{getShortDescription(proposal.body)}</p>
-      <div className="mt-4">
+      <p className="text-gray-600 mb-4">{getShortDescription(proposal.body)}</p>
+      <div className="mb-4">
         <p>Start: {formatDate(proposal.start)}</p>
         <p>End: {formatDate(proposal.end)}</p>
       </div>
@@ -160,18 +141,17 @@ const GovernanceProposal: React.FC<ProposalProps> = ({
         )}
       </div>
       {proposal.scores && proposal.scores.length > 0 && (
-        <div className="mt-4">
-          <h4 className="font-semibold">Voting Results:</h4>
+        <div>
+          <h4 className="font-semibold mb-2">Voting Results:</h4>
           <ul>
             {proposal.choices.map((choice, index) => (
               <li key={index}>
-                {choice}:{' '}
-                {proposal.scores && proposal.scores[index] !== undefined
-                  ? `${proposal.scores[index].toFixed(2)} (${(
-                      (proposal.scores[index] / proposal.scores_total) *
-                      100
-                    ).toFixed(2)}%)`
-                  : 'No votes'}
+                {choice}: {formatVotes(proposal.scores[index])} (
+                {(
+                  (proposal.scores[index] / proposal.scores_total) *
+                  100
+                ).toFixed(2)}
+                %)
               </li>
             ))}
           </ul>

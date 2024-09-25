@@ -13,14 +13,19 @@ const GovernanceInfo: React.FC = () => {
         <strong>How it works:</strong>
       </p>
       <ol className="list-decimal list-inside mb-2">
-        <li>Proposals are created and discussed in the forum</li>
-        <li>Formal proposals are submitted to Snapshot for voting</li>
-        <li>Token holders cast their votes during the voting period</li>
-        <li>Results are tallied and implemented if passed</li>
+        <li>
+          Discussion: Proposals are first discussed by the community in the
+          forum.
+        </li>
+        <li>
+          Voting: Formal proposals are then posted on Snapshot for voting.
+        </li>
+        <li>
+          Participation: Token holders can vote on proposals during the voting
+          period.
+        </li>
+        <li>Results: If a proposal passes, it’s implemented by the project.</li>
       </ol>
-      <p className="text-blue-600 font-semibold">
-        Contribute to the discussion and have your say in governance!
-      </p>
     </div>
   );
 };
