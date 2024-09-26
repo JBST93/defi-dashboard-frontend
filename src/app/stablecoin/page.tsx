@@ -37,10 +37,6 @@ export default async function ProjectsPage() {
       0
     );
 
-  const btcDominance = btcMarketCap / totalMarketCap;
-  const ethDominance = ethMarketCap / totalMarketCap;
-  const stablecoinDominance = stablecoinMarketCap / totalMarketCap;
-
   return (
     <div className="min-h-screen bg-amber-100 text-brown-800 p-4 sm:p-8">
       <div className="max-w-4xl mx-auto">
