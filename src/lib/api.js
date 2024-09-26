@@ -16,6 +16,28 @@ export async function fetchProjects() {
   }
 }
 
+export async function fetchStablecoinProjects() {
+  try {
+    const res = await fetch(
+      'https://defi-dashboard-99d015fc546e.herokuapp.com/api/projects'
+    );
+    if (!res.ok) throw new Error('Failed to fetch projects');
+
+    const data = await res.json();
+
+    // Filter projects to only include stablecoins
+    const stablecoins = data.filter(
+      (project) => project.type.toLowerCase() === 'stablecoin'
+    );
+    console.log('Filtered stablecoins:', stablecoins);
+
+    return stablecoins;
+  } catch (error) {
+    console.error('Error fetching or processing stablecoin data:', error);
+    throw new Error(`Failed to fetch stablecoin data: ${error.message}`);
+  }
+}
+
 export async function yieldRates() {
   try {
     const res = await fetch(

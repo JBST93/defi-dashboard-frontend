@@ -1,149 +1,102 @@
 'use client';
 
-import { useState, useEffect, SetStateAction } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
-import YieldTable from '@/components/YieldTable';
-import YieldFilters from '@/components/YieldFilters';
-import { Suspense } from 'react';
-import { yieldRatesStablecoin } from '@/lib/api';
+import { useState, useEffect } from 'react';
+import { fetchProjects } from '@/lib/api';
 
-interface YieldItem {
-  id: number;
+interface StablecoinProject {
   project: string;
-  chain: string;
-  market: string;
-  apy: number;
-  yield_rate_base: string;
-  tvl: number;
-  humanized_timestamp: string;
+  token: string;
+  description: string;
 }
 
-function YieldPageContent() {
-  const router = useRouter();
-  const searchParams = useSearchParams();
+// Custom Input component
+const Input = ({ type, placeholder, value, onChange, className }) => (
+  <input
+    type={type}
+    placeholder={placeholder}
+    value={value}
+    onChange={onChange}
+    className={`border rounded px-2 py-1 ${className}`}
+  />
+);
 
-  const [yieldData, setYieldData] = useState<(YieldItem & { index: number })[]>(
-    []
-  );
-  const [searchTerm, setSearchTerm] = useState(
-    searchParams.get('search') || ''
-  );
-  const [selectedChains, setSelectedChains] = useState<string[]>(
-    searchParams.get('chain') ? [searchParams.get('chain')!] : []
-  );
-  const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
+// Custom Table components
+const Table = ({ children }) => (
+  <table className="w-full border-collapse">{children}</table>
+);
+
+const TableHead = ({ children }) => <thead>{children}</thead>;
+const TableBody = ({ children }) => <tbody>{children}</tbody>;
+const TableRow = ({ children }) => <tr>{children}</tr>;
+const TableCell = ({ children }) => (
+  <td className="border px-4 py-2">{children}</td>
+);
+export default function StablecoinProjectsPage() {
+  const [projects, setProjects] = useState<StablecoinProject[]>([]);
+  const [searchTerm, setSearchTerm] = useState('');
   const [isLoading, setIsLoading] = useState(true);
-  const [isSingleAssetOnly, setIsSingleAssetOnly] = useState(false); // Add this line
+  const [error, setError] = useState(''); // For error handling
 
   useEffect(() => {
-    const fetchData = async () => {
+    async function loadProjects() {
       try {
-        const data = await yieldRatesStablecoin();
-        const indexedData = data.map((item: YieldItem, index: number) => ({
-          ...item,
-          index: index + 1,
-        }));
-        setYieldData(indexedData);
-        setIsLoading(false);
-
-        // Set initial selections for chains and projects
-        const uniqueChains = Array.from(
-          new Set(indexedData.map((item: YieldItem) => item.chain))
-        ) as string[];
-        const uniqueProjects = Array.from(
-          new Set(indexedData.map((item: YieldItem) => item.project))
-        ) as string[];
-        setSelectedChains(uniqueChains);
-        setSelectedProjects(uniqueProjects);
+        const data = await fetchProjects();
+        setProjects(data);
       } catch (error) {
-        console.error('Error fetching yield data:', error);
-        setYieldData([]);
+        console.error('Error fetching stablecoin projects:', error);
+        setError(error.message); // Capture error
+      } finally {
         setIsLoading(false);
       }
-    };
+    }
 
-    fetchData();
+    loadProjects();
   }, []);
 
-  const uniqueChains = Array.from(new Set(yieldData.map((item) => item.chain)));
-  const uniqueProjects = Array.from(
-    new Set(yieldData.map((item) => item.project))
+  const filteredProjects = projects.filter(
+    (project) =>
+      project.project.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      project.token.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const updateURLParams = (search: string, chain: string) => {
-    const params = new URLSearchParams();
-    if (search) params.set('search', search);
-    if (chain) params.set('chain', chain);
-    router.push(`/yield/stablecoin?${params.toString()}`);
-  };
-
-  const setSearchTermAndUpdateURL = (value: string) => {
-    setSearchTerm(value);
-    updateURLParams(value, selectedChains[0] || '');
-  };
-
-  const setSelectedChainsAndUpdateURL = (
-    chainsOrUpdater: SetStateAction<string[]>
-  ) => {
-    setSelectedChains(chainsOrUpdater);
-    const newChains =
-      typeof chainsOrUpdater === 'function'
-        ? chainsOrUpdater(selectedChains)
-        : chainsOrUpdater;
-    updateURLParams(searchTerm, newChains[0] || '');
-  };
-
-  const setSelectedProjectsAndUpdateURL = (
-    projectsOrUpdater: SetStateAction<string[]>
-  ) => {
-    setSelectedProjects(projectsOrUpdater);
-    // No need to update URL params for projects, as it's not included in the URL
-  };
-
-  const resetFilters = () => {
-    setSearchTerm('');
-    setSelectedChains(uniqueChains);
-    setSelectedProjects(uniqueProjects);
-    setIsSingleAssetOnly(false); // Add this line
-    router.push('/yield/stablecoin');
-  };
-
   return (
-    <div className="min-h-screen bg-amber-100 text-brown-800 p-4 sm:p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-left text-brown-900">
-          Yield Farming Opportunities
-        </h1>
-        <YieldFilters
-          searchTerm={searchTerm}
-          setSearchTerm={setSearchTermAndUpdateURL}
-          selectedChains={selectedChains}
-          setSelectedChains={setSelectedChainsAndUpdateURL}
-          selectedProjects={selectedProjects}
-          setSelectedProjects={setSelectedProjectsAndUpdateURL}
-          availableChains={uniqueChains}
-          availableProjects={uniqueProjects}
-          resetFilters={resetFilters}
-          isSingleAssetOnly={isSingleAssetOnly}
-          setIsSingleAssetOnly={setIsSingleAssetOnly} // Add this line
-        />
-        <YieldTable
-          yieldData={yieldData}
-          searchTerm={searchTerm}
-          selectedChains={selectedChains}
-          selectedProjects={selectedProjects}
-          isLoading={isLoading}
-          isSingleAssetOnly={isSingleAssetOnly} // Add this line
-        />
-      </div>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Stablecoin Projects</h1>
+
+      <Input
+        type="text"
+        placeholder="Search projects..."
+        value={searchTerm}
+        onChange={(e) => setSearchTerm(e.target.value)}
+        className="mb-4 w-full"
+      />
+
+      {isLoading ? (
+        <p>Loading projects...</p>
+      ) : error ? ( // Display error message
+        <p>Error: {error}</p>
+      ) : (
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>Name</TableCell>
+              <TableCell>Symbol</TableCell>
+              <TableCell>Description</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {filteredProjects.map((project) => (
+              <TableRow key={project.token}>
+                <TableCell>{project.project || 'No name available'}</TableCell>
+                <TableCell>{project.token || 'No token available'}</TableCell>
+                <TableCell>
+                  {project.description || 'No description available'}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      )}
     </div>
-  );
-}
-
-export default function YieldPage() {
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <YieldPageContent />
-    </Suspense>
   );
 }

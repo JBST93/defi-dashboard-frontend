@@ -36,6 +36,7 @@ const navItems = [
       { name: 'ETH Yields', path: '/yield/ethereum' },
     ],
   },
+  { name: 'Stablecoins', path: '/stablecoin' },
   { name: 'Governance', path: '/governance' },
 ];
 
