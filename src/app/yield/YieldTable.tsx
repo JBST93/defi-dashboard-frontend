@@ -12,6 +12,7 @@ interface YieldData {
   yield_rate_reward?: string;
   tvl?: number;
   chain: string;
+  information?: string; // Add this line
 }
 
 interface YieldTableProps {
@@ -151,6 +152,8 @@ export default function YieldTable({
                 >
                   {item.project}
                 </Link>
+
+                <div className="text-gray-400 text-xs">{item.information}</div>
               </td>
               <td className="p-2 text-xs sm:text-sm font-semibold">
                 {(
