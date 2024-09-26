@@ -1,6 +1,7 @@
 import { Suspense } from 'react';
 import StablecoinTable from './StablecoinTable';
 import Link from 'next/link';
+import StablecoinBarChart from './StablecoinBarChart';
 
 async function getProjects() {
   const res = await fetch(
@@ -68,6 +69,9 @@ export default async function ProjectsPage() {
         </Link>
 
         <Suspense fallback={<div>Loading...</div>}>
+          <div className="max-w mx-auto mb-8">
+            <StablecoinBarChart projects={projects} />
+          </div>
           <div className="max-w mx-auto">
             <StablecoinTable
               initialProjects={projects}

@@ -135,7 +135,7 @@ export default function ProjectTable({
           <tbody>
             {sortedProjects.map((project, index) => (
               <tr
-                key={project.index}
+                key={project.token}
                 className={
                   index % 2 === 0
                     ? 'bg-amber-50'
