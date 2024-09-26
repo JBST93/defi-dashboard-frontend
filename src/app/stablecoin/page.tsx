@@ -81,7 +81,30 @@ export default async function ProjectsPage() {
           </div>
         </Suspense>
 
-        {/* Add FAQ section */}
+        {/* New CTA section */}
+        <div className="mt-12 mb-12 bg-gradient-to-r from-green-500 to-teal-600 rounded-lg shadow-lg overflow-hidden">
+          <div className="p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between">
+            <div className="mb-4 sm:mb-0 sm:mr-6">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+                Maximize Your Stablecoin Yields
+              </h2>
+              <p className="text-white text-lg">
+                Discover the best yield opportunities for your stablecoins with
+                our DeFi Yield Aggregator.
+              </p>
+            </div>
+            <Link
+              href="/yield/stablecoin"
+              className="inline-block"
+            >
+              <button className="bg-white text-teal-600 font-bold py-3 px-6 rounded-full hover:bg-teal-100 transition-colors duration-300 shadow-md hover:shadow-lg">
+                Explore Yield Options
+              </button>
+            </Link>
+          </div>
+        </div>
+
+        {/* FAQ section */}
         <section className="mt-12 bg-white rounded-lg shadow-md p-6">
           <h2 className="text-2xl font-bold mb-6 text-brown-900">
             Stablecoin FAQ
