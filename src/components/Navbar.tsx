@@ -38,6 +38,7 @@ const navItems = [
   },
   { name: 'Stablecoins', path: '/stablecoin' },
   { name: 'Governance', path: '/governance' },
+  { name: 'Articles', path: '/articles' },
 ];
 
 export default function Navbar() {
