@@ -1,3 +1,5 @@
+/* eslint-disable react/no-unescaped-entities */
+
 import BlogPost from '@/components/BlogPost';
 import Link from 'next/link';
 
