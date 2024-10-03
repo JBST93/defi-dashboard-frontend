@@ -11,6 +11,7 @@ export interface BlogPost {
   date: string;
   image: string;
   slug: string;
+  content: React.ReactNode;
 }
 
 function getBlogPosts(): BlogPost[] {

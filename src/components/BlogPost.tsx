@@ -9,7 +9,7 @@ export interface BlogPost {
   excerpt: string;
   date: string;
   image: string;
-  content: string;
+  content: React.ReactNode;
 }
 
 interface BlogPostProps {
