@@ -32,6 +32,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/yield/ethereum',
     '/stablecoin',
     '/governance',
+    '/articles',
+    '/articles/curve-finance-defi-stablecoin-exchange',
+    '/articles/what-is-defi',
+    '/articles/what-are-stablecoins',
+    '/articles/top-defi-projects',
+    '/articles/defi-yield-farming',
   ];
 
   // Create sitemap entries for static routes
