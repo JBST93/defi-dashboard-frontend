@@ -73,11 +73,12 @@ function YieldPageContent({ params }: { params: { slug: string } }) {
     new Set(yieldData.map((item) => item.project))
   );
 
+  // Update this function
   const updateURLParams = (search: string, chain: string) => {
-    const params = new URLSearchParams();
-    if (search) params.set('search', search);
-    if (chain) params.set('chain', chain);
-    router.push(`/yield/${params.slug}?${params.toString()}`);
+    const urlParams = new URLSearchParams();
+    if (search) urlParams.set('search', search);
+    if (chain) urlParams.set('chain', chain);
+    router.push(`/yield/${params.slug}?${urlParams.toString()}`);
   };
 
   const setSearchTermAndUpdateURL = (value: string) => {
@@ -96,6 +97,7 @@ function YieldPageContent({ params }: { params: { slug: string } }) {
     updateURLParams(searchTerm, newChains[0] || '');
   };
 
+  // This function doesn't need to update URL params
   const setSelectedProjectsAndUpdateURL = (
     projectsOrUpdater: string[] | ((prev: string[]) => string[])
   ) => {
