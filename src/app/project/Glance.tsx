@@ -1,144 +1,91 @@
 import { ArrowDownIcon, ArrowUpIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Separator } from '@/components/ui/separator';
+import Image from 'next/image';
 
-type CryptoData = {
+interface GlanceProps {
+  topGainersLosers: {
+    gainers: CryptoData[];
+    losers: CryptoData[];
+  };
+}
+
+interface CryptoData {
   name: string;
-  marketCap: number;
+  symbol: string;
+  price: number;
   change24h: number;
-};
+  logo?: string;
+}
 
-const formatMarketCap = (value: number) => {
-  if (value >= 1e12) {
-    return `$${(value / 1e12).toFixed(2)}T`;
-  } else if (value >= 1e9) {
-    return `$${(value / 1e9).toFixed(2)}B`;
-  } else {
-    return `$${value.toLocaleString()}`;
-  }
-};
-
-const formatChange = (value: number) => {
-  return value > 0 ? `+${value.toFixed(2)}%` : `${value.toFixed(2)}%`;
-};
+const formatPercentage = (value: number) => `${value.toFixed(2)}%`;
 
 const CryptoInfoRow = ({ data }: { data: CryptoData }) => (
-  <div className="flex justify-between items-center py-2">
-    <div>
-      <p className="text-sm font-medium text-brown-800">{data.name}</p>
-      <p className="text-xs text-brown-600">Market Cap</p>
+  <div className="flex items-center justify-between mb-2">
+    <div className="flex items-center">
+      {data.logo ? (
+        <Image
+          src={data.logo}
+          alt={`${data.symbol} logo`}
+          width={20}
+          height={20}
+          className="rounded-full mr-1"
+        />
+      ) : (
+        <div className="w-5 h-5 bg-gray-200 rounded-full mr-1"></div>
+      )}
+      <span className="text-sm">{data.symbol}</span>
     </div>
-    <div className="text-right">
-      <p className="text-sm font-bold text-brown-800">
-        {formatMarketCap(data.marketCap)}
-      </p>
-      <p
-        className={`text-xs flex items-center justify-end ${
-          data.change24h > 0 ? 'text-green-600' : 'text-red-600'
+    <div className="flex items-center">
+      <span
+        className={`mr-1 text-sm ${
+          data.change24h >= 0 ? 'text-green-500' : 'text-red-500'
         }`}
       >
-        {data.change24h > 0 ? (
-          <ArrowUpIcon className="h-3 w-3 mr-1" />
-        ) : (
-          <ArrowDownIcon className="h-3 w-3 mr-1" />
-        )}
-        {formatChange(data.change24h)}
-      </p>
+        {formatPercentage(data.change24h)}
+      </span>
+      {data.change24h >= 0 ? (
+        <ArrowUpIcon className="w-3 h-3 text-green-500" />
+      ) : (
+        <ArrowDownIcon className="w-3 h-3 text-red-500" />
+      )}
     </div>
   </div>
 );
 
-// Remove the Button import
-
-// Add a new type for governance proposals
-type GovernanceProposal = {
-  id: string;
-  title: string;
-  status: 'Active' | 'Passed' | 'Failed';
-};
-
-export default function Glance(data: any) {
-  const totalMarketCapChange = -3.43;
-  const totalMarketCapChangeValue = -57995652602.93;
-
-  // Add a new type for governance proposals
-  type GovernanceProposal = {
-    id: string;
-    title: string;
-    status: 'Active' | 'Passed' | 'Failed';
-  };
-
-  // Mock data for governance proposals
-  const governanceProposals: GovernanceProposal[] = [
-    { id: 'PROP-1', title: 'Increase staking rewards', status: 'Active' },
-    { id: 'PROP-2', title: 'Reduce transaction fees', status: 'Passed' },
-    { id: 'PROP-3', title: 'Add new token pair', status: 'Failed' },
-  ];
-
+export default function Glance({ topGainersLosers }: GlanceProps) {
   return (
-    <div className="max-w-4xl p-4]">
-      <Card className="w-full mt-4 bg-white border-brown-300 shadow-lg">
-        <CardContent className="py-4">
-          <h2 className="text-lg font-semibold text-brown-800 mb-2">
-            Total Market Cap Change (24h)
-          </h2>
-          <div className="flex justify-between items-center">
-            <p
-              className={`text-2xl font-bold ${
-                totalMarketCapChange > 0 ? 'text-green-600' : 'text-red-600'
-              }`}
-            >
-              {formatChange(totalMarketCapChange)}
-            </p>
-            <p
-              className={`text-lg ${
-                totalMarketCapChange > 0 ? 'text-green-600' : 'text-red-600'
-              }`}
-            >
-              {formatMarketCap(Math.abs(totalMarketCapChangeValue))}
-            </p>
+    <Card className="bg-white border-brown-300 shadow-lg">
+      <CardHeader className="pb-2">
+        <CardTitle className="text-lg font-semibold text-brown-800">
+          Market Movers
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <h3 className="text-base font-semibold text-brown-700 mb-2">
+              Top Gainers
+            </h3>
+            {topGainersLosers?.gainers?.slice(0, 3).map((gainer, index) => (
+              <CryptoInfoRow
+                key={index}
+                data={gainer}
+              />
+            ))}
           </div>
-          <div className="mt-2 text-sm text-brown-600">
-            <span className="mr-4">24h Change</span>
-            <span className="mr-2">BTC: {formatChange(-3.73)}</span>
-            <span>ETH: {formatChange(-4.26)}</span>
+          <div>
+            <h3 className="text-base font-semibold text-brown-700 mb-2">
+              Top Losers
+            </h3>
+            {topGainersLosers?.losers?.slice(0, 3).map((loser, index) => (
+              <CryptoInfoRow
+                key={index}
+                data={loser}
+              />
+            ))}
           </div>
-        </CardContent>
-      </Card>
-
-      <Card className="w-full mt-4 bg-white border-brown-300 shadow-lg">
-        <CardHeader>
-          <CardTitle className="text-lg font-semibold text-brown-800">
-            Governance Proposals
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          {governanceProposals.map((proposal) => (
-            <div
-              key={proposal.id}
-              className="mb-2 flex justify-between items-center"
-            >
-              <div>
-                <p className="text-sm font-medium text-brown-800">
-                  {proposal.title}
-                </p>
-                <p className="text-xs text-brown-600">{proposal.id}</p>
-              </div>
-              <div
-                className={`px-2 py-1 text-xs font-semibold rounded ${
-                  proposal.status === 'Active'
-                    ? 'bg-blue-100 text-blue-700'
-                    : proposal.status === 'Passed'
-                    ? 'bg-green-100 text-green-700'
-                    : 'bg-red-100 text-red-700'
-                }`}
-              >
-                {proposal.status}
-              </div>
-            </div>
-          ))}
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

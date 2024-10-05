@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaDollarSign, FaBitcoin, FaEthereum, FaCoins } from 'react-icons/fa';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 interface ProjectOverviewProps {
   totalMarketCap: number;
@@ -41,20 +42,35 @@ const ProjectOverview: React.FC<ProjectOverviewProps> = ({
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-      {stats.map((stat, index) => (
-        <div
-          key={index}
-          className="bg-white retro-box shadow-md p-4 flex flex-col items-center justify-center transition-all hover:shadow-lg"
-        >
-          <stat.icon className="text-2xl mb-2 text-amber-500" />
-          <h2 className="text-sm font-semibold text-gray-700 mb-1 text-center">
-            {stat.title}
-          </h2>
-          <p className="text-lg font-bold text-gray-900">{stat.value}</p>
+    <Card className="bg-white border-brown-300 shadow-lg">
+      <CardHeader>
+        <CardTitle className="text-lg font-semibold text-brown-800">
+          Market Overview
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="grid grid-cols-2 gap-4">
+          {stats.map((stat, index) => (
+            <div
+              key={index}
+              className="flex items-center space-x-3"
+            >
+              <div className="bg-amber-100 rounded-full p-2 flex-shrink-0">
+                <stat.icon className="text-xl text-amber-600" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-500">
+                  {stat.title}
+                </p>
+                <p className="text-lg font-semibold text-gray-900">
+                  {stat.value}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
+      </CardContent>
+    </Card>
   );
 };
 
