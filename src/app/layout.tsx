@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 import GoogleAnalytics from '@/components/GoogleAnalytics';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -18,7 +19,6 @@ export const viewport = {
   width: 'device-width',
   initialScale: 1,
   maximumScale: 1,
-  // Add any other viewport configurations you need
 };
 
 export default function RootLayout({
@@ -29,8 +29,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navbar />
-        <main>{children}</main>
+        <div className="flex flex-col min-h-screen">
+          <Navbar />
+          <main className="flex-grow">{children}</main>
+          <Footer />
+        </div>
         <GoogleAnalytics gaId="G-017T9RC5Z4" />
       </body>
     </html>
