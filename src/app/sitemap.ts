@@ -33,11 +33,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/stablecoin',
     '/governance',
     '/articles',
-    '/articles/curve-finance-defi-stablecoin-exchange',
-    '/articles/what-is-defi',
-    '/articles/what-are-stablecoins',
-    '/articles/top-defi-projects',
-    '/articles/defi-yield-farming',
   ];
 
   // Create sitemap entries for static routes
@@ -53,7 +48,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     .filter((project: any) => {
       const slug = project.project; // Use the 'project' field as the slug
       const isValid = slug && typeof slug === 'string' && slug.trim() !== '';
-      console.log(`Project slug: ${slug}, Valid: ${isValid}`);
       return isValid;
     })
     .map((project: any) => {
@@ -68,5 +62,38 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       };
     });
 
-  return [...staticPages, ...projectPages];
+  // Create sitemap entries for blog posts
+  const blogPosts = getBlogPosts();
+  const blogPages = blogPosts.map((post) => ({
+    url: `${baseUrl}/articles/${post.slug}`,
+    lastModified: new Date(post.date).toISOString(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.7,
+  }));
+
+  // Create sitemap entries for dynamic yield pages
+  const yieldPages = projects
+    .filter((project: any) => project.project)
+    .map((project: any) => ({
+      url: `${baseUrl}/yield/${encodeURIComponent(
+        project.project.toLowerCase().replace(/\s+/g, '-')
+      )}`,
+      lastModified: new Date().toISOString(),
+      changeFrequency: 'daily' as const,
+      priority: 0.7,
+    }));
+
+  return [...staticPages, ...projectPages, ...blogPages, ...yieldPages];
+}
+
+// Add this function to get blog posts
+function getBlogPosts() {
+  // This is a simplified version. You should implement the actual logic to get blog posts.
+  return [
+    { slug: 'curve-finance-defi-stablecoin-exchange', date: '2023-01-01' },
+    { slug: 'what-is-defi', date: '2023-01-02' },
+    { slug: 'what-are-stablecoins', date: '2023-01-03' },
+    { slug: 'top-defi-projects', date: '2023-01-04' },
+    { slug: 'defi-yield-farming', date: '2023-01-05' },
+  ];
 }

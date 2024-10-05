@@ -232,9 +232,7 @@ export default function ProjectTable({
                 <td className="p-1 sm:p-4 whitespace-nowrap">
                   <div className="flex space-x-1 sm:space-x-2">
                     <Link
-                      href={`/yield?search=${encodeURIComponent(
-                        project.token
-                      )}`}
+                      href={`/yield/${encodeURIComponent(project.token)}`}
                       className="text-blue-600 hover:underline"
                     >
                       Yields
