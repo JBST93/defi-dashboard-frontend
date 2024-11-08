@@ -24,7 +24,13 @@ import {
 } from '@/components/ui/navigation-menu';
 
 // Define the navItems array
-const navItems = [
+type NavItem = {
+  name: string;
+  path: string;
+  subItems?: { name: string; path: string }[];
+};
+
+const navItems: NavItem[] = [
   { name: 'Home', path: '/' },
   { name: 'Projects', path: '/project' },
   {
