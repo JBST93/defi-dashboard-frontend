@@ -2,10 +2,11 @@
 
 import { useState, useEffect, SetStateAction } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import YieldTable from '@/components/YieldTable';
+import YieldTable from '../YieldTable';
 import YieldFilters from '@/components/YieldFilters';
 import { Suspense } from 'react';
 import { yieldRatesStablecoin } from '@/lib/api';
+import { formatNumber } from '@/lib/utils';
 
 interface YieldItem {
   id: number;
@@ -16,6 +17,14 @@ interface YieldItem {
   yield_rate_base: string;
   tvl: number;
   humanized_timestamp: string;
+}
+
+interface HighlightCard {
+  project: string;
+  chain: string;
+  asset: string;
+  apy: number;
+  tvl: number;
 }
 
 function YieldPageContent() {
@@ -39,6 +48,7 @@ function YieldPageContent() {
     const fetchData = async () => {
       try {
         const data = await yieldRatesStablecoin();
+        console.log('Fetched yield data:', data);
         const indexedData = data.map((item: YieldItem, index: number) => ({
           ...item,
           index: index + 1,
@@ -108,12 +118,210 @@ function YieldPageContent() {
     router.push('/yield/stablecoin');
   };
 
+  const getHighlightData = (): HighlightCard[] => {
+    // Sort all pools by TVL and get top 4
+    const topPools = [...yieldData]
+      .sort((a, b) => b.tvl - a.tvl)
+      .slice(0, 4)
+      .map((pool) => ({
+        project: pool.project,
+        chain: pool.chain,
+        asset: pool.market,
+        apy: parseFloat(pool.yield_rate_base),
+        tvl: pool.tvl,
+      }));
+
+    console.log('Top 4 pools by TVL:', topPools); // Debug log
+    return topPools;
+  };
+
+  // Add this function to calculate average USDT yield
+  const getAverageUsdtYield = (): { avgApy: number; poolCount: number } => {
+    const usdtPools = yieldData.filter(
+      (item) => item.market === 'USDT' && item.tvl > 50_000_000
+    );
+
+    if (usdtPools.length === 0) return { avgApy: 0, poolCount: 0 };
+
+    // Log the pools we're calculating from
+    console.log('USDT pools for average:', usdtPools);
+
+    const totalApy = usdtPools.reduce((sum, pool) => {
+      const apyValue = parseFloat(pool.yield_rate_base);
+      return sum + (isNaN(apyValue) ? 0 : apyValue);
+    }, 0);
+
+    const avgApy = totalApy / usdtPools.length;
+
+    return {
+      avgApy: isNaN(avgApy) ? 0 : avgApy,
+      poolCount: usdtPools.length,
+    };
+  };
+
+  // Add this function for USDC calculations
+  const getAverageUsdcYield = (): { avgApy: number; poolCount: number } => {
+    const usdcPools = yieldData.filter(
+      (item) => item.market === 'USDC' && item.tvl > 50_000_000
+    );
+
+    if (usdcPools.length === 0) return { avgApy: 0, poolCount: 0 };
+
+    const totalApy = usdcPools.reduce((sum, pool) => {
+      const apyValue = parseFloat(pool.yield_rate_base);
+      return sum + (isNaN(apyValue) ? 0 : apyValue);
+    }, 0);
+
+    const avgApy = totalApy / usdcPools.length;
+
+    return {
+      avgApy: isNaN(avgApy) ? 0 : avgApy,
+      poolCount: usdcPools.length,
+    };
+  };
+
+  // Add this new function near your other average calculation functions
+  const getOverallAverageYield = (): { avgApy: number; poolCount: number } => {
+    const significantPools = yieldData.filter((item) => item.tvl > 50_000_000);
+
+    if (significantPools.length === 0) return { avgApy: 0, poolCount: 0 };
+
+    const totalApy = significantPools.reduce((sum, pool) => {
+      const apyValue = parseFloat(pool.yield_rate_base);
+      return sum + (isNaN(apyValue) ? 0 : apyValue);
+    }, 0);
+
+    const avgApy = totalApy / significantPools.length;
+
+    return {
+      avgApy: isNaN(avgApy) ? 0 : avgApy,
+      poolCount: significantPools.length,
+    };
+  };
+
   return (
-    <div className="min-h-screen bg-amber-100 text-brown-800 p-4 sm:p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-left text-brown-900">
-          Yield Farming Opportunities
+    <div className="min-h-screen bg-amber-100 text-brown-800 p-4 sm:p-6">
+      <div className="max-w-5xl mx-auto">
+        <h1 className="text-2xl sm:text-3xl font-bold mb-6 sm:mb-8 text-left text-brown-900">
+          Stablecoin Yield Farming Opportunities
         </h1>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+          {/* Top TVL Cards */}
+          <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {getHighlightData().map((highlight, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-lg p-4 shadow-md hover:shadow-xl transition-all duration-300 border border-brown-100 transform hover:-translate-y-1"
+              >
+                <div className="flex justify-between items-center mb-2">
+                  <h3 className="font-semibold text-base text-brown-900">
+                    {highlight.project}
+                  </h3>
+                  <span className="px-2 py-0.5 bg-amber-50 rounded-full text-xs text-brown-700 font-medium">
+                    {highlight.chain}
+                  </span>
+                </div>
+                <div className="text-2xl font-bold text-brown-900 mb-2">
+                  {highlight.asset}
+                </div>
+                <div className="flex justify-between items-center">
+                  <div className="flex flex-col">
+                    <span className="text-xs text-gray-600 mb-0.5">APY</span>
+                    <span className="text-base font-bold text-green-600">
+                      {highlight.apy.toFixed(2)}%
+                    </span>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <span className="text-xs text-gray-600 mb-0.5">TVL</span>
+                    <span className="text-base font-bold text-brown-800">
+                      ${formatNumber(highlight.tvl)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Average Yields Card */}
+          <div className="bg-white rounded-lg p-4 shadow-md hover:shadow-xl transition-all duration-300 border border-brown-100">
+            <div className="flex justify-between items-center mb-3">
+              <h3 className="font-semibold text-base text-brown-900">
+                Average DeFi Yield
+              </h3>
+              <span className="px-2 py-0.5 bg-amber-50 rounded-full text-xs text-brown-700 font-medium">
+                All Chains
+              </span>
+            </div>
+
+            {/* Overall Average Section */}
+            <div className="mb-4 border-b border-amber-100 pb-4">
+              <div className="text-xl font-bold text-brown-900 mb-2">
+                Overall Markets
+              </div>
+              <div className="space-y-1.5">
+                <div className="flex justify-between items-center bg-amber-100/50 rounded p-2">
+                  <span className="text-sm text-gray-700">Average APY</span>
+                  <span className="text-base font-bold text-green-600">
+                    {getOverallAverageYield().avgApy.toFixed(2)}%
+                  </span>
+                </div>
+                <div className="flex justify-between items-center bg-amber-100/50 rounded p-2">
+                  <span className="text-sm text-gray-700">Active Pools</span>
+                  <span className="text-base font-bold text-brown-800">
+                    {getOverallAverageYield().poolCount}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Individual Markets Grid */}
+            <div className="grid grid-cols-2 gap-3">
+              {/* USDT Section */}
+              <div>
+                <div className="text-base font-bold text-brown-900 mb-2">
+                  USDT Markets
+                </div>
+                <div className="bg-amber-50/50 rounded p-2">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-sm text-gray-700">APY</span>
+                    <span className="text-base font-bold text-green-600">
+                      {getAverageUsdtYield().avgApy.toFixed(2)}%
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-700">Pools</span>
+                    <span className="text-base font-bold text-brown-800">
+                      {getAverageUsdtYield().poolCount}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* USDC Section */}
+              <div>
+                <div className="text-base font-bold text-brown-900 mb-2">
+                  USDC Markets
+                </div>
+                <div className="bg-amber-50/50 rounded p-2">
+                  <div className="flex justify-between items-center mb-1">
+                    <span className="text-sm text-gray-700">APY</span>
+                    <span className="text-base font-bold text-green-600">
+                      {getAverageUsdcYield().avgApy.toFixed(2)}%
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-700">Pools</span>
+                    <span className="text-base font-bold text-brown-800">
+                      {getAverageUsdcYield().poolCount}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <YieldFilters
           searchTerm={searchTerm}
           setSearchTerm={setSearchTermAndUpdateURL}
