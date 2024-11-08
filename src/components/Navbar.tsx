@@ -30,13 +30,10 @@ const navItems = [
   {
     name: 'Yields',
     path: '/yield',
-    subItems: [
-      { name: 'All yields', path: '/yield' },
-      { name: 'Stablecoin yields', path: '/yield/stablecoin' },
-      { name: 'ETH Yields', path: '/yield/ethereum' },
-    ],
   },
   { name: 'Stablecoins', path: '/stablecoin' },
+  { name: 'Stablecoin Yields', path: '/yield/stablecoin' },
+
   { name: 'Governance', path: '/governance' },
   { name: 'Articles', path: '/articles' },
 ];
