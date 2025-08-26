@@ -41,6 +41,8 @@ const navItems: NavItem[] = [
   { name: 'Stablecoin Yields', path: '/yield/stablecoin' },
 
   { name: 'Governance', path: '/governance' },
+  { name: 'Portfolio', path: '/portfolio' },
+
   { name: 'Articles', path: '/articles' },
 ];
 
