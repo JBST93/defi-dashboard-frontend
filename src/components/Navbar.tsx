@@ -32,16 +32,13 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { name: 'Home', path: '/' },
-  { name: 'Projects', path: '/project' },
   {
     name: 'Yields',
     path: '/yield',
   },
-  { name: 'Stablecoins', path: '/stablecoin' },
   { name: 'Stablecoin Yields', path: '/yield/stablecoin' },
 
   { name: 'Governance', path: '/governance' },
-  { name: 'Portfolio', path: '/portfolio' },
 
   { name: 'Articles', path: '/articles' },
 ];
