@@ -59,11 +59,17 @@ export default function BlogPage() {
   const blogPosts = getBlogPosts();
 
   return (
-    <div className="min-h-screen bg-amber-100 text-brown-800 p-4 sm:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 text-gray-800 p-4 sm:p-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-left text-brown-900">
-          TokenDataView Blog
-        </h1>
+        <div className="text-center mb-12">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-4 text-gray-900">
+            DeFi Insights & Articles
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Stay informed with the latest insights on DeFi lending, yield
+            farming, and the broader cryptocurrency ecosystem.
+          </p>
+        </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogPosts.map((post) => (
@@ -72,7 +78,7 @@ export default function BlogPage() {
               key={post.id}
               className="block h-full"
             >
-              <Card className="hover:shadow-lg transition-shadow duration-300 h-full flex flex-col">
+              <Card className="hover:shadow-xl transition-all duration-300 h-full flex flex-col bg-white border-gray-200 hover:border-blue-200">
                 <div className="h-48 overflow-hidden">
                   <Image
                     src={post.image}
@@ -83,12 +89,12 @@ export default function BlogPage() {
                   />
                 </div>
                 <CardHeader className="flex-grow">
-                  <CardTitle className="text-xl font-semibold line-clamp-2">
+                  <CardTitle className="text-xl font-semibold line-clamp-2 text-gray-900">
                     {post.title}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="flex flex-col justify-between">
-                  <p className="text-sm text-gray-600 mb-2 line-clamp-3">
+                  <p className="text-sm text-gray-600 mb-2 line-clamp-3 leading-relaxed">
                     {post.excerpt}
                   </p>
                   <div className="flex justify-between items-center text-xs text-gray-500 mt-auto">

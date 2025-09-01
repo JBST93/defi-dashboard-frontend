@@ -93,9 +93,9 @@ export default function YieldTable({
   return (
     <div className="overflow-x-auto">
       <table className="w-full border-collapse">
-        <thead className="bg-amber-200 sticky top-0">
+        <thead className="bg-blue-200 sticky top-0">
           <tr>
-            <th className="sticky left-0 z-10 bg-amber-200 p-2 text-xs sm:text-sm">
+            <th className="sticky left-0 z-10 bg-blue-200 p-2 text-xs sm:text-sm">
               #
             </th>
             <th className="p-2 text-xs sm:text-sm">Name</th>
@@ -137,7 +137,7 @@ export default function YieldTable({
           {paginatedData.map((item) => (
             <tr
               key={item.id}
-              className={item.index % 2 === 0 ? 'bg-white' : 'bg-amber-50'}
+              className={item.index % 2 === 0 ? 'bg-white' : 'bg-blue-50'}
             >
               <td className="sticky left-0 bg-inherit p-2 text-xs sm:text-sm">
                 {item.index}
@@ -182,7 +182,7 @@ export default function YieldTable({
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
           disabled={currentPage === 1}
-          className="px-4 py-2 bg-amber-500 text-white rounded disabled:bg-gray-300 mb-2 sm:mb-0"
+          className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 mb-2 sm:mb-0 transition-colors"
         >
           Previous
         </button>
@@ -194,7 +194,7 @@ export default function YieldTable({
             setCurrentPage((prev) => Math.min(prev + 1, totalPages))
           }
           disabled={currentPage === totalPages}
-          className="px-4 py-2 bg-amber-500 text-white rounded disabled:bg-gray-300"
+          className="px-4 py-2 bg-blue-500 text-white rounded disabled:bg-gray-300 transition-colors"
         >
           Next
         </button>

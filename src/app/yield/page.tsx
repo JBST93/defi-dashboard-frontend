@@ -137,11 +137,18 @@ function YieldPageContent() {
   };
 
   return (
-    <div className="min-h-screen bg-amber-100 text-brown-800 p-4 sm:p-8">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 text-gray-800 p-4 sm:p-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-3xl sm:text-4xl font-bold mb-6 sm:mb-8 text-left text-brown-900 ">
-          Yield Farming Opportunities
-        </h1>
+        <div className="text-center mb-8">
+          <h1 className="text-3xl sm:text-4xl font-bold mb-4 text-gray-900">
+            DeFi Yield Farming Opportunities
+          </h1>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Discover the best yield farming opportunities across all DeFi
+            protocols. Compare rates, analyze risks, and maximize your returns.
+          </p>
+        </div>
+
         <YieldFilters
           searchTerm={searchTerm}
           setSearchTerm={setSearchTermAndUpdateURL}
@@ -153,7 +160,7 @@ function YieldPageContent() {
           availableProjects={uniqueProjects}
           resetFilters={resetFilters}
           isSingleAssetOnly={isSingleAssetOnly}
-          setIsSingleAssetOnly={setIsSingleAssetOnly}
+          setIsSingleAssetOnly={setIsSingleAssetOnly} // Add this line
         />
         <YieldTable
           yieldData={yieldData}

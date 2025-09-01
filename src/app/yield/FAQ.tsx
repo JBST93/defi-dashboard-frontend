@@ -11,18 +11,20 @@ interface FAQProps {
 
 export default function FAQ({ faqData }: FAQProps) {
   return (
-    <section className="mt-8 retro-box p-6">
-      <h2 className="text-2xl font-bold mb-6 text-brown-900">
+    <section className="mt-12 bg-white rounded-lg shadow-lg p-8">
+      <h2 className="text-2xl font-bold mb-8 text-gray-900 text-center">
         Frequently Asked Questions
       </h2>
-      <dl>
+      <dl className="space-y-6">
         {faqData.map((item, index) => (
           <div
             key={index}
-            className="mb-6"
+            className="border-b border-gray-200 pb-6 last:border-b-0"
           >
-            <dt className="font-semibold text-lg mb-2">{item.question}</dt>
-            <dd className="ml-4">{item.answer}</dd>
+            <dt className="font-semibold text-lg mb-3 text-gray-900">
+              {item.question}
+            </dt>
+            <dd className="text-gray-600 leading-relaxed">{item.answer}</dd>
           </div>
         ))}
       </dl>

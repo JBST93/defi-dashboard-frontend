@@ -91,12 +91,12 @@ export default function YieldFilters({
             placeholder="Search market"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full p-2 border rounded"
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
           />
         </div>
         <button
           onClick={resetFilters}
-          className="inline-flex items-center px-6 py-auto border border-transparent text-base font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700"
+          className="inline-flex items-center px-6 py-2 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
         >
           Reset
         </button>
@@ -105,7 +105,7 @@ export default function YieldFilters({
         <div className="relative">
           <button
             onClick={() => setIsChainOpen(!isChainOpen)}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
           >
             Select Chain ({selectedChains.length})
           </button>
@@ -150,7 +150,7 @@ export default function YieldFilters({
         <div className="relative">
           <button
             onClick={() => setIsProjectOpen(!isProjectOpen)}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-amber-600 hover:bg-amber-700"
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
           >
             Select Project ({selectedProjects.length})
           </button>
@@ -195,10 +195,10 @@ export default function YieldFilters({
         <div>
           <button
             onClick={() => setIsSingleAssetOnly(!isSingleAssetOnly)}
-            className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md ${
+            className={`inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md transition-colors ${
               isSingleAssetOnly
-                ? 'text-white bg-amber-600 hover:bg-amber-700'
-                : 'text-amber-600 bg-white hover:bg-gray-100 border-amber-600'
+                ? 'text-white bg-blue-600 hover:bg-blue-700'
+                : 'text-blue-600 bg-white hover:bg-gray-100 border-blue-600'
             }`}
           >
             Single Exposure

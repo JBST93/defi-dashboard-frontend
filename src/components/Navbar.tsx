@@ -32,14 +32,10 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { name: 'Home', path: '/' },
-  {
-    name: 'Yields',
-    path: '/yield',
-  },
   { name: 'Stablecoin Yields', path: '/yield/stablecoin' },
-
+  { name: 'Stablecoins', path: '/stablecoins' },
+  { name: 'Projects', path: '/projects' },
   { name: 'Governance', path: '/governance' },
-
   { name: 'Articles', path: '/articles' },
 ];
 
@@ -49,7 +45,7 @@ export default function Navbar() {
   const currentPath = usePathname();
 
   return (
-    <nav className="bg-white text-gray-800 shadow-md">
+    <nav className="bg-white text-gray-800 shadow-lg border-b border-gray-100">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           <Link
@@ -58,7 +54,7 @@ export default function Navbar() {
           >
             <Image
               src="/logo_nav.jpg"
-              alt="TokenDataView Logo"
+              alt="DeFi Lending Dashboard Logo"
               width={150}
               height={40}
               className="mr-2"
@@ -81,8 +77,10 @@ export default function Navbar() {
                         passHref
                       >
                         <NavigationMenuLink
-                          className={`px-3 py-2 rounded-md text-sm font-medium hover:bg-gray-100 ${
-                            currentPath === item.path ? 'bg-yellow-400' : ''
+                          className={`px-3 py-2 rounded-md text-sm font-medium transition-colors hover:bg-blue-50 hover:text-blue-700 ${
+                            currentPath === item.path
+                              ? 'bg-blue-100 text-blue-700'
+                              : 'text-gray-700'
                           }`}
                         >
                           {item.name}
@@ -97,7 +95,7 @@ export default function Navbar() {
                               <NavigationMenuLink asChild>
                                 <Link
                                   href={subItem.path}
-                                  className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                  className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-blue-50 hover:text-blue-700 focus:bg-blue-50 focus:text-blue-700"
                                 >
                                   {subItem.name}
                                 </Link>
@@ -130,18 +128,18 @@ export default function Navbar() {
               </SheetTrigger>
               <SheetContent
                 side="right"
-                className="w-full sm:w-[300px] p-0 bg-[#1a1a1a] text-white"
+                className="w-full sm:w-[300px] p-0 bg-white text-gray-800"
               >
                 <div className="flex flex-col h-full">
-                  <div className="p-4 border-b border-gray-700">
-                    <DialogTitle className="text-xl font-semibold text-[#ffd700]">
+                  <div className="p-4 border-b border-gray-200">
+                    <DialogTitle className="text-xl font-semibold text-blue-600">
                       Menu
                     </DialogTitle>
                     <SheetDescription className="sr-only">
                       Navigation menu for mobile devices
                     </SheetDescription>
                     <SheetClose className="absolute top-4 right-4">
-                      <X className="h-6 w-6 text-white" />
+                      <X className="h-6 w-6 text-gray-600" />
                       <span className="sr-only">Close menu</span>
                     </SheetClose>
                   </div>
@@ -154,7 +152,7 @@ export default function Navbar() {
                         {item.subItems ? (
                           <Button
                             variant="ghost"
-                            className="w-full justify-between text-left px-6 py-3 text-lg hover:bg-[#333333]"
+                            className="w-full justify-between text-left px-6 py-3 text-lg hover:bg-blue-50 hover:text-blue-700"
                             onClick={() =>
                               setActiveSubmenu(
                                 activeSubmenu === item.name ? null : item.name
@@ -173,10 +171,10 @@ export default function Navbar() {
                             <Link href={item.path}>
                               <Button
                                 variant="ghost"
-                                className={`w-full justify-start px-6 py-3 text-lg ${
+                                className={`w-full justify-start px-6 py-3 text-lg transition-colors ${
                                   currentPath === item.path
-                                    ? 'bg-[#333333] text-[#ffd700]'
-                                    : 'hover:bg-[#333333]'
+                                    ? 'bg-blue-100 text-blue-700'
+                                    : 'hover:bg-blue-50 hover:text-blue-700'
                                 }`}
                               >
                                 {item.name}
@@ -185,7 +183,7 @@ export default function Navbar() {
                           </SheetClose>
                         )}
                         {item.subItems && activeSubmenu === item.name && (
-                          <div className="bg-[#2a2a2a] py-2">
+                          <div className="bg-gray-50 py-2">
                             {item.subItems.map((subItem) => (
                               <SheetClose
                                 key={subItem.path}
@@ -194,10 +192,10 @@ export default function Navbar() {
                                 <Link href={subItem.path}>
                                   <Button
                                     variant="ghost"
-                                    className={`w-full justify-start pl-10 py-2 text-base ${
+                                    className={`w-full justify-start pl-10 py-2 text-base transition-colors ${
                                       currentPath === subItem.path
-                                        ? 'bg-[#333333] text-[#ffd700]'
-                                        : 'hover:bg-[#333333]'
+                                        ? 'bg-blue-100 text-blue-700'
+                                        : 'hover:bg-blue-50 hover:text-blue-700'
                                     }`}
                                   >
                                     {subItem.name}

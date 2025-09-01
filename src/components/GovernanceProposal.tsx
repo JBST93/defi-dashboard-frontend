@@ -66,13 +66,13 @@ const GovernanceProposal: React.FC<ProposalProps> = ({
   const getCardBackgroundColor = (status: string) => {
     switch (status) {
       case 'closed':
-        return 'bg-red-50';
+        return 'bg-red-50 border-red-200';
       case 'active':
-        return 'bg-green-50';
+        return 'bg-green-50 border-green-200';
       case 'pending':
-        return 'bg-yellow-50';
+        return 'bg-yellow-50 border-yellow-200';
       default:
-        return 'bg-white';
+        return 'bg-white border-gray-200';
     }
   };
 
@@ -102,21 +102,23 @@ const GovernanceProposal: React.FC<ProposalProps> = ({
 
   return (
     <div
-      className={`border rounded-lg overflow-hidden shadow-md ${getCardBackgroundColor(
+      className={`border rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 ${getCardBackgroundColor(
         proposal.state
       )}`}
     >
       {/* New header for time information */}
-      <div className="bg-gray-100 p-3 border-b">
+      <div className="bg-gray-50 p-3 border-b border-gray-200">
         <div className="flex justify-between items-center text-sm">
           <div className="flex items-center space-x-4">
             <div>
               <span className="font-semibold text-gray-600">Start:</span>{' '}
-              <span>{formatDate(proposal.start)}</span>
+              <span className="text-gray-800">
+                {formatDate(proposal.start)}
+              </span>
             </div>
             <div>
               <span className="font-semibold text-gray-600">End:</span>{' '}
-              <span>{formatDate(proposal.end)}</span>
+              <span className="text-gray-800">{formatDate(proposal.end)}</span>
             </div>
           </div>
           {proposal.state === 'active' && timeLeft && (
@@ -125,13 +127,13 @@ const GovernanceProposal: React.FC<ProposalProps> = ({
         </div>
       </div>
 
-      <div className="p-4">
+      <div className="p-6">
         <div className="flex justify-between items-center mb-4">
-          <span className="text-lg font-semibold text-gray-700">
+          <span className="text-lg font-semibold text-gray-800">
             {projectName}
           </span>
           <span
-            className={`px-2 py-1 text-sm text-white rounded ${getStatusColor(
+            className={`px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(
               proposal.state
             )}`}
           >
@@ -141,27 +143,35 @@ const GovernanceProposal: React.FC<ProposalProps> = ({
 
         <a
           href={getProposalUrl()}
-          className="text-2xl font-bold hover:underline block mb-2"
+          className="text-xl font-bold hover:text-blue-600 transition-colors block mb-3 text-gray-900"
           target="_blank"
           rel="noopener noreferrer"
         >
           {proposal.title}
         </a>
-        <p className="text-gray-600 mb-4">
+        <p className="text-gray-600 mb-4 leading-relaxed">
           {getShortDescription(proposal.body)}
         </p>
         {proposal.scores && proposal.scores.length > 0 && (
-          <div>
-            <h4 className="font-semibold mb-2">Voting Results:</h4>
-            <ul>
+          <div className="bg-gray-50 rounded-lg p-4">
+            <h4 className="font-semibold mb-3 text-gray-800">
+              Voting Results:
+            </h4>
+            <ul className="space-y-2">
               {proposal.choices.map((choice, index) => (
-                <li key={index}>
-                  {choice}: {formatVotes(proposal.scores[index])} (
-                  {(
-                    (proposal.scores[index] / proposal.scores_total) *
-                    100
-                  ).toFixed(2)}
-                  %)
+                <li
+                  key={index}
+                  className="flex justify-between items-center"
+                >
+                  <span className="text-gray-700">{choice}:</span>
+                  <span className="font-medium text-gray-900">
+                    {formatVotes(proposal.scores[index])} (
+                    {(
+                      (proposal.scores[index] / proposal.scores_total) *
+                      100
+                    ).toFixed(2)}
+                    %)
+                  </span>
                 </li>
               ))}
             </ul>
