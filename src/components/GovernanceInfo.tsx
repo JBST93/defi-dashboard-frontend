@@ -26,8 +26,8 @@ const GovernanceInfo: React.FC = () => {
           during the voting period.
         </li>
         <li>
-          <strong>Results:</strong> If a proposal passes, it's implemented by
-          the project.
+          <strong>Results:</strong> If a proposal passes, it&apos;s implemented
+          by the project.
         </li>
       </ol>
       <div className="bg-blue-50 rounded-lg p-4 border border-blue-100">
