@@ -37,16 +37,21 @@ function YieldPageContent() {
   const [isLoading, setIsLoading] = useState(true);
   const [faqData, setFaqData] = useState<FAQItem[]>([]);
 
-  // Define uniqueChains and uniqueProjects
+  // Define uniqueChains, uniqueProjects, and uniqueStablecoins
   const uniqueChains = Array.from(new Set(yieldData.map((item) => item.chain)));
   const uniqueProjects = Array.from(
     new Set(yieldData.map((item) => item.project))
   );
+  const uniqueStablecoins = Array.from(
+    new Set(yieldData.map((item) => item.market))
+  );
 
-  // Initialize selectedChains and selectedProjects with all options
+  // Initialize selectedChains, selectedProjects, and selectedStablecoins with all options
   const [selectedChains, setSelectedChains] = useState<string[]>(uniqueChains);
   const [selectedProjects, setSelectedProjects] =
     useState<string[]>(uniqueProjects);
+  const [selectedStablecoins, setSelectedStablecoins] =
+    useState<string[]>(uniqueStablecoins);
 
   const [isSingleAssetOnly, setIsSingleAssetOnly] = useState(false);
 
@@ -64,15 +69,19 @@ function YieldPageContent() {
         setYieldData(indexedData);
         setIsLoading(false);
 
-        // Update uniqueChains and uniqueProjects after data is fetched
+        // Update uniqueChains, uniqueProjects, and uniqueStablecoins after data is fetched
         const chains = Array.from(
           new Set(indexedData.map((item) => item.chain))
         );
         const projects = Array.from(
           new Set(indexedData.map((item) => item.project))
         );
+        const stablecoins = Array.from(
+          new Set(indexedData.map((item) => item.market))
+        );
         setSelectedChains(chains);
         setSelectedProjects(projects);
+        setSelectedStablecoins(stablecoins);
       } catch (error) {
         console.error('Error fetching yield data:', error);
         setYieldData([]);
@@ -128,10 +137,21 @@ function YieldPageContent() {
     updateURLParams(searchTerm, selectedChains[0] || '');
   };
 
+  const setSelectedStablecoinsAndUpdateURL = (
+    stablecoinsOrUpdater: string[] | ((prev: string[]) => string[])
+  ) => {
+    const newStablecoins =
+      typeof stablecoinsOrUpdater === 'function'
+        ? stablecoinsOrUpdater(selectedStablecoins)
+        : stablecoinsOrUpdater;
+    setSelectedStablecoins(newStablecoins);
+  };
+
   const resetFilters = () => {
     setSearchTerm('');
-    setSelectedChains([]);
-    setSelectedProjects([]);
+    setSelectedChains(uniqueChains);
+    setSelectedProjects(uniqueProjects);
+    setSelectedStablecoins(uniqueStablecoins);
     setIsSingleAssetOnly(false);
     router.push('/yield');
   };
@@ -156,19 +176,23 @@ function YieldPageContent() {
           setSelectedChains={setSelectedChainsAndUpdateURL}
           selectedProjects={selectedProjects}
           setSelectedProjects={setSelectedProjectsAndUpdateURL}
+          selectedStablecoins={selectedStablecoins}
+          setSelectedStablecoins={setSelectedStablecoinsAndUpdateURL}
           availableChains={uniqueChains}
           availableProjects={uniqueProjects}
+          availableStablecoins={uniqueStablecoins}
           resetFilters={resetFilters}
           isSingleAssetOnly={isSingleAssetOnly}
-          setIsSingleAssetOnly={setIsSingleAssetOnly} // Add this line
+          setIsSingleAssetOnly={setIsSingleAssetOnly}
         />
         <YieldTable
           yieldData={yieldData}
           searchTerm={searchTerm}
           selectedChains={selectedChains}
           selectedProjects={selectedProjects}
+          selectedStablecoins={selectedStablecoins}
           isLoading={isLoading}
-          isSingleAssetOnly={isSingleAssetOnly} // Add this line
+          isSingleAssetOnly={isSingleAssetOnly}
         />
         <FAQ faqData={faqData} />
       </div>
