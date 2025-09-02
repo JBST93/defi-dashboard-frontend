@@ -7,8 +7,11 @@ interface YieldFiltersProps {
   setSelectedChains: React.Dispatch<React.SetStateAction<string[]>>;
   selectedProjects: string[];
   setSelectedProjects: React.Dispatch<React.SetStateAction<string[]>>;
+  selectedStablecoins: string[];
+  setSelectedStablecoins: React.Dispatch<React.SetStateAction<string[]>>;
   availableChains: string[];
   availableProjects: string[];
+  availableStablecoins: string[];
   resetFilters: () => void;
   isSingleAssetOnly: boolean;
   setIsSingleAssetOnly: React.Dispatch<React.SetStateAction<boolean>>;
@@ -21,16 +24,21 @@ export default function YieldFilters({
   setSelectedChains,
   selectedProjects,
   setSelectedProjects,
+  selectedStablecoins,
+  setSelectedStablecoins,
   availableChains,
   availableProjects,
+  availableStablecoins,
   resetFilters,
   isSingleAssetOnly,
   setIsSingleAssetOnly,
 }: YieldFiltersProps) {
   const [isChainOpen, setIsChainOpen] = useState(false);
   const [isProjectOpen, setIsProjectOpen] = useState(false);
+  const [isStablecoinOpen, setIsStablecoinOpen] = useState(false);
   const chainDropdownRef = useRef<HTMLDivElement>(null);
   const projectDropdownRef = useRef<HTMLDivElement>(null);
+  const stablecoinDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -45,6 +53,12 @@ export default function YieldFilters({
         !projectDropdownRef.current.contains(event.target as Node)
       ) {
         setIsProjectOpen(false);
+      }
+      if (
+        stablecoinDropdownRef.current &&
+        !stablecoinDropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsStablecoinOpen(false);
       }
     };
 
@@ -66,6 +80,14 @@ export default function YieldFilters({
     );
   };
 
+  const handleStablecoinSelection = (stablecoin: string) => {
+    setSelectedStablecoins((prev) =>
+      prev.includes(stablecoin)
+        ? prev.filter((s) => s !== stablecoin)
+        : [...prev, stablecoin]
+    );
+  };
+
   const handleChainSelectAll = () => {
     setSelectedChains([...availableChains]);
   };
@@ -80,6 +102,14 @@ export default function YieldFilters({
 
   const handleProjectUnselectAll = () => {
     setSelectedProjects([]);
+  };
+
+  const handleStablecoinSelectAll = () => {
+    setSelectedStablecoins([...availableStablecoins]);
+  };
+
+  const handleStablecoinUnselectAll = () => {
+    setSelectedStablecoins([]);
   };
 
   return (
@@ -101,7 +131,7 @@ export default function YieldFilters({
           Reset
         </button>
       </div>
-      <div className="flex gap-4 mb-4">
+      <div className="flex flex-wrap gap-4 mb-4">
         <div className="relative">
           <button
             onClick={() => setIsChainOpen(!isChainOpen)}
@@ -186,6 +216,51 @@ export default function YieldFilters({
                       className="mr-2"
                     />
                     {project}
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="relative">
+          <button
+            onClick={() => setIsStablecoinOpen(!isStablecoinOpen)}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
+          >
+            Select Stablecoin ({selectedStablecoins.length})
+          </button>
+          {isStablecoinOpen && (
+            <div
+              ref={stablecoinDropdownRef}
+              className="absolute z-10 mt-2 w-56 bg-white rounded-md shadow-lg ring-1 ring-black ring-opacity-5"
+            >
+              <div className="py-1">
+                <div className="flex justify-between px-4 py-2 border-b border-gray-200">
+                  <button
+                    onClick={handleStablecoinSelectAll}
+                    className="text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    Select All
+                  </button>
+                  <button
+                    onClick={handleStablecoinUnselectAll}
+                    className="text-sm text-blue-600 hover:text-blue-800"
+                  >
+                    Unselect All
+                  </button>
+                </div>
+                {availableStablecoins.map((stablecoin) => (
+                  <label
+                    key={stablecoin}
+                    className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedStablecoins.includes(stablecoin)}
+                      onChange={() => handleStablecoinSelection(stablecoin)}
+                      className="mr-2"
+                    />
+                    {stablecoin}
                   </label>
                 ))}
               </div>

@@ -20,8 +20,9 @@ interface YieldTableProps {
   searchTerm: string;
   selectedChains: string[];
   selectedProjects: string[];
+  selectedStablecoins: string[];
   isLoading: boolean;
-  isSingleAssetOnly: boolean; // Add this line
+  isSingleAssetOnly: boolean;
 }
 
 export default function YieldTable({
@@ -29,8 +30,9 @@ export default function YieldTable({
   searchTerm,
   selectedChains,
   selectedProjects,
+  selectedStablecoins,
   isLoading,
-  isSingleAssetOnly, // Add this line
+  isSingleAssetOnly,
 }: YieldTableProps) {
   const [sortColumn, setSortColumn] = useState<
     'apy' | 'tvl' | 'yield_rate_base' | 'yield_rate_reward' | null
@@ -47,9 +49,16 @@ export default function YieldTable({
       selectedChains.length === 0 || selectedChains.includes(item.chain);
     const matchesProject =
       selectedProjects.length === 0 || selectedProjects.includes(item.project);
+    const matchesStablecoin =
+      selectedStablecoins.length === 0 ||
+      selectedStablecoins.includes(item.market);
     const matchesSingleAsset = !isSingleAssetOnly || !item.market.includes('/');
     return (
-      matchesSearch && matchesChain && matchesProject && matchesSingleAsset
+      matchesSearch &&
+      matchesChain &&
+      matchesProject &&
+      matchesStablecoin &&
+      matchesSingleAsset
     );
   });
 
