@@ -7,10 +7,10 @@ export default function Footer() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="col-span-1 md:col-span-2">
-            <h2 className="text-2xl font-bold mb-4">DeFi Lending Dashboard</h2>
+            <h2 className="text-2xl font-bold mb-4">TokenDataView.com</h2>
             <p className="text-gray-300 mb-4">
-              Your comprehensive platform for DeFi lending opportunities and
-              yield farming insights
+              Your comprehensive platform for DeFi yield opportunities and yield
+              farming insights
             </p>
             <div className="flex space-x-4">
               <a
@@ -124,7 +124,7 @@ export default function Footer() {
         </div>
         <div className="mt-8 pt-8 border-t border-gray-700 text-center">
           <p className="text-gray-300">
-            &copy; {new Date().getFullYear()} DeFi Lending Dashboard. All rights
+            &copy; {new Date().getFullYear()} TokenDataView.com . All rights
             reserved.
           </p>
         </div>
