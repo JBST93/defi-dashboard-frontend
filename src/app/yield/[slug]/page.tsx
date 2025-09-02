@@ -30,6 +30,7 @@ function YieldPageContent({ params }: { params: { slug: string } }) {
   );
   const [selectedChains, setSelectedChains] = useState<string[]>([]);
   const [selectedProjects, setSelectedProjects] = useState<string[]>([]);
+  const [selectedStablecoins, setSelectedStablecoins] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSingleAssetOnly, setIsSingleAssetOnly] = useState(false);
 
@@ -56,8 +57,12 @@ function YieldPageContent({ params }: { params: { slug: string } }) {
         const projects = Array.from(
           new Set(indexedData.map((item) => item.project))
         );
+        const stablecoins = Array.from(
+          new Set(indexedData.map((item) => item.market))
+        );
         setSelectedChains(chains);
         setSelectedProjects(projects);
+        setSelectedStablecoins(stablecoins);
       } catch (error) {
         console.error('Error fetching yield data:', error);
         setYieldData([]);
@@ -71,6 +76,9 @@ function YieldPageContent({ params }: { params: { slug: string } }) {
   const uniqueChains = Array.from(new Set(yieldData.map((item) => item.chain)));
   const uniqueProjects = Array.from(
     new Set(yieldData.map((item) => item.project))
+  );
+  const uniqueStablecoins = Array.from(
+    new Set(yieldData.map((item) => item.market))
   );
 
   // Update this function
@@ -108,10 +116,21 @@ function YieldPageContent({ params }: { params: { slug: string } }) {
     setSelectedProjects(newProjects);
   };
 
+  const setSelectedStablecoinsAndUpdateURL = (
+    stablecoinsOrUpdater: string[] | ((prev: string[]) => string[])
+  ) => {
+    const newStablecoins =
+      typeof stablecoinsOrUpdater === 'function'
+        ? stablecoinsOrUpdater(selectedStablecoins)
+        : stablecoinsOrUpdater;
+    setSelectedStablecoins(newStablecoins);
+  };
+
   const resetFilters = () => {
     setSearchTerm('');
     setSelectedChains(uniqueChains);
     setSelectedProjects(uniqueProjects);
+    setSelectedStablecoins(uniqueStablecoins);
     setIsSingleAssetOnly(false);
     router.push(`/yield/${params.slug}`);
   };
@@ -135,8 +154,11 @@ function YieldPageContent({ params }: { params: { slug: string } }) {
             setSelectedChains={setSelectedChainsAndUpdateURL}
             selectedProjects={selectedProjects}
             setSelectedProjects={setSelectedProjectsAndUpdateURL}
+            selectedStablecoins={selectedStablecoins}
+            setSelectedStablecoins={setSelectedStablecoinsAndUpdateURL}
             availableChains={uniqueChains}
             availableProjects={uniqueProjects}
+            availableStablecoins={uniqueStablecoins}
             resetFilters={resetFilters}
             isSingleAssetOnly={isSingleAssetOnly}
             setIsSingleAssetOnly={setIsSingleAssetOnly}
@@ -146,6 +168,7 @@ function YieldPageContent({ params }: { params: { slug: string } }) {
             searchTerm={searchTerm}
             selectedChains={selectedChains}
             selectedProjects={selectedProjects}
+            selectedStablecoins={selectedStablecoins}
             isLoading={isLoading}
             isSingleAssetOnly={isSingleAssetOnly}
           />
