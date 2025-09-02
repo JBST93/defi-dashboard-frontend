@@ -197,7 +197,6 @@ export default function Home() {
             isLoading={isLoading}
           />
           <LendingBenefitsSection />
-          <CTASection />
         </main>
         <Footer />
       </div>
@@ -422,7 +421,6 @@ function MarketOverviewSection({
             ) : (
               marketStats.supportedProtocols
             )}{' '}
-            6
           </div>
         </div>
 
