@@ -6,6 +6,8 @@ import Link from 'next/link';
 import { yieldRatesStablecoin } from '@/lib/api';
 import { formatNumber } from '@/lib/utils';
 import ProtocolLogo from '@/components/ProtocolLogo';
+import ProtocolLogoWithFallback from '@/components/ProtocolLogoWithFallback';
+import ProtocolCarousel from '@/components/ProtocolCarousel';
 
 interface YieldItem {
   id: number;
@@ -187,17 +189,28 @@ export default function Home() {
 
       <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
         <HeroSection />
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-          <MarketOverviewSection
-            marketStats={marketStats}
-            isLoading={isLoading}
-          />
-          <TopYieldOpportunitiesSection
-            topYields={topYields}
-            isLoading={isLoading}
-          />
-          <LendingBenefitsSection />
+        <ProtocolCarousel />
+
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="py-16">
+            <MarketOverviewSection
+              marketStats={marketStats}
+              isLoading={isLoading}
+            />
+          </div>
+
+          <div className="py-16">
+            <TopYieldOpportunitiesSection
+              topYields={topYields}
+              isLoading={isLoading}
+            />
+          </div>
+
+          <div className="py-16">
+            <LendingBenefitsSection />
+          </div>
         </main>
+
         <Footer />
       </div>
     </>
@@ -309,7 +322,7 @@ function HeroSection() {
 
                   {/* Protocol Logos - Scattered across the middle and other areas */}
                   <div className="absolute top-1/4 right-1/3">
-                    <ProtocolLogo
+                    <ProtocolLogoWithFallback
                       protocol="AAVE"
                       size={56}
                       className="w-14 h-14"
@@ -317,7 +330,7 @@ function HeroSection() {
                   </div>
 
                   <div className="absolute bottom-1/3 left-1/4">
-                    <ProtocolLogo
+                    <ProtocolLogoWithFallback
                       protocol="PENDLE"
                       size={40}
                       className="w-10 h-10"
@@ -325,7 +338,7 @@ function HeroSection() {
                   </div>
 
                   <div className="absolute top-2/3 right-1/6">
-                    <ProtocolLogo
+                    <ProtocolLogoWithFallback
                       protocol="GEARBOX"
                       size={44}
                       className="w-11 h-11"
@@ -361,7 +374,7 @@ function MarketOverviewSection({
 }) {
   if (isLoading) {
     return (
-      <section className="mt-24">
+      <section className="">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {[...Array(4)].map((_, i) => (
             <div
@@ -378,7 +391,7 @@ function MarketOverviewSection({
   }
 
   return (
-    <section className="mt-24">
+    <section>
       <div className="text-center mb-16">
         <h2 className="text-4xl font-bold text-gray-900 mb-4">
           Market Overview
@@ -539,7 +552,7 @@ function TopYieldOpportunitiesSection({
   isLoading: boolean;
 }) {
   return (
-    <section className="mt-24">
+    <section>
       <div className="text-center mb-16">
         <h2 className="text-4xl font-bold text-gray-900 mb-4">
           Top Yield Opportunities
@@ -584,7 +597,7 @@ function TopYieldOpportunitiesSection({
             >
               {/* Header with protocol and chain */}
               <div className="flex items-center space-x-3 mb-6">
-                <ProtocolLogo
+                <ProtocolLogoWithFallback
                   protocol={yieldItem.project}
                   size={48}
                   className="w-12 h-12"
@@ -698,7 +711,7 @@ function TopYieldOpportunitiesSection({
 
 function LendingBenefitsSection() {
   return (
-    <section className="mt-24 bg-white rounded-lg shadow-lg p-8">
+    <section className="bg-white rounded-lg shadow-lg p-8">
       <div className="text-center mb-12">
         <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
           Why Choose DeFi ?
@@ -800,16 +813,7 @@ function Footer() {
   return (
     <footer className="bg-gray-900 mt-24">
       <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center">
-          <div className="flex justify-center space-x-6 md:order-2">
-            {/* Add social media icons here */}
-          </div>
-          <div className="mt-8 md:mt-0 md:order-1">
-            <p className="text-center text-base text-gray-400">
-              &copy; 2024 Token Data View. All rights reserved.
-            </p>
-          </div>
-        </div>
+        <div className="flex justify-between items-center"></div>
       </div>
     </footer>
   );
