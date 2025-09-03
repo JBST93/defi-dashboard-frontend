@@ -53,11 +53,53 @@ export async function yieldRates() {
 
 export async function yieldRatesStablecoin() {
   try {
+    // Use the general yield rates endpoint and filter for stablecoins on frontend
+    // This ensures we get ALL stablecoin opportunities, including those missing from the stablecoin-specific endpoint
     const res = await fetch(
-      'https://defi-dashboard-99d015fc546e.herokuapp.com/api/stablecoin_yield_rates'
+      'https://defi-dashboard-99d015fc546e.herokuapp.com/api/yield_rates'
     );
-    if (!res.ok) throw new Error('Failed to fetch stablecoin yield rates');
-    return await res.json();
+    if (!res.ok) throw new Error('Failed to fetch yield rates');
+
+    const allData = await res.json();
+
+    // Define stablecoin markets to filter for
+    const stablecoinMarkets = [
+      'USDC',
+      'USDT',
+      'DAI',
+      'BUSD',
+      'TUSD',
+      'USDP',
+      'FRAX',
+      'LUSD',
+      'sUSD',
+      'GUSD',
+      'USDD',
+      'DUSD',
+      'FEI',
+      'RAI',
+      'MIM',
+      'UST',
+      'USTC',
+      'USN',
+      'eUSD',
+      'USDe',
+      'crvUSD',
+      'GHO',
+      'FXUSD',
+      'sDAI',
+      'wUSDM',
+      'USR',
+      'EURe',
+    ];
+
+    // Filter for stablecoin markets only
+    const stablecoinData = allData.filter((item) =>
+      stablecoinMarkets.includes(item.market)
+    );
+
+    console.log('Filtered stablecoin data:', stablecoinData.length, 'items');
+    return stablecoinData;
   } catch (error) {
     console.error('Error fetching stablecoin yield rates:', error);
     throw error;
