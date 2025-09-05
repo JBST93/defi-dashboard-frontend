@@ -138,8 +138,8 @@ export default function AboutPage() {
                 Contact Us
               </h2>
               <p className="text-gray-600 leading-relaxed">
-                Have questions or suggestions? We'd love to hear from you. Reach
-                out to us through our social media channels or email us at
+                Have questions or suggestions? We&apos;d love to hear from you.
+                Reach out to us through our social media channels or email us at
                 support@tokendataview.com
               </p>
             </div>

@@ -3,11 +3,22 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'Stablecoins Guide - USDC, USDT, DAI, eUSD & More',
-  description: 'Complete guide to stablecoins including USDC, USDT, DAI, eUSD, USDe, and others. Compare features, risks, and lending opportunities.',
-  keywords: ['stablecoins', 'USDC', 'USDT', 'DAI', 'eUSD', 'USDe', 'stablecoin guide', 'crypto stablecoins'],
+  description:
+    'Complete guide to stablecoins including USDC, USDT, DAI, eUSD, USDe, and others. Compare features, risks, and lending opportunities.',
+  keywords: [
+    'stablecoins',
+    'USDC',
+    'USDT',
+    'DAI',
+    'eUSD',
+    'USDe',
+    'stablecoin guide',
+    'crypto stablecoins',
+  ],
   openGraph: {
     title: 'Stablecoins Guide - Compare All Major Stablecoins',
-    description: 'Learn about USDC, USDT, DAI, eUSD, USDe and other stablecoins. Compare features, risks, and DeFi opportunities.',
+    description:
+      'Learn about USDC, USDT, DAI, eUSD, USDe and other stablecoins. Compare features, risks, and DeFi opportunities.',
     url: 'https://www.tokendataview.com/stablecoins',
   },
   alternates: {
@@ -230,7 +241,7 @@ const stablecoins: Stablecoin[] = [
 
 export default function StablecoinsPage() {
   return (
-    <>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* Structured Data for Stablecoins */}
       <script
         type="application/ld+json"
@@ -239,12 +250,14 @@ export default function StablecoinsPage() {
             '@context': 'https://schema.org',
             '@type': 'WebPage',
             name: 'Stablecoins Guide',
-            description: 'Complete guide to stablecoins including USDC, USDT, DAI, eUSD, USDe, and others.',
+            description:
+              'Complete guide to stablecoins including USDC, USDT, DAI, eUSD, USDe, and others.',
             url: 'https://www.tokendataview.com/stablecoins',
             mainEntity: {
               '@type': 'ItemList',
               name: 'Stablecoins',
-              description: 'List of major stablecoins with features and comparisons',
+              description:
+                'List of major stablecoins with features and comparisons',
               numberOfItems: stablecoins.length,
               itemListElement: stablecoins.map((stablecoin, index) => ({
                 '@type': 'ListItem',
@@ -264,9 +277,7 @@ export default function StablecoinsPage() {
           }),
         }}
       />
-
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Header Section */}
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-gray-900 mb-6">

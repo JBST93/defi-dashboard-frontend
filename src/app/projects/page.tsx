@@ -4,11 +4,22 @@ import { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: 'DeFi Protocols - Aave, Pendle, Gearbox, Stargate & More',
-  description: 'Explore comprehensive guides to top DeFi protocols including Aave, Pendle, Gearbox, Stargate, and Spark Lend. Compare features, risks, and yields.',
-  keywords: ['DeFi protocols', 'Aave', 'Pendle', 'Gearbox', 'Stargate', 'Spark Lend', 'DeFi comparison', 'protocol features'],
+  description:
+    'Explore comprehensive guides to top DeFi protocols including Aave, Pendle, Gearbox, Stargate, and Spark Lend. Compare features, risks, and yields.',
+  keywords: [
+    'DeFi protocols',
+    'Aave',
+    'Pendle',
+    'Gearbox',
+    'Stargate',
+    'Spark Lend',
+    'DeFi comparison',
+    'protocol features',
+  ],
   openGraph: {
     title: 'DeFi Protocols Guide - Compare Top DeFi Platforms',
-    description: 'Comprehensive guides to Aave, Pendle, Gearbox, Stargate, and other leading DeFi protocols.',
+    description:
+      'Comprehensive guides to Aave, Pendle, Gearbox, Stargate, and other leading DeFi protocols.',
     url: 'https://www.tokendataview.com/projects',
   },
   alternates: {
@@ -159,7 +170,7 @@ const protocols: Protocol[] = [
 
 export default function ProjectsPage() {
   return (
-    <>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       {/* Structured Data for DeFi Protocols */}
       <script
         type="application/ld+json"
@@ -168,12 +179,14 @@ export default function ProjectsPage() {
             '@context': 'https://schema.org',
             '@type': 'WebPage',
             name: 'DeFi Protocols Guide',
-            description: 'Comprehensive guides to top DeFi protocols including Aave, Pendle, Gearbox, Stargate, and Spark Lend.',
+            description:
+              'Comprehensive guides to top DeFi protocols including Aave, Pendle, Gearbox, Stargate, and Spark Lend.',
             url: 'https://www.tokendataview.com/projects',
             mainEntity: {
               '@type': 'ItemList',
               name: 'DeFi Protocols',
-              description: 'List of major DeFi protocols with features and comparisons',
+              description:
+                'List of major DeFi protocols with features and comparisons',
               numberOfItems: protocols.length,
               itemListElement: protocols.map((protocol, index) => ({
                 '@type': 'ListItem',
@@ -189,9 +202,7 @@ export default function ProjectsPage() {
           }),
         }}
       />
-
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Header Section */}
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-gray-900 mb-6">
