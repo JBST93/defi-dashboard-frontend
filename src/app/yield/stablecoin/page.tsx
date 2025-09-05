@@ -44,6 +44,7 @@ function YieldPageContent() {
   const [selectedStablecoins, setSelectedStablecoins] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSingleAssetOnly, setIsSingleAssetOnly] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -55,6 +56,10 @@ function YieldPageContent() {
           index: index + 1,
         }));
         setYieldData(indexedData);
+        // Use the API's timestamp from the first item (all items should have similar timestamps)
+        if (indexedData.length > 0) {
+          setLastUpdated(indexedData[0].humanized_timestamp);
+        }
         setIsLoading(false);
 
         // Set initial selections for chains, projects, and stablecoins
@@ -390,6 +395,22 @@ function YieldPageContent() {
             isSingleAssetOnly={isSingleAssetOnly}
             setIsSingleAssetOnly={setIsSingleAssetOnly}
           />
+
+          {/* Last Updated Timestamp */}
+          {lastUpdated && (
+            <div className="mb-4 flex items-center justify-center">
+              <div className="bg-white rounded-lg px-4 py-2 shadow-sm border border-gray-200 flex items-center space-x-2">
+                <div className="flex items-center space-x-2">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm text-gray-600">Last updated:</span>
+                  <span className="text-sm font-medium text-gray-900">
+                    {lastUpdated}
+                  </span>
+                </div>
+              </div>
+            </div>
+          )}
+
           <YieldTable
             yieldData={yieldData}
             searchTerm={searchTerm}

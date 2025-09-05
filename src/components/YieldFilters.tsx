@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import ChainLogo from './ChainLogo';
 
 interface YieldFiltersProps {
   searchTerm: string;
@@ -137,7 +138,9 @@ export default function YieldFilters({
             onClick={() => setIsChainOpen(!isChainOpen)}
             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors"
           >
-            Select Chain ({selectedChains.length})
+            <div className="flex items-center space-x-2">
+              <span>Select Chain ({selectedChains.length})</span>
+            </div>
           </button>
           {isChainOpen && (
             <div
@@ -170,7 +173,13 @@ export default function YieldFilters({
                       onChange={() => handleChainSelection(chain)}
                       className="mr-2"
                     />
-                    {chain}
+                    <div className="flex items-center space-x-2">
+                      <ChainLogo
+                        chain={chain}
+                        size={16}
+                      />
+                      <span>{chain}</span>
+                    </div>
                   </label>
                 ))}
               </div>

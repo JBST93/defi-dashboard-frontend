@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import ChainLogo from '@/components/ChainLogo';
 
 interface YieldData {
   id: number;
@@ -176,12 +177,22 @@ export default function YieldTable({
               <td className="p-2 text-xs sm:text-sm">
                 ${Math.round(item.tvl || 0).toLocaleString()}
               </td>
-              <td className="p-2 text-xs sm:text-sm">{item.chain}</td>
+              <td className="p-2 text-xs sm:text-sm">
+                <div className="flex items-center space-x-2">
+                  <ChainLogo
+                    chain={item.chain}
+                    size={16}
+                  />
+                  <span>{item.chain}</span>
+                </div>
+              </td>
               <td className="p-2 text-xs sm:text-sm">
                 {item.yield_rate_base}%
               </td>
               <td className="p-2 text-xs sm:text-sm">
-                {item.yield_rate_reward}%
+                {item.yield_rate_reward
+                  ? `${parseFloat(item.yield_rate_reward).toFixed(2)}%`
+                  : '0.00%'}
               </td>
             </tr>
           ))}
