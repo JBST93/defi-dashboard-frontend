@@ -93,6 +93,9 @@ export default function ProtocolLogoWithFallback({
         'https://assets.coingecko.com/coins/images/11683/large/Balancer.png',
         '/logos/balancer-logo.svg',
       ],
+      morpho: [
+        'https://brand.morpho.org/_next/static/media/Morpho-logo-symbol-lightmode.043f1c2e.svg',
+      ],
     };
 
     return (
