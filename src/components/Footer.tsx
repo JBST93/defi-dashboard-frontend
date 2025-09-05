@@ -52,18 +52,26 @@ export default function Footer() {
               </li>
               <li>
                 <Link
-                  href="/yield"
-                  className="text-gray-300 hover:text-blue-400 transition-colors"
-                >
-                  All Yields
-                </Link>
-              </li>
-              <li>
-                <Link
                   href="/yield/stablecoin"
                   className="text-gray-300 hover:text-blue-400 transition-colors"
                 >
                   Stablecoin Yields
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/projects"
+                  className="text-gray-300 hover:text-blue-400 transition-colors"
+                >
+                  Projects
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/stablecoins"
+                  className="text-gray-300 hover:text-blue-400 transition-colors"
+                >
+                  Stablecoins
                 </Link>
               </li>
               <li>
@@ -96,12 +104,12 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <a
-                  href="#"
+                <Link
+                  href="/faq"
                   className="text-gray-300 hover:text-blue-400 transition-colors"
                 >
                   FAQ
-                </a>
+                </Link>
               </li>
               <li>
                 <a

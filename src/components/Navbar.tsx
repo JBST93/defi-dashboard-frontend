@@ -37,6 +37,8 @@ const navItems: NavItem[] = [
   { name: 'Projects', path: '/projects' },
   { name: 'Governance', path: '/governance' },
   { name: 'Articles', path: '/articles' },
+  { name: 'FAQ', path: '/faq' },
+  { name: 'About', path: '/about' },
 ];
 
 export default function Navbar() {

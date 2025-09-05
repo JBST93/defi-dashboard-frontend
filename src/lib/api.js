@@ -93,9 +93,11 @@ export async function yieldRatesStablecoin() {
       'EURe',
     ];
 
-    // Filter for stablecoin markets only
-    const stablecoinData = allData.filter((item) =>
-      stablecoinMarkets.includes(item.market)
+    // Filter for stablecoin markets only and exclude 0% yield pools
+    const stablecoinData = allData.filter(
+      (item) =>
+        stablecoinMarkets.includes(item.market) &&
+        parseFloat(item.yield_rate_base) > 0
     );
 
     console.log('Filtered stablecoin data:', stablecoinData.length, 'items');

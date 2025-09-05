@@ -1,5 +1,29 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'DeFi Articles & Guides - Learn About DeFi Lending',
+  description:
+    'Comprehensive DeFi articles covering stablecoin lending, yield farming, protocol guides, and DeFi strategies.',
+  keywords: [
+    'DeFi articles',
+    'DeFi guides',
+    'stablecoin lending',
+    'yield farming',
+    'DeFi education',
+    'crypto lending',
+  ],
+  openGraph: {
+    title: 'DeFi Articles & Educational Content',
+    description:
+      'Learn about DeFi lending, stablecoins, yield farming, and protocol strategies through our comprehensive guides.',
+    url: 'https://www.tokendataview.com/articles',
+  },
+  alternates: {
+    canonical: '/articles',
+  },
+};
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import fs from 'fs';
 import path from 'path';

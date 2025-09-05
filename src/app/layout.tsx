@@ -78,8 +78,6 @@ export const metadata: Metadata = {
   },
   verification: {
     google: 'your-google-verification-code', // Add your Google Search Console verification
-    yandex: 'your-yandex-verification-code',
-    yahoo: 'your-yahoo-verification-code',
   },
   icons: {
     icon: [

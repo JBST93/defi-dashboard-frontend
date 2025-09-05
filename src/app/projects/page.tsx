@@ -1,5 +1,20 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'DeFi Protocols - Aave, Pendle, Gearbox, Stargate & More',
+  description: 'Explore comprehensive guides to top DeFi protocols including Aave, Pendle, Gearbox, Stargate, and Spark Lend. Compare features, risks, and yields.',
+  keywords: ['DeFi protocols', 'Aave', 'Pendle', 'Gearbox', 'Stargate', 'Spark Lend', 'DeFi comparison', 'protocol features'],
+  openGraph: {
+    title: 'DeFi Protocols Guide - Compare Top DeFi Platforms',
+    description: 'Comprehensive guides to Aave, Pendle, Gearbox, Stargate, and other leading DeFi protocols.',
+    url: 'https://www.tokendataview.com/projects',
+  },
+  alternates: {
+    canonical: '/projects',
+  },
+};
 
 interface Protocol {
   name: string;
@@ -144,8 +159,39 @@ const protocols: Protocol[] = [
 
 export default function ProjectsPage() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <>
+      {/* Structured Data for DeFi Protocols */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            name: 'DeFi Protocols Guide',
+            description: 'Comprehensive guides to top DeFi protocols including Aave, Pendle, Gearbox, Stargate, and Spark Lend.',
+            url: 'https://www.tokendataview.com/projects',
+            mainEntity: {
+              '@type': 'ItemList',
+              name: 'DeFi Protocols',
+              description: 'List of major DeFi protocols with features and comparisons',
+              numberOfItems: protocols.length,
+              itemListElement: protocols.map((protocol, index) => ({
+                '@type': 'ListItem',
+                position: index + 1,
+                item: {
+                  '@type': 'Organization',
+                  name: protocol.name,
+                  description: protocol.description,
+                  url: protocol.website,
+                },
+              })),
+            },
+          }),
+        }}
+      />
+
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         {/* Header Section */}
         <div className="text-center mb-16">
           <h1 className="text-4xl font-bold text-gray-900 mb-6">

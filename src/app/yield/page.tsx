@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+// Note: This is a client component, metadata should be in a parent layout
 import { useRouter, useSearchParams } from 'next/navigation';
 import YieldTable from './YieldTable';
 import YieldFilters from '@/components/YieldFilters';

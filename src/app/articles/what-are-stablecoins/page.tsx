@@ -2,6 +2,31 @@
 
 import BlogPost from '@/components/BlogPost';
 import Link from 'next/link';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'What Are Stablecoins? Complete Guide to Stable Cryptocurrencies',
+  description:
+    'Learn what stablecoins are, how they work, types of stablecoins, and why they are important in DeFi and crypto markets.',
+  keywords: [
+    'stablecoins',
+    'what are stablecoins',
+    'USDC',
+    'USDT',
+    'DAI',
+    'stablecoin guide',
+    'crypto stablecoins',
+  ],
+  openGraph: {
+    title: 'What Are Stablecoins? Complete Guide',
+    description:
+      'Comprehensive guide to stablecoins - learn how they work, types, and their role in DeFi.',
+    url: 'https://www.tokendataview.com/articles/what-are-stablecoins',
+  },
+  alternates: {
+    canonical: '/articles/what-are-stablecoins',
+  },
+};
 
 const post = {
   id: '2',

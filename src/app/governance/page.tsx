@@ -1,6 +1,30 @@
 import { fetchProjects } from '@/lib/api';
 import { fetchProposals } from '@/lib/snaphotApi';
 import GovernancePageClient from './GovernancePageClient';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'DeFi Governance - DAO Proposals & Voting',
+  description:
+    'Track governance proposals and voting across DeFi protocols. Stay updated on Aave, Compound, and other DAO decisions.',
+  keywords: [
+    'DeFi governance',
+    'DAO voting',
+    'governance proposals',
+    'Aave governance',
+    'Compound governance',
+    'DeFi DAO',
+  ],
+  openGraph: {
+    title: 'DeFi Governance Tracker - DAO Proposals & Voting',
+    description:
+      'Monitor governance proposals and voting across major DeFi protocols and DAOs.',
+    url: 'https://www.tokendataview.com/governance',
+  },
+  alternates: {
+    canonical: '/governance',
+  },
+};
 
 interface Project {
   project: string;
