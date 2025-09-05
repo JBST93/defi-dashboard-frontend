@@ -21,7 +21,15 @@ export const metadata: Metadata = {
     title: 'What Are Stablecoins? Complete Guide',
     description:
       'Comprehensive guide to stablecoins - learn how they work, types, and their role in DeFi.',
-    url: 'https://www.tokendataview.com/articles/what-are-stablecoins',
+    type: 'article',
+    images: ['/blog/blog-image-stablecoin.svg'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'What Are Stablecoins? Complete Guide',
+    description:
+      'Comprehensive guide to stablecoins - learn how they work, types, and their role in DeFi.',
+    images: ['/blog/blog-image-stablecoin.svg'],
   },
   alternates: {
     canonical: '/articles/what-are-stablecoins',
@@ -35,7 +43,7 @@ const post = {
     'Learn what stablecoins are, how they work, and why they are important in the crypto world.',
   date: '2023-10-03',
   author: 'Jacek Bastin',
-  image: '/blog/blog-image-stablecoin.jpg',
+  image: '/blog/blog-image-stablecoin.svg',
   content: (
     <>
       <p className="text-gray-700">

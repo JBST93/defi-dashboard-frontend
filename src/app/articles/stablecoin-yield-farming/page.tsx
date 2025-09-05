@@ -2,6 +2,29 @@
 
 import BlogPost from '@/components/BlogPost';
 import Link from 'next/link';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Stablecoin Yield Farming: Complete DeFi Guide | TokenDataView',
+  description:
+    'Learn about stablecoin yield farming strategies, risks, and opportunities in DeFi. Maximize returns on your stablecoin holdings.',
+  keywords:
+    'stablecoin yield farming, DeFi yield, USDC farming, USDT farming, DAI farming, crypto yield strategies',
+  openGraph: {
+    title: 'Stablecoin Yield Farming: Complete DeFi Guide',
+    description:
+      'Learn about stablecoin yield farming strategies, risks, and opportunities in DeFi.',
+    type: 'article',
+    images: ['/blog/blog-image-yield-farming.svg'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Stablecoin Yield Farming: Complete DeFi Guide',
+    description:
+      'Learn about stablecoin yield farming strategies, risks, and opportunities in DeFi.',
+    images: ['/blog/blog-image-yield-farming.svg'],
+  },
+};
 
 const post = {
   id: '1',
@@ -10,7 +33,7 @@ const post = {
     'A comprehensive guide to stablecoin yield farming in crypto, exploring its uses, risks, and benefits.',
   date: '2023-04-15',
   author: 'Jacek Bastin',
-  image: '/blog/blog-image-yield-farming.jpg',
+  image: '/blog/blog-image-yield-farming.svg',
   content: (
     <>
       <p className="text-gray-700">

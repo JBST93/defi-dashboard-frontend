@@ -2,6 +2,29 @@
 
 import BlogPost from '@/components/BlogPost';
 import Link from 'next/link';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'DeFi Lending Protocols: How to Earn Interest | TokenDataView',
+  description:
+    'Learn how DeFi lending protocols like Aave, Compound, and MakerDAO work. Discover how to earn interest on your crypto assets.',
+  keywords:
+    'DeFi lending, crypto lending, Aave, Compound, MakerDAO, earn interest crypto, DeFi protocols',
+  openGraph: {
+    title: 'DeFi Lending Protocols: How to Earn Interest',
+    description:
+      'Learn how DeFi lending protocols like Aave, Compound, and MakerDAO work.',
+    type: 'article',
+    images: ['/blog/blog-image-lending-protocols.svg'],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'DeFi Lending Protocols: How to Earn Interest',
+    description:
+      'Learn how DeFi lending protocols like Aave, Compound, and MakerDAO work.',
+    images: ['/blog/blog-image-lending-protocols.svg'],
+  },
+};
 
 const post = {
   id: '3',
@@ -10,7 +33,7 @@ const post = {
     'Discover how DeFi lending protocols like Aave, Compound, and MakerDAO allow users to lend their crypto, borrow assets, and earn interest in the decentralized finance ecosystem.',
   date: '2024-10-02',
   author: 'Jacek Bastin',
-  image: '/blog/blog-image-lending-protocols.jpg',
+  image: '/blog/blog-image-lending-protocols.svg',
   content: (
     <>
       <p className="text-gray-700">

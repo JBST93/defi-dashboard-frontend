@@ -84,7 +84,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
 
   // Create sitemap entries for blog posts
-  const blogPosts = getBlogPosts();
+  const blogPosts = await getBlogPosts();
   const blogPages = blogPosts.map((post) => ({
     url: `${baseUrl}/articles/${post.slug}`,
     lastModified: new Date(post.date),
@@ -135,19 +135,81 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ];
 }
 
-// Add this function to get blog posts
-function getBlogPosts() {
-  // This is a simplified version. You should implement the actual logic to get blog posts.
-  return [
-    { slug: 'curve-finance-defi-stablecoin-exchange', date: '2023-01-01' },
-    { slug: 'what-is-defi', date: '2023-01-02' },
-    { slug: 'what-are-stablecoins', date: '2023-01-03' },
-    { slug: 'top-defi-projects', date: '2023-01-04' },
-    { slug: 'defi-yield-farming', date: '2023-01-05' },
-    { slug: 'best-stablecoin-lending-rates', date: '2023-01-06' },
-    { slug: 'usdc-vs-usdt-yields-comparison', date: '2023-01-07' },
-    { slug: 'aave-lending-protocol-guide', date: '2023-01-08' },
-    { slug: 'compound-finance-lending', date: '2023-01-09' },
-    { slug: 'defi-lending-risks-and-rewards', date: '2023-01-10' },
-  ];
+// Add this function to get blog posts dynamically
+async function getBlogPosts() {
+  try {
+    // Import the file system module
+    const fs = await import('fs');
+    const path = await import('path');
+
+    const articlesDir = path.join(process.cwd(), 'src/app/articles');
+
+    // Check if articles directory exists
+    if (!fs.existsSync(articlesDir)) {
+      console.warn('Articles directory not found');
+      return [];
+    }
+
+    // Read all directories in the articles folder
+    const articleDirs = fs
+      .readdirSync(articlesDir, { withFileTypes: true })
+      .filter((dirent) => dirent.isDirectory())
+      .map((dirent) => dirent.name);
+
+    // Extract metadata from each article
+    const articles = [];
+
+    for (const dir of articleDirs) {
+      try {
+        const pagePath = path.join(articlesDir, dir, 'page.tsx');
+
+        if (fs.existsSync(pagePath)) {
+          // Read the page file to extract metadata
+          const pageContent = fs.readFileSync(pagePath, 'utf8');
+
+          // Extract date from the file content (look for dateTime or datePublished)
+          let articleDate = new Date().toISOString().split('T')[0]; // Default to today
+
+          // Try to find date in the content
+          const dateMatch =
+            pageContent.match(/dateTime="([^"]+)"/) ||
+            pageContent.match(/datePublished":\s*"([^"]+)"/) ||
+            pageContent.match(/dateModified":\s*"([^"]+)"/);
+
+          if (dateMatch) {
+            articleDate = dateMatch[1];
+          }
+
+          articles.push({
+            slug: dir,
+            date: articleDate,
+          });
+        }
+      } catch (error) {
+        console.warn(`Error reading article ${dir}:`, error);
+      }
+    }
+
+    // Sort by date (newest first)
+    return articles.sort(
+      (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+    );
+  } catch (error) {
+    console.error('Error getting blog posts:', error);
+    // Fallback to hardcoded list if file system access fails
+    return [
+      { slug: 'aave-protocol-complete-guide', date: '2024-12-19' },
+      { slug: 'curve-finance-defi-stablecoin-exchange', date: '2024-12-19' },
+      { slug: 'defi-lending-protocols-earn-interest', date: '2024-12-19' },
+      { slug: 'stablecoin-yield-farming', date: '2024-12-19' },
+      { slug: 'what-are-stablecoins', date: '2024-12-19' },
+      { slug: '1inch-dex-aggregator-best-rates', date: '2024-12-19' },
+      { slug: 'compound-finance-defi-lending-pioneer', date: '2024-12-19' },
+      { slug: 'stargate-finance-cross-chain-bridge', date: '2024-12-19' },
+      { slug: 'makerdao-dai-stablecoin-ecosystem', date: '2024-12-19' },
+      { slug: 'pendle-finance-yield-trading-protocol', date: '2024-12-19' },
+      { slug: 'gearbox-protocol-leveraged-defi', date: '2024-12-19' },
+      { slug: 'spark-lend-aave-fork-optimized', date: '2024-12-19' },
+    ];
+  }
 }
