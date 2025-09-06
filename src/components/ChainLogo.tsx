@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 
 interface ChainLogoProps {
@@ -49,13 +49,10 @@ export default function ChainLogo({
   size = 20,
   className = '',
 }: ChainLogoProps) {
-  const [imageError, setImageError] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
-
   const logoUrl = getChainLogo(chain);
   const gradient = getChainGradient(chain);
 
-  if (!logoUrl || imageError) {
+  if (!logoUrl) {
     return (
       <div
         className={`inline-flex items-center justify-center rounded-full bg-gradient-to-r ${gradient} text-white font-bold text-xs ${className}`}
@@ -84,8 +81,6 @@ export default function ChainLogo({
             maxWidth: size,
             maxHeight: size,
           }}
-          onError={() => setImageError(true)}
-          onLoad={() => setImageLoaded(true)}
           unoptimized
         />
       </div>

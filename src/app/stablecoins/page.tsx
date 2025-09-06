@@ -424,21 +424,13 @@ export default function StablecoinsPage() {
                   </ul>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex space-x-3">
+                {/* Action Button */}
+                <div className="flex justify-center">
                   <Link
-                    href={stablecoin.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg text-center font-medium hover:bg-blue-700 transition-colors"
+                    href={`/stablecoin/${stablecoin.symbol.toLowerCase()}`}
+                    className="w-full bg-green-600 text-white px-6 py-3 rounded-lg text-center font-medium hover:bg-green-700 transition-colors"
                   >
-                    Visit Website
-                  </Link>
-                  <Link
-                    href={`/projects?search=${stablecoin.symbol.toLowerCase()}`}
-                    className="flex-1 bg-green-600 text-white px-4 py-2 rounded-lg text-center font-medium hover:bg-green-700 transition-colors"
-                  >
-                    View Protocols ({stablecoin.avgAPY} avg)
+                    View Yield Opportunities ({stablecoin.avgAPY} avg)
                   </Link>
                 </div>
               </div>
@@ -472,6 +464,9 @@ export default function StablecoinsPage() {
                   </th>
                   <th className="text-left py-3 px-4 font-semibold text-gray-900">
                     Protocols
+                  </th>
+                  <th className="text-left py-3 px-4 font-semibold text-gray-900">
+                    Actions
                   </th>
                 </tr>
               </thead>
@@ -524,6 +519,14 @@ export default function StablecoinsPage() {
                           </span>
                         ))}
                       </div>
+                    </td>
+                    <td className="py-3 px-4">
+                      <Link
+                        href={`/stablecoin/${stablecoin.symbol.toLowerCase()}`}
+                        className="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
+                      >
+                        View Yields
+                      </Link>
                     </td>
                   </tr>
                 ))}
