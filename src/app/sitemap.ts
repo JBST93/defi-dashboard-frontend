@@ -1,9 +1,11 @@
 import { MetadataRoute } from 'next';
+import fs from 'fs';
+import path from 'path';
 
 // Protocol slugs for future protocol pages
 const PROTOCOL_SLUGS = [
   'aave',
-  'morpho', 
+  'morpho',
   'curve',
   'compound',
   'maker',
@@ -11,14 +13,21 @@ const PROTOCOL_SLUGS = [
   'pendle',
   'gearbox',
   'uniswap',
-  'stargate'
+  'stargate',
 ];
 
 // Type definitions for better type safety
 interface SitemapEntry {
   url: string;
   lastModified: Date;
-  changeFrequency: 'always' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'never';
+  changeFrequency:
+    | 'always'
+    | 'hourly'
+    | 'daily'
+    | 'weekly'
+    | 'monthly'
+    | 'yearly'
+    | 'never';
   priority: number;
 }
 
@@ -46,53 +55,50 @@ async function getProjects() {
 
 async function getBlogPosts(): Promise<BlogPost[]> {
   try {
-    const fs = await import('fs');
-    const path = await import('path');
-    
     const articlesDir = path.join(process.cwd(), 'src/app/articles');
-    
+
     // Check if articles directory exists
     if (!fs.existsSync(articlesDir)) {
       console.warn('Articles directory not found');
       return [];
     }
-    
+
     // Read all directories in the articles folder
     const articleDirs = fs
       .readdirSync(articlesDir, { withFileTypes: true })
       .filter((dirent) => dirent.isDirectory())
       .map((dirent) => dirent.name);
-    
+
     const articles: BlogPost[] = [];
-    
+
     for (const dir of articleDirs) {
       try {
         const pagePath = path.join(articlesDir, dir, 'page.tsx');
-        
+
         if (fs.existsSync(pagePath)) {
           // Get file stats for actual modification date
           const stats = fs.statSync(pagePath);
           const lastModified = stats.mtime;
-          
+
           // Read the page file to extract metadata
           const pageContent = fs.readFileSync(pagePath, 'utf8');
-          
+
           // Extract date from the content (look for dateTime or datePublished)
           let articleDate = lastModified;
-          
+
           // Try to find date in the content
           const dateMatch =
             pageContent.match(/dateTime="([^"]+)"/) ||
             pageContent.match(/datePublished":\s*"([^"]+)"/) ||
             pageContent.match(/dateModified":\s*"([^"]+)"/);
-          
+
           if (dateMatch) {
             const parsedDate = new Date(dateMatch[1]);
             if (!isNaN(parsedDate.getTime())) {
               articleDate = parsedDate;
             }
           }
-          
+
           articles.push({
             slug: dir,
             lastModified: articleDate,
@@ -103,12 +109,11 @@ async function getBlogPosts(): Promise<BlogPost[]> {
         console.warn(`Error reading article ${dir}:`, error);
       }
     }
-    
+
     // Sort by last modified date (newest first)
     return articles.sort(
       (a, b) => b.lastModified.getTime() - a.lastModified.getTime()
     );
-    
   } catch (error) {
     console.error('Error getting blog posts:', error);
     // Return empty array on error to ensure sitemap still works
@@ -227,21 +232,21 @@ function getYieldPages(baseUrl: string, projects: any[]): SitemapEntry[] {
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.tokendataview.com';
-  
+
   try {
     // Fetch data in parallel for better performance
     const [projects, blogPosts] = await Promise.all([
       getProjects(),
-      getBlogPosts()
+      getBlogPosts(),
     ]);
-    
+
     // Build all sitemap sections
     const staticRoutes = getStaticRoutes(baseUrl);
     const protocolPages = getProtocolPages(baseUrl);
     const blogPages = getBlogPages(baseUrl, blogPosts);
     const projectPages = getProjectPages(baseUrl, projects);
     const yieldPages = getYieldPages(baseUrl, projects);
-    
+
     // Combine all routes
     const allRoutes = [
       ...staticRoutes,
@@ -250,7 +255,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       ...projectPages,
       ...yieldPages,
     ];
-    
+
     // Log sitemap generation info
     console.log(`Generated sitemap with ${allRoutes.length} URLs:`);
     console.log(`- Static routes: ${staticRoutes.length}`);
@@ -258,12 +263,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.log(`- Blog articles: ${blogPages.length}`);
     console.log(`- Project pages: ${projectPages.length}`);
     console.log(`- Yield pages: ${yieldPages.length}`);
-    
+
     return allRoutes;
-    
   } catch (error) {
     console.error('Error generating sitemap:', error);
-    
+
     // Return minimal sitemap on error to ensure site remains accessible
     return getStaticRoutes(baseUrl);
   }

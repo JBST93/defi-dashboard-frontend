@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "check-sitemap": "node scripts/check-sitemap.js",
-    "test-sitemap": "node scripts/test-sitemap.js"
+    "test-sitemap": "node scripts/test-sitemap.js",
+    "verify-seo": "node scripts/verify-seo-files.js"
   },
   "dependencies": {
     "@next/third-parties": "^14.2.13",
