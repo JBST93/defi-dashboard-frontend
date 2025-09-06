@@ -1,7 +1,6 @@
 import { formatNumber } from '@/lib/utils';
 import { StablecoinYieldItem } from '@/lib/stablecoinData';
 import RiskBadge, { RiskLevel } from './RiskBadge';
-import ProtocolLogoWithFallback from '../ProtocolLogoWithFallback';
 import ChainLogo from '../ChainLogo';
 
 interface YieldTableProps {
@@ -102,22 +101,15 @@ export default function YieldTable({ yields, stablecoin }: YieldTableProps) {
                   className="hover:bg-gray-50 transition-colors"
                 >
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <ProtocolLogoWithFallback
-                        protocol={item.project}
-                        size={32}
-                        className="flex-shrink-0"
-                      />
-                      <div className="ml-3">
-                        <div className="text-sm font-medium text-gray-900">
-                          {item.project}
-                        </div>
-                        {item.information && (
-                          <div className="text-xs text-gray-500">
-                            {item.information}
-                          </div>
-                        )}
+                    <div>
+                      <div className="text-sm font-medium text-gray-900">
+                        {item.project}
                       </div>
+                      {item.information && (
+                        <div className="text-xs text-gray-500">
+                          {item.information}
+                        </div>
+                      )}
                     </div>
                   </td>
 
