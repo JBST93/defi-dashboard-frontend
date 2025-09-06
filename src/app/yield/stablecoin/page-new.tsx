@@ -14,17 +14,17 @@ export async function generateMetadata(): Promise<Metadata> {
   const data = await getStablecoinYields();
 
   return {
-    title: 'Stablecoin Yield Farming | Best DeFi Yields 2025 | TokenDataView',
-    description: `Compare the best stablecoin yield farming opportunities across DeFi protocols. Real-time APY data for USDC, USDT, DAI and more. ${
+    title: 'Stablecoin Lending Rates | Best DeFi Yields 2025 | TokenDataView',
+    description: `Compare the best stablecoin lending rates across DeFi protocols. Real-time APY data for USDC, USDT, DAI and more. ${
       data.totalPools
     } active pools with up to ${Math.max(
       ...data.yields.map((y) => parseFloat(y.yield_rate_base))
     ).toFixed(2)}% APY.`,
     keywords:
-      'stablecoin yield farming, DeFi yields, USDC APY, USDT rates, DAI farming, crypto yield farming',
+      'stablecoin lending, DeFi yields, USDC APY, USDT rates, DAI lending, crypto lending rates',
     openGraph: {
-      title: 'Stablecoin Yield Farming | Best DeFi Yields 2025',
-      description: `Compare the best stablecoin yield farming opportunities across DeFi protocols. ${data.totalPools} active pools available.`,
+      title: 'Stablecoin Lending Rates | Best DeFi Yields 2025',
+      description: `Compare the best stablecoin lending rates across DeFi protocols. ${data.totalPools} active pools available.`,
       type: 'website',
       url: 'https://www.tokendataview.com/yield/stablecoin',
       images: [
@@ -38,8 +38,8 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Stablecoin Yield Farming | Best DeFi Yields 2025',
-      description: `Compare the best stablecoin yield farming opportunities across DeFi protocols. ${data.totalPools} active pools available.`,
+      title: 'Stablecoin Lending Rates | Best DeFi Yields 2025',
+      description: `Compare the best stablecoin lending rates across DeFi protocols. ${data.totalPools} active pools available.`,
       images: ['https://www.tokendataview.com/og-stablecoin-yields.jpg'],
     },
     alternates: {
@@ -61,15 +61,9 @@ async function StablecoinPageContent() {
 
   // Calculate averages
   const getAverageYield = (market: string) => {
-    const pools = data.yields.filter((item) => {
-      if (market === '') {
-        // For overall average, use all pools above 50M TVL
-        return item.tvl > 50_000_000;
-      } else {
-        // For specific markets, use all pools of that market above 50M TVL
-        return item.market === market && item.tvl > 50_000_000;
-      }
-    });
+    const pools = data.yields.filter(
+      (item) => item.market === market && item.tvl > 50_000_000
+    );
     if (pools.length === 0) return { avgApy: 0, poolCount: 0 };
 
     const totalApy = pools.reduce((sum, pool) => {
@@ -96,18 +90,18 @@ async function StablecoinPageContent() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'WebPage',
-            name: 'Stablecoin Yield Farming',
+            name: 'Stablecoin Lending Rates',
             description:
-              'Compare the best stablecoin yield farming opportunities across DeFi protocols',
+              'Compare the best stablecoin lending rates across DeFi protocols',
             url: 'https://www.tokendataview.com/yield/stablecoin',
             mainEntity: {
               '@type': 'Dataset',
-              name: 'Stablecoin Yield Farming',
+              name: 'Stablecoin Lending Rates',
               description:
-                'Real-time data on stablecoin yield farming opportunities across DeFi protocols',
+                'Real-time data on stablecoin lending rates across DeFi protocols',
               keywords: [
                 'stablecoin',
-                'yield farming',
+                'lending',
                 'APY',
                 'USDC',
                 'USDT',
@@ -125,12 +119,11 @@ async function StablecoinPageContent() {
           {/* Header */}
           <div className="text-center mb-8">
             <h1 className="text-2xl sm:text-3xl font-bold mb-4 text-gray-900">
-              Stablecoin Yield Farming Opportunities
+              Stablecoin Lending Opportunities
             </h1>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Find the best stablecoin yield farming opportunities across DeFi
-              protocols. Compare USDC, USDT, and other stablecoin yields in
-              real-time.
+              Find the best stablecoin lending rates across DeFi protocols.
+              Compare USDC, USDT, and other stablecoin yields in real-time.
             </p>
           </div>
 
@@ -251,18 +244,58 @@ async function StablecoinPageContent() {
             </div>
           </div>
 
+          {/* Filters - Client Component */}
+          <Suspense
+            fallback={
+              <div className="h-20 bg-gray-100 rounded-lg animate-pulse mb-6"></div>
+            }
+          >
+            <YieldFiltersClient
+              filterOptions={filterOptions}
+              initialData={data}
+            />
+          </Suspense>
+
+          {/* Last Updated Timestamp */}
+          <div className="mb-4 flex items-center justify-center">
+            <div className="bg-white rounded-lg px-4 py-2 shadow-sm border border-gray-200 flex items-center space-x-2">
+              <div className="flex items-center space-x-2">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span className="text-sm text-gray-600">Last updated:</span>
+                <span className="text-sm font-medium text-gray-900">
+                  {data.lastUpdated}
+                </span>
+              </div>
+            </div>
+          </div>
+
           {/* Table - Client Component with SSR data */}
           <StablecoinTableClient
             initialData={data.yields}
             lastUpdated={data.lastUpdated}
-            totalPools={data.yields.length}
-            availableChains={filterOptions.chains}
-            availableProjects={filterOptions.projects}
-            availableStablecoins={filterOptions.stablecoins}
+            totalPools={data.totalPools}
           />
         </div>
       </div>
     </>
+  );
+}
+
+// Client component for filters (needs interactivity)
+function YieldFiltersClient({
+  filterOptions,
+  initialData,
+}: {
+  filterOptions: any;
+  initialData: any;
+}) {
+  // This will be hydrated on the client
+  return (
+    <div className="bg-white rounded-lg p-4 shadow-sm border border-gray-200 mb-6">
+      <div className="text-sm text-gray-600 text-center">
+        Filters will be available after page loads
+      </div>
+    </div>
   );
 }
 
