@@ -66,9 +66,27 @@ async function checkSitemap() {
       console.log('\n✅ All articles are properly included in the sitemap!');
     }
 
+    // Check for protocol pages
+    const protocolUrls = sitemapContent.match(
+      /<loc>https:\/\/www\.tokendataview\.com\/protocols\/[^<]+<\/loc>/g
+    ) || [];
+    const sitemapProtocols = protocolUrls.map((url) =>
+      url
+        .replace('<loc>https://www.tokendataview.com/protocols/', '')
+        .replace('</loc>', '')
+    );
+
+    console.log(`\n🏛️  Found ${sitemapProtocols.length} protocol pages in sitemap:`);
+    sitemapProtocols.forEach((protocol) => console.log(`   - ${protocol}`));
+
+    // Count total URLs
+    const totalUrls = sitemapContent.match(/<loc>/g)?.length || 0;
+
     console.log(`\n📊 Summary:`);
+    console.log(`   - Total URLs in sitemap: ${totalUrls}`);
     console.log(`   - Articles in directory: ${articleDirs.length}`);
     console.log(`   - Articles in sitemap: ${sitemapArticles.length}`);
+    console.log(`   - Protocol pages: ${sitemapProtocols.length}`);
     console.log(`   - Missing from sitemap: ${missingInSitemap.length}`);
     console.log(`   - Extra in sitemap: ${extraInSitemap.length}`);
   } catch (error) {

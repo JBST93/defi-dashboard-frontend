@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "check-sitemap": "node scripts/check-sitemap.js"
+    "check-sitemap": "node scripts/check-sitemap.js",
+    "test-sitemap": "node scripts/test-sitemap.js"
   },
   "dependencies": {
     "@next/third-parties": "^14.2.13",
