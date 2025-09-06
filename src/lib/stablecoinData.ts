@@ -8,8 +8,10 @@ export interface StablecoinYieldItem {
   market: string;
   apy: number;
   yield_rate_base: string;
+  yield_rate_reward?: string;
   tvl: number;
   humanized_timestamp: string;
+  information?: string;
   index?: number;
 }
 
