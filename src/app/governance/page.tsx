@@ -43,10 +43,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title:
-      'DeFi Governance Tracker 2025 | Live DAO Proposals & Voting Analytics',
+    title: 'DeFi Governance Tracker | Live DAO Proposals & Voting Analytics',
     description:
-      'Track live governance proposals across 20+ DeFi protocols. Real-time voting analytics and DAO decision tracking.',
+      'Track live governance proposals across major DeFi protocols. Stay informed on voting outcomes that effect stablecoin yields and platform development. Real time governance data for informed participation.',
     images: ['https://www.tokendataview.com/og-governance-tracker.jpg'],
   },
   alternates: {

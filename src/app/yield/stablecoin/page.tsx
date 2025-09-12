@@ -15,17 +15,22 @@ export async function generateMetadata(): Promise<Metadata> {
   const data = await getStablecoinYields();
 
   return {
-    title: 'Stablecoin Yield Farming | Best DeFi Yields 2025 | TokenDataView',
-    description: `Compare the best stablecoin yield farming opportunities across DeFi protocols. Real-time APY data for USDC, USDT, DAI and more. ${
+    title:
+      'Best Stablecoin Yields and APY | Best DeFi Yields 2025 | TokenDataView',
+    description: `Find and Compare the best stablecoin yields and APY rates in DeFi.
+    Real-time APY rates for USDC, USDT, DAI, USDe and more across top protocols like Aave, Compound, Pendle, Maker and more.
+    Data-driven to maximize your stablecoin returns with verified data. ${
       data.totalPools
-    } active pools with up to ${Math.max(
+    } active pools with across Ethereum, Base and others up to ${Math.max(
       ...data.yields.map((y) => parseFloat(y.yield_rate_base))
     ).toFixed(2)}% APY.`,
     keywords:
       'stablecoin yield farming, DeFi yields, USDC APY, USDT rates, DAI farming, crypto yield farming',
     openGraph: {
-      title: 'Stablecoin Yield Farming | Best DeFi Yields 2025',
-      description: `Compare the best stablecoin yield farming opportunities across DeFi protocols. ${data.totalPools} active pools available.`,
+      title: 'Best Stablecoin Yields and APY | Best DeFi Yields 2025',
+      description: `Find and Compare the best stablecoin yields and APY rates in DeFi.
+    Real-time APY rates for USDC, USDT, DAI, USDe and more across top protocols like Aave, Compound, Pendle, Maker and more.
+    Data-driven to maximize your stablecoin returns with verified data. ${data.totalPools} active pools available.`,
       type: 'website',
       url: 'https://www.tokendataview.com/yield/stablecoin',
       images: [
@@ -39,7 +44,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Stablecoin Yield Farming | Best DeFi Yields 2025',
+      title: 'Best Stablecoin Yields and APY | Best DeFi Yields 2025',
       description: `Compare the best stablecoin yield farming opportunities across DeFi protocols. ${data.totalPools} active pools available.`,
       images: ['https://www.tokendataview.com/og-stablecoin-yields.jpg'],
     },

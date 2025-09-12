@@ -176,7 +176,7 @@ export default function Home() {
             name: 'DeFi Dashboard',
             url: 'https://www.tokendataview.com',
             description:
-              'Comprehensive DeFi platform for comparing stablecoin yields and APY rates',
+              'Comprehensive DeFi platform for comparing stablecoin yields and APY rates across Aave, Compound, Pendle, Maker and more',
             potentialAction: {
               '@type': 'SearchAction',
               target:
@@ -242,9 +242,11 @@ function HeroSection() {
                   <span className="block xl:inline"> on stablecoins</span>
                 </h1>
                 <p className="mt-3 text-base text-blue-100 sm:mt-5 sm:text-lg sm:max-w-xl sm:mx-auto md:mt-5 md:text-xl lg:mx-0">
-                  Discover the best DeFi yield opportunities for USDC, USDT, and
-                  other stablecoins. Compare rates across protocols and maximize
-                  your yield with real-time data.
+                  Discover and Compare the best DeFi yield opportunities for
+                  USDC, USDT, DAI, USDe and other stablecoins across Aave,
+                  Compound, Pendle, Maker and more. Compare rates across
+                  protocols and maximize your yield with real-time data. Start
+                  earning passive income today.
                 </p>
                 <div className="mt-5 sm:mt-8 sm:flex sm:justify-center lg:justify-start">
                   <div className="rounded-md shadow">

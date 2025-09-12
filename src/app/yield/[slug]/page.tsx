@@ -206,7 +206,8 @@ export default function YieldPage({ params }: { params: { slug: string } }) {
         <title>{`${params.slug.toUpperCase()} Yield Farming Opportunities | TokenDataView.com`}</title>
         <meta
           name="description"
-          content={`Explore the best yield farming opportunities for ${params.slug.toUpperCase()}. Find high APY and project information on TokenDataView.com.`}
+          content={`Explore and compare real-time stablecoin yields across Aave, Compound, Pendle, Maker and more DeFi protocols.
+             Find the highest yield farming opportunities or APY rates for ${params.slug.toUpperCase()} with our transparent dashboard. Start earning passive income today`}
         />
       </Head>
 
