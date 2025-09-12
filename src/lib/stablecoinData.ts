@@ -22,7 +22,7 @@ export interface StablecoinData {
 }
 
 // Cache configuration
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
+const CACHE_DURATION = 1 * 60 * 1000; // 1 minute in milliseconds
 const cache = new Map<string, { data: StablecoinData; timestamp: number }>();
 
 export async function getStablecoinYields(): Promise<StablecoinData> {
@@ -137,8 +137,15 @@ export async function getTopStablecoinYields(
   return data.yields.slice(0, limit);
 }
 
+// Cache invalidation function
+export function invalidateStablecoinCache() {
+  cache.clear();
+}
+
 // Get unique values for filters
 export async function getStablecoinFilterOptions() {
+  // Force cache refresh to ensure we get latest data including Maple
+  invalidateStablecoinCache();
   const data = await getStablecoinYields();
 
   const uniqueChains = Array.from(
