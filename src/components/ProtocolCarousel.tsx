@@ -13,6 +13,7 @@ const protocols = [
   { name: 'GEARBOX', description: 'Leveraged DeFi' },
   { name: 'STARGATE', description: 'Cross-Chain Bridge' },
   { name: 'SPARK', description: 'Lending Protocol' },
+  { name: 'SILO', description: 'Isolated Lending' },
   { name: 'COMPOUND', description: 'Lending Protocol' },
   { name: 'MAKER', description: 'DAO & DAI' },
   { name: 'UNISWAP', description: 'DEX Protocol' },

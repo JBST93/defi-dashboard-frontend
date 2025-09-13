@@ -3,23 +3,25 @@ import Image from 'next/image';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'DeFi Protocols - Aave, Pendle, Gearbox, Stargate & More',
+  title: 'DeFi Protocols - Aave, Pendle, Gearbox, Stargate, Silo & More',
   description:
-    'Explore comprehensive guides to top DeFi protocols including Aave, Pendle, Gearbox, Stargate, and Spark Lend. Compare features, risks, and yields.',
+    'Explore comprehensive guides to top DeFi protocols including Aave, Pendle, Gearbox, Stargate, Silo Finance, and Spark Lend. Compare features, risks, and yields.',
   keywords: [
     'DeFi protocols',
     'Aave',
     'Pendle',
     'Gearbox',
     'Stargate',
+    'Silo Finance',
     'Spark Lend',
     'DeFi comparison',
     'protocol features',
+    'isolated lending',
   ],
   openGraph: {
     title: 'DeFi Protocols Guide - Compare Top DeFi Platforms',
     description:
-      'Comprehensive guides to Aave, Pendle, Gearbox, Stargate, and other leading DeFi protocols.',
+      'Comprehensive guides to Aave, Pendle, Gearbox, Stargate, Silo Finance, and other leading DeFi protocols.',
     url: 'https://www.tokendataview.com/projects',
   },
   alternates: {
@@ -166,6 +168,31 @@ const protocols: Protocol[] = [
     website: 'https://spark.fi',
     category: 'Lending',
   },
+  {
+    name: 'Silo Finance',
+    description:
+      'Silo Finance is a non-custodial lending protocol that creates permissionless and risk-isolated lending markets. By employing an isolated-pool approach, Silo allows users to borrow any crypto asset with another while minimizing risk exposure through bridge assets ETH and USDC.',
+    features: [
+      'Isolated lending pools',
+      'Risk-isolated markets',
+      'Bridge asset system (ETH/USDC)',
+      'Permissionless lending',
+      'Individual token pools',
+    ],
+    benefits: [
+      'Enhanced security through isolation',
+      'Reduced systemic risk',
+      'Flexible asset borrowing',
+      'Permissionless access',
+      'Capital efficiency',
+    ],
+    riskLevel: 'Medium',
+    tvl: '$180M',
+    apy: '4.2% - 11.5%',
+    logo: '/silo-logo.svg',
+    website: 'https://silo.finance',
+    category: 'Lending',
+  },
 ];
 
 export default function ProjectsPage() {
@@ -180,7 +207,7 @@ export default function ProjectsPage() {
             '@type': 'WebPage',
             name: 'DeFi Protocols Guide',
             description:
-              'Comprehensive guides to top DeFi protocols including Aave, Pendle, Gearbox, Stargate, and Spark Lend.',
+              'Comprehensive guides to top DeFi protocols including Aave, Pendle, Gearbox, Stargate, Silo Finance, and Spark Lend.',
             url: 'https://www.tokendataview.com/projects',
             mainEntity: {
               '@type': 'ItemList',
