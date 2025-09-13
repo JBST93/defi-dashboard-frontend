@@ -60,10 +60,16 @@ function getBlogPosts(): BlogPost[] {
   });
 
   // Sort by date (newest first)
-  return blogPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  return blogPosts.sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+  );
 }
 
-function extractPostData(content: string, folder: string, mtime: Date): BlogPost | null {
+function extractPostData(
+  content: string,
+  folder: string,
+  mtime: Date
+): BlogPost | null {
   const postData = {} as BlogPost;
 
   // Extract title from metadata
@@ -94,7 +100,7 @@ function extractPostData(content: string, folder: string, mtime: Date): BlogPost
   // Generate ID from folder name
   postData.id = folder;
   postData.slug = folder;
-  
+
   // Set date from file modification time
   postData.date = mtime.toISOString().split('T')[0];
 
