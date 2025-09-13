@@ -273,7 +273,7 @@ export default function SiloFinanceGuide() {
                 Key Innovation: Risk Isolation
               </h3>
               <p className="text-blue-800">
-                Silo Finance's core innovation lies in its isolated lending
+                Silo Finance&apos;s core innovation lies in its isolated lending
                 pools. Each token asset has its own dedicated market and is
                 paired exclusively against bridge assets (ETH and USDC),
                 preventing the ripple effects of asset vulnerabilities from
