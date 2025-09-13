@@ -3,9 +3,9 @@ import Image from 'next/image';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'DeFi Protocols - Aave, Pendle, Gearbox, Stargate, Silo & More',
+  title: 'DeFi Protocols - Aave, Pendle, Gearbox, Stargate, Silo, Maple & More',
   description:
-    'Explore comprehensive guides to top DeFi protocols including Aave, Pendle, Gearbox, Stargate, Silo Finance, and Spark Lend. Compare features, risks, and yields.',
+    'Explore comprehensive guides to top DeFi protocols including Aave, Pendle, Gearbox, Stargate, Silo Finance, Maple Finance, and Spark Lend. Compare features, risks, and yields.',
   keywords: [
     'DeFi protocols',
     'Aave',
@@ -13,15 +13,17 @@ export const metadata: Metadata = {
     'Gearbox',
     'Stargate',
     'Silo Finance',
+    'Maple Finance',
     'Spark Lend',
     'DeFi comparison',
     'protocol features',
     'isolated lending',
+    'institutional lending',
   ],
   openGraph: {
     title: 'DeFi Protocols Guide - Compare Top DeFi Platforms',
     description:
-      'Comprehensive guides to Aave, Pendle, Gearbox, Stargate, Silo Finance, and other leading DeFi protocols.',
+      'Comprehensive guides to Aave, Pendle, Gearbox, Stargate, Silo Finance, Maple Finance, and other leading DeFi protocols.',
     url: 'https://www.tokendataview.com/projects',
   },
   alternates: {
@@ -193,6 +195,31 @@ const protocols: Protocol[] = [
     website: 'https://silo.finance',
     category: 'Lending',
   },
+  {
+    name: 'Maple Finance',
+    description:
+      'Maple Finance is a leading digital asset lending platform that brings institutional-grade lending to DeFi. Founded in 2019, Maple combines traditional finance rigor with blockchain transparency, offering fixed-rate, overcollateralized loans to institutional borrowers through their innovative SyrupUSDC product.',
+    features: [
+      'Institutional-grade lending',
+      'Fixed-rate loans',
+      'Overcollateralized lending',
+      'SyrupUSDC liquid yielding dollar',
+      'White-glove service',
+    ],
+    benefits: [
+      'Institutional quality yield',
+      'Transparent lending process',
+      'Professional risk management',
+      'Consistent high yields',
+      'Short-term liquidity options',
+    ],
+    riskLevel: 'Low',
+    tvl: '$320M',
+    apy: '8.5% - 15.2%',
+    logo: '/maple-logo.svg',
+    website: 'https://maple.finance',
+    category: 'Institutional Lending',
+  },
 ];
 
 export default function ProjectsPage() {
@@ -207,7 +234,7 @@ export default function ProjectsPage() {
             '@type': 'WebPage',
             name: 'DeFi Protocols Guide',
             description:
-              'Comprehensive guides to top DeFi protocols including Aave, Pendle, Gearbox, Stargate, Silo Finance, and Spark Lend.',
+              'Comprehensive guides to top DeFi protocols including Aave, Pendle, Gearbox, Stargate, Silo Finance, Maple Finance, and Spark Lend.',
             url: 'https://www.tokendataview.com/projects',
             mainEntity: {
               '@type': 'ItemList',
