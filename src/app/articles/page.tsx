@@ -51,31 +51,53 @@ function getBlogPosts(): BlogPost[] {
     const postPath = path.join(blogDir, folder, 'page.tsx');
     if (fs.existsSync(postPath)) {
       const content = fs.readFileSync(postPath, 'utf8');
-      const postData = extractPostData(content, folder);
+      const stats = fs.statSync(postPath);
+      const postData = extractPostData(content, folder, stats.mtime);
       if (postData) {
         blogPosts.push(postData);
       }
     }
   });
 
-  return blogPosts;
+  // Sort by date (newest first)
+  return blogPosts.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
-function extractPostData(content: string, folder: string): BlogPost | null {
-  const fields = ['id', 'title', 'excerpt', 'date', 'author', 'image'] as const;
+function extractPostData(content: string, folder: string, mtime: Date): BlogPost | null {
   const postData = {} as BlogPost;
 
-  for (const field of fields) {
-    const regex = new RegExp(`${field}:\\s*['"](.+?)['"]`);
-    const match = content.match(regex);
-    if (match) {
-      postData[field as keyof BlogPost] = match[1];
-    } else {
-      return null; // If any field is missing, return null
-    }
+  // Extract title from metadata
+  const titleMatch = content.match(/title:\s*['"](.+?)['"]/);
+  if (titleMatch) {
+    postData.title = titleMatch[1];
+  } else {
+    return null;
   }
 
+  // Extract description as excerpt
+  const descriptionMatch = content.match(/description:\s*['"](.+?)['"]/);
+  if (descriptionMatch) {
+    postData.excerpt = descriptionMatch[1];
+  } else {
+    return null;
+  }
+
+  // Extract image from openGraph
+  const imageMatch = content.match(/url:\s*['"](.+?og-.+?\.jpg)['"]/);
+  if (imageMatch) {
+    postData.image = imageMatch[1];
+  } else {
+    // Default image if not found
+    postData.image = '/og-default.jpg';
+  }
+
+  // Generate ID from folder name
+  postData.id = folder;
   postData.slug = folder;
+  
+  // Set date from file modification time
+  postData.date = mtime.toISOString().split('T')[0];
+
   return postData;
 }
 

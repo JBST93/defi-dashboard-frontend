@@ -272,8 +272,8 @@ export default function MapleFinanceGuide() {
                 Key Innovation: Institutional DeFi
               </h3>
               <p className="text-blue-800">
-                Maple Finance&apos;s core innovation lies in bridging the gap between
-                traditional institutional finance and DeFi. By offering
+                Maple Finance&apos;s core innovation lies in bridging the gap
+                between traditional institutional finance and DeFi. By offering
                 fixed-rate, overcollateralized loans to institutional borrowers,
                 Maple brings professional-grade lending practices to the crypto
                 ecosystem while maintaining the transparency and efficiency of
@@ -431,11 +431,11 @@ export default function MapleFinanceGuide() {
             </h2>
 
             <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-              SyrupUSDC is Maple Finance&apos;s flagship product - a liquid yielding
-              dollar that makes institutional lending accessible to all DeFi
-              users. It represents a revolutionary approach to yield generation
-              by combining the stability of USDC with the high yields of
-              institutional lending.
+              SyrupUSDC is Maple Finance&apos;s flagship product - a liquid
+              yielding dollar that makes institutional lending accessible to all
+              DeFi users. It represents a revolutionary approach to yield
+              generation by combining the stability of USDC with the high yields
+              of institutional lending.
             </p>
 
             <div className="bg-purple-50 border border-purple-200 rounded-xl p-6 mb-8">
@@ -445,9 +445,9 @@ export default function MapleFinanceGuide() {
               <p className="text-purple-800">
                 SyrupUSDC is an overcollateralized, liquid yielding dollar that
                 provides institutional-quality yield in a single, easy-to-use
-                asset. It&apos;s backed by Maple&apos;s institutional lending marketplace
-                and offers consistent, high yields while maintaining the
-                stability and liquidity of USDC.
+                asset. It&apos;s backed by Maple&apos;s institutional lending
+                marketplace and offers consistent, high yields while maintaining
+                the stability and liquidity of USDC.
               </p>
             </div>
 
@@ -496,10 +496,10 @@ export default function MapleFinanceGuide() {
             </h3>
             <p className="text-lg text-gray-700 mb-6 leading-relaxed">
               When you deposit USDC into SyrupUSDC, your funds are automatically
-              deployed into Maple&apos;s institutional lending pools. These pools
-              provide fixed-rate loans to vetted institutional borrowers, and
-              the yield generated from these loans is distributed to SyrupUSDC
-              holders.
+              deployed into Maple&apos;s institutional lending pools. These
+              pools provide fixed-rate loans to vetted institutional borrowers,
+              and the yield generated from these loans is distributed to
+              SyrupUSDC holders.
             </p>
 
             <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
@@ -543,11 +543,11 @@ export default function MapleFinanceGuide() {
             </h2>
 
             <p className="text-lg text-gray-700 mb-6 leading-relaxed">
-              Maple Finance&apos;s institutional lending model represents a paradigm
-              shift in DeFi lending. Instead of relying solely on algorithmic
-              models, Maple employs traditional finance practices including
-              professional due diligence, KYC/AML compliance, and human risk
-              assessment.
+              Maple Finance&apos;s institutional lending model represents a
+              paradigm shift in DeFi lending. Instead of relying solely on
+              algorithmic models, Maple employs traditional finance practices
+              including professional due diligence, KYC/AML compliance, and
+              human risk assessment.
             </p>
 
             <div className="bg-yellow-50 border border-yellow-200 rounded-xl p-6 mb-8">
@@ -700,8 +700,8 @@ export default function MapleFinanceGuide() {
             <p className="text-lg text-gray-700 mb-6 leading-relaxed">
               Maple Finance has migrated from the original MPL token to the new
               SYRUP token, offering improved functionality and better alignment
-              with the protocol&apos;s vision. MPL holders can convert their tokens
-              to SYRUP through the official migration process.
+              with the protocol&apos;s vision. MPL holders can convert their
+              tokens to SYRUP through the official migration process.
             </p>
 
             <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
@@ -1154,10 +1154,10 @@ export default function MapleFinanceGuide() {
                 </h3>
                 <p className="text-gray-700">
                   SyrupUSDC is a liquid yielding dollar that automatically earns
-                  yield from Maple&apos;s institutional lending pools, while regular
-                  USDC is a stablecoin that doesn&apos;t earn any yield. SyrupUSDC
-                  maintains USDC&apos;s stability while providing institutional-grade
-                  returns.
+                  yield from Maple&apos;s institutional lending pools, while
+                  regular USDC is a stablecoin that doesn&apos;t earn any yield.
+                  SyrupUSDC maintains USDC&apos;s stability while providing
+                  institutional-grade returns.
                 </p>
               </div>
 
@@ -1168,8 +1168,8 @@ export default function MapleFinanceGuide() {
                 <p className="text-gray-700">
                   KYC is only required for permissioned products (Blue Chip,
                   High Yield, Bitcoin Yield). Open access products like
-                  SyrupUSDC and SyrupUSDT don&apos;t require KYC and are available to
-                  everyone (non-US residents).
+                  SyrupUSDC and SyrupUSDT don&apos;t require KYC and are
+                  available to everyone (non-US residents).
                 </p>
               </div>
 
